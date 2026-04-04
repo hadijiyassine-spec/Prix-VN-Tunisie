@@ -2,6 +2,10 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0D47A1">
+
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Prix VN Tunisie &mdash; Desktop</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
@@ -99,6 +103,45 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 .le{padding:18px 10px;text-align:center;color:var(--t3);font-size:12px}
 .kbd{font-size:10px;color:var(--t3);padding:4px 10px 7px;text-align:center;flex-shrink:0}
 @keyframes fi{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}.ani{animation:fi .13s ease}
+
+/* ── Responsive / Mobile ── */
+@media (max-width: 768px) {
+  /* Full-page scroll instead of fixed height */
+  html,body{height:auto;overflow:auto}
+  .shell{display:flex;flex-direction:column;height:auto;min-height:100vh}
+  /* Topbar: stack logo + filter */
+  .topbar{height:auto;padding:10px 16px;flex-direction:column;align-items:flex-start;gap:8px}
+  .topbar-right{width:100%;justify-content:flex-start;gap:8px;flex-wrap:wrap}
+  .pill{display:none}
+  .yr-filter{flex:1}
+  .yr-filter input{width:80px}
+  /* Main: single column, no fixed height */
+  .main{display:flex;flex-direction:column;overflow:visible}
+  /* Each panel: visible, not scrolled independently */
+  .panel{border-right:none;border-bottom:1px solid var(--bd);overflow:visible}
+  .ph{position:sticky;top:0;z-index:5}
+  .pl{overflow:visible;max-height:none;padding:5px}
+  /* Result panel */
+  .result-panel{overflow:visible}
+  .res-empty{padding:24px 16px}
+  .res-scroll{overflow:visible;padding:12px}
+  /* Panels stacked: each gets a natural height */
+  .panel .pl .item,.panel .pl .vi,.panel .pl .or{font-size:13px}
+  /* Colonne finitions: show all items, no scroll */
+  #listB,#listM,#listV{overflow:visible;max-height:none}
+  /* kbd hint hidden on mobile */
+  .kbd{display:none}
+  /* Result card full width */
+  .rcard{margin-bottom:12px}
+  /* Meta grid: 1 col on very small */
+  @media (max-width:400px){.meta-grid{grid-template-columns:1fr}}
+}
+@media (min-width:769px) and (max-width:1100px) {
+  /* Tablet: 2 columns */
+  .main{grid-template-columns:220px 1fr}
+  .result-panel{display:none}
+  .res-scroll{display:block !important}
+}
 </style>
 </head>
 <body>
@@ -604,7 +647,28 @@ function rResult(){
   document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Escape'){e.target.value='';e.target.dispatchEvent(new Event('input'));}});
 });
 rBrands('');
-<script defer src="/_vercel/insights/script.js"></script>
+
+
+// ── Mobile responsive: auto-scroll to result ──
+function isMobile(){ return window.innerWidth <= 768; }
+const _origRResult = rResult;
+// Wrap rResult to scroll into view on mobile
+window.addEventListener('load', function(){
+  const origRResult = window.rResult;
+  if(origRResult) {
+    window.rResult = function(){
+      origRResult();
+      if(isMobile()){
+        setTimeout(()=>{
+          const rc = document.querySelector('.rcard');
+          if(rc) rc.scrollIntoView({behavior:'smooth',block:'start'});
+        }, 100);
+      }
+    };
+  }
+});
+
 </script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
