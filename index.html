@@ -852,16 +852,121 @@ function rResult(){
     else if(c==='apres') banner='<div class="compat-banner apres">⛔ Dernière réf. : '+v.d+'. Probablement non actif en '+FY+'.</div>';
     else banner='<div class="compat-banner avant">⏳ Non encore référencé en '+FY+'. 1ère entrée : '+v.d0+'.</div>';
   }
+function pricesByGen(hist, gens) {
+  if (!gens || !hist || !hist.length) return null;
+  const result = {};
+  gens.forEach(g => {
+    const y0 = g.y0, y1 = g.y1 || 2030;
+    const pts = hist.filter(h => {
+      const y = parseInt(h.d.split('.')[2]);
+      return y >= y0 && y <= y1;
+    });
+    if (pts.length) {
+      result[g.gen] = {
+        first: pts[0],
+        last:  pts[pts.length - 1],
+        count: pts.length,
+        min:   Math.min(...pts.map(p=>p.p)),
+        max:   Math.max(...pts.map(p=>p.p))
+      };
+    }
+  });
+  return Object.keys(result).length ? result : null;
+}
+
+function genTimeline(modelName, hist, FY) {
+  const gens = GENS[modelName];
+  if (!gens || gens.length < 1) return '';
+  const CY2 = 2026;
+  const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
+  const minY = Math.min(...gens.map(g=>g.y0));
+  const maxY = Math.max(...gens.map(g=>g.y1||CY2));
+  const span = maxY - minY || 1;
+  const colors = ['#1565C0','#0D47A1','#1976D2','#0288D1'];
+  const pxByGen = hist ? pricesByGen(hist, gens) : null;
+
+  let html = '<div>';
+  html += '<div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:9px">G\u00e9n\u00e9rations &mdash; '+gens.length+' phase'+(gens.length>1?'s':'')+'</div>';
+
+  gens.forEach((g, i) => {
+    const y0 = g.y0, y1 = g.y1||CY2;
+    const isCur = g.y1 === null || g.y1 >= CY2 - 1;
+    const isAct = FY ? (FY >= y0 && FY <= y1) : false;
+    const pL = Math.round((y0-minY)/span*100);
+    const pR = Math.round((maxY-y1)/span*100);
+    const col = colors[i % colors.length];
+    const px = pxByGen ? pxByGen[g.gen] : null;
+
+    html += '<div style="margin-bottom:8px">';
+
+    // Header row: gen name + years + current badge
+    html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap">';
+    html += '<span style="font-size:10.5px;font-weight:700;color:'+col+'">'+g.gen+'</span>';
+    html += '<span style="font-size:9px;color:var(--t3)">'+y0+'&ndash;'+(g.y1?g.y1:'pr\u00e9sent')+'</span>';
+    if (isCur) html += '<span style="font-size:8px;background:#E8F5E9;color:#2E7D32;padding:1px 4px;border-radius:3px;font-weight:600">actuel</span>';
+    if (isAct && FY) html += '<span style="font-size:8.5px;color:#FF6F00;font-weight:700">&#9654; '+FY+'</span>';
+    // Price range for this gen
+    if (px) {
+      const delta = px.max - px.min;
+      html += '<span style="margin-left:auto;font-size:9.5px;font-weight:700;color:'+col+'">'+fmt(px.last.p)+'</span>';
+      if (delta > 0) html += '<span style="font-size:8.5px;color:#C62828">+'+delta.toLocaleString('fr-TN')+'\u00a0DT</span>';
+    }
+    html += '</div>';
+
+    // Bar
+    html += '<div style="height:7px;background:var(--bd);border-radius:4px;position:relative;overflow:visible;margin-bottom:3px">';
+    html += '<div style="position:absolute;top:0;bottom:0;background:'+col+';border-radius:4px;left:'+pL+'%;right:'+pR+'%;opacity:'+(isAct||!FY?'1':'0.3')+'"></div>';
+    if (FY) {
+      const pfy = Math.round((FY-minY)/span*100);
+      if (pfy>=0 && pfy<=100)
+        html += '<div style="position:absolute;top:-5px;bottom:-5px;width:3px;background:#FF6F00;border-radius:2px;left:'+pfy+'%"></div>';
+    }
+    // End-of-gen price dot
+    if (px && !isCur) {
+      html += '<div style="position:absolute;top:50%;right:'+pR+'%;transform:translate(50%,-50%);width:10px;height:10px;background:'+col+';border:2px solid #fff;border-radius:50%;z-index:3" title="Fin de phase: '+fmt(px.last.p)+'"></div>';
+    }
+    html += '</div>';
+
+    // Price detail row: first price → last price + dates
+    if (px) {
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;font-size:8.5px;color:var(--t3)">';
+      html += '<span>D\u00e9but phase&nbsp;<b style="color:'+col+'">'+fmt(px.first.p)+'</b>&nbsp;<span style="opacity:.7">'+px.first.d+'</span></span>';
+      if (px.first.d !== px.last.d)
+        html += '<span>Fin phase&nbsp;<b style="color:'+(isCur?'#2E7D32':col)+'">'+fmt(px.last.p)+'</b>&nbsp;<span style="opacity:.7">'+px.last.d+'</span></span>';
+      html += '</div>';
+    } else {
+      html += '<div style="font-size:8.5px;color:var(--t3)">'+g.info+'</div>';
+    }
+
+    if (!px) {
+      // just show info
+    } else {
+      html += '<div style="font-size:8.5px;color:var(--t3);margin-top:1px">'+g.info+(px?' &middot; '+px.count+' mise'+(px.count>1?'s':'')+'&nbsp;\u00e0&nbsp;jour':'')+'</div>';
+    }
+    html += '</div>';
+  });
+
+  // Timeline axis
+  html += '<div style="display:flex;justify-content:space-between;font-size:8.5px;color:var(--t3);border-top:1px solid var(--bd);padding-top:4px;margin-top:2px">';
+  const step = span<=6?1:span<=12?2:3;
+  for (let y = minY; y <= maxY; y += step) html += '<span>'+y+'</span>';
+  html += '</div>';
+  html += '</div>';
+  return html;
+}
+
   document.getElementById('resEmpty').style.display='none';
   const c2=document.getElementById('resContent');c2.style.display='block';c2.innerHTML='';
   const chartId='cD'+Date.now();
   const p0=pctY(y0),p1=pctY(y1),pfy=pctFY();
+  const genSect=genTimeline(sel.m,v.hist,FY);
   const fillCls=c==='ok'?'ok':c==='avant'?'avant':'apres';
   const card=document.createElement('div');card.className='rcard ani';
   card.innerHTML=
     '<div class="rcard-head"><div class="rcard-badge">Prix officiel TTC</div><div class="rcard-brand">'+sel.b+'</div><div class="rcard-model">'+sel.m+'</div><div class="rcard-version">'+v.v+'</div></div>'+
     '<div class="rcard-body">'+banner+
     '<div class="price-block"><span class="price-val">'+v.p.toLocaleString('fr-TN')+'</span><span class="price-unit">DT</span><span class="price-lbl">TTC</span></div>'+
+(genSect?'<div class="sect"><div class="sect-hd"><span class="sect-title">G\u00e9n\u00e9rations \u2014 prix par phase</span></div>'+genSect+'</div>':'')+
     (v.hist.length>=2?
     '<div class="sect"><div class="sect-hd"><span class="sect-title">Évolution du prix</span><div style="display:flex;gap:8px;align-items:center"><span style="font-size:10px;color:var(--t3)">1er <b style="color:var(--pr)">'+fmt(pFirst)+'</b></span>'+dHtml+'</div></div><div class="chart-wrap"><canvas id="'+chartId+'"></canvas></div></div>':'')+
     '<div class="sect"><div class="sect-hd"><span class="sect-title">Phase base Tunisie</span></div>'+
