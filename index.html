@@ -272,6 +272,94 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
   .res-col{display:none}
   .res-col.has-result{display:flex;grid-column:1/-1}
 }
+
+/* Mobile brand chip — shown after brand selection */
+.mob-brand-chip{
+  display:none;
+  align-items:center;
+  gap:8px;
+  padding:9px 14px;
+  background:var(--prd);
+  color:#fff;
+  font-size:12.5px;
+  font-weight:600;
+  position:sticky;
+  top:0;
+  z-index:20;
+  border-bottom:2px solid var(--pr3);
+  cursor:pointer;
+}
+.mob-brand-chip .chip-ico{
+  width:26px;height:26px;
+  background:rgba(255,255,255,.2);
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;
+  flex-shrink:0;
+}
+.mob-brand-chip .chip-name{flex:1}
+.mob-brand-chip .chip-change{
+  font-size:10.5px;
+  opacity:.8;
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:6px;
+  padding:3px 8px;
+  white-space:nowrap;
+}
+@media (max-width:768px){
+  .mob-brand-chip.visible{display:flex}
+  /* Models column: no top border when chip is shown */
+  .col.models-col{border-top:none !important}
+}
+
+@media (max-width:768px){
+  /* Model column collapse after model selection */
+  .models-col.collapsed .col-head,
+  .models-col.collapsed .col-list{
+    display:none !important;
+  }
+  .models-col.collapsed{
+    flex:0 0 auto !important;
+    overflow:visible !important;
+  }
+
+  /* Model chip — shown after model selection */
+  .mob-model-chip{
+    display:none;
+    align-items:center;
+    gap:8px;
+    padding:9px 14px;
+    background:var(--sf);
+    border-bottom:2px solid var(--pr3);
+    cursor:pointer;
+    position:sticky;
+    top:0;
+    z-index:19;
+  }
+  .mob-model-chip.visible{display:flex}
+  .mob-model-chip .mchip-ico{
+    font-size:13px;
+    width:26px;height:26px;
+    background:var(--prl);
+    border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .mob-model-chip .mchip-name{
+    flex:1;
+    font-size:12.5px;font-weight:600;color:var(--pr);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .mob-model-chip .mchip-change{
+    font-size:10px;color:var(--t3);
+    background:var(--sf3);border:1px solid var(--bd);
+    border-radius:5px;padding:2px 7px;white-space:nowrap;flex-shrink:0;
+  }
+
+  /* Versions col: take full space when model selected */
+  .versions-col{border-top:none !important}
+}
 </style>
 </head>
 <body>
@@ -333,7 +421,13 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
   <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--bd)">
 
     <!-- Models -->
-    <div class="col" style="flex:1;overflow:hidden;border-right:none">
+    <div class="col models-col" style="flex:1;overflow:hidden;border-right:none">
+      <!-- Mobile brand chip -->
+      <div class="mob-brand-chip" id="mobBrandChip" onclick="toggleDrawer()">
+        <div class="chip-ico" id="mobChipIco">🚗</div>
+        <span class="chip-name" id="mobChipName">Marque sélectionnée</span>
+        <span class="chip-change">⇄ Changer</span>
+      </div>
       <div class="col-head">
         <div class="col-label" id="modelLabel">Modèle <span class="badge" id="mCnt">–</span></div>
         <div class="col-srch">
@@ -345,7 +439,13 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
     </div>
 
     <!-- Versions -->
-    <div class="col" style="flex:1;overflow:hidden;border-right:none;border-top:1px solid var(--bd)">
+    <div class="col versions-col" id="versionsCol" style="flex:1;overflow:hidden;border-right:none;border-top:1px solid var(--bd)">
+      <!-- Mobile model chip -->
+      <div class="mob-model-chip" id="mobModelChip">
+        <div class="mchip-ico">🏷️</div>
+        <span class="mchip-name" id="mobModelName">Modèle</span>
+        <span class="mchip-change" onclick="expandModels()">⇄ Changer</span>
+      </div>
       <div class="col-head">
         <div class="col-label">Finition <span class="badge" id="vCnt">–</span></div>
         <div class="col-srch">
@@ -595,9 +695,18 @@ function showGSResults(q){
       rBrands(document.getElementById('srchB').value.trim());
       rModels('');
       rVersions('');
-      // Scroll models into view on mobile
+      // Update mobile chip
+      const chip=document.getElementById('mobBrandChip');
+      if(chip){
+        document.getElementById('mobChipIco').textContent=r.brand.substring(0,2).toUpperCase();
+        document.getElementById('mobChipName').textContent=r.brand;
+        chip.classList.add('visible');
+      }
       if(window.innerWidth<=768){
-        setTimeout(()=>{const lm=document.getElementById('listM');if(lm)lm.scrollIntoView({behavior:'smooth',block:'start'});},150);
+        setTimeout(()=>{
+          const c2=document.getElementById('mobBrandChip');
+          if(c2) c2.scrollIntoView({behavior:'smooth',block:'start'});
+        },150);
       }
     });
     el.appendChild(d);
@@ -634,9 +743,20 @@ function selectBrand(b){
   rModels(''); clearV(); clearRes();
   document.getElementById('srchM').value='';
   document.getElementById('srchV').value='';
-  document.getElementById('modelLabel').textContent='';
-  document.getElementById('modelLabel').innerHTML='Modèle <span class="badge" id="mCnt">–</span>';
-  // Update drawer selection
+  // Update mobile chip
+  const chip=document.getElementById('mobBrandChip');
+  const chipIco=document.getElementById('mobChipIco');
+  const chipName=document.getElementById('mobChipName');
+  if(chip){
+    chipIco.textContent=b.substring(0,2).toUpperCase();
+    chipName.textContent=b;
+    chip.classList.add('visible');
+  }
+  // Reset model collapse state
+  const mc=document.querySelector('.models-col');
+  if(mc) mc.classList.remove('collapsed');
+  const mchip=document.getElementById('mobModelChip');
+  if(mchip) mchip.classList.remove('visible');
   renderDrawer(document.getElementById('drawerSrch').value.trim());
 }
 
@@ -664,7 +784,25 @@ function rModels(q){
       '<div class="item-meta">Base TN: '+minY0+'→'+maxY1+(gc?' · '+gc+' gén.'+(gc>1?'s':''):'')+( curGen?' · <b>'+curGen.gen+'</b>':'')+' </div>'+
       (FY?tagHtml(c,minY0,maxY1):'')+
       '</div><span class="item-arr">›</span>';
-    d.addEventListener('click',()=>{sel.m=m;sel.v=null;rModels(document.getElementById('srchM').value.trim());rVersions('');clearRes();document.getElementById('srchV').value='';});
+    d.addEventListener('click',()=>{
+      sel.m=m; sel.v=null;
+      rModels(document.getElementById('srchM').value.trim());
+      rVersions('');
+      clearRes();
+      document.getElementById('srchV').value='';
+      // Mobile: collapse model list, show model chip, scroll to versions
+      if(window.innerWidth<=768){
+        const mc=document.querySelector('.models-col');
+        if(mc) mc.classList.add('collapsed');
+        const mchip=document.getElementById('mobModelChip');
+        const mname=document.getElementById('mobModelName');
+        if(mchip&&mname){ mname.textContent=m; mchip.classList.add('visible'); }
+        setTimeout(()=>{
+          const vc=document.getElementById('versionsCol');
+          if(vc) vc.scrollIntoView({behavior:'smooth',block:'start'});
+        },80);
+      }
+    });
     el.appendChild(d);
   });
 }
@@ -818,7 +956,14 @@ function renderDrawer(q){
       selectBrand(b);
       closeDrawer();
       if(window.innerWidth<=768){
-        setTimeout(()=>{const lm=document.getElementById('listM');if(lm)lm.scrollIntoView({behavior:'smooth',block:'start'});},300);
+        // Short delay to let drawer close animation finish, then scroll to models
+        setTimeout(()=>{
+          const chip=document.getElementById('mobBrandChip');
+          if(chip) chip.scrollIntoView({behavior:'smooth',block:'start'});
+          // Focus model search for quick filtering
+          const sm=document.getElementById('srchM');
+          if(sm && window.innerWidth>400) sm.focus();
+        },320);
       }
     });
     el.appendChild(d);
@@ -856,6 +1001,19 @@ document.getElementById('srchV').addEventListener('input',e=>rVersions(e.target.
     if(e.key==='Escape'){e.target.value='';e.target.dispatchEvent(new Event('input'));}
   });
 });
+
+function expandModels(){
+  // Re-expand the model list on mobile
+  const mc=document.querySelector('.models-col');
+  if(mc) mc.classList.remove('collapsed');
+  const mchip=document.getElementById('mobModelChip');
+  if(mchip) mchip.classList.remove('visible');
+  setTimeout(()=>{
+    const bchip=document.getElementById('mobBrandChip');
+    if(bchip) bchip.scrollIntoView({behavior:'smooth',block:'start'});
+  },80);
+}
+
 </script>
 </body>
 </html>
