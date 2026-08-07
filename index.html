@@ -1052,11 +1052,11 @@ function expandModels(){
 function fuelClass(fuel){
   if(!fuel) return 'essence';
   const fl=fuel.toLowerCase();
-  if(fl.includes('élec')||fl.includes('elec')) return 'elec';
-  if(fl.includes('phev')||fl.includes('rech')) return 'phev';
-  if(fl.includes('hev')||fl.includes('hybr')) return 'hev';
+  if(fuel.includes('⚡')||fl.includes('élec')||fl.includes('elec')||fl.includes('bev')) return 'elec';
+  if(fuel.includes('🔌')||fl.includes('phev')||fl.includes('rech')) return 'phev';
+  if(fuel.includes('🌿')||fl.includes('hev')||fl.includes('hybr')) return 'hev';
+  if(fuel.includes('💨')||fl.includes('gpl')||fl.includes('cng')) return 'gpl';
   if(fl.includes('diesel')) return 'diesel';
-  if(fl.includes('gpl')||fl.includes('cng')) return 'gpl';
   return 'essence';
 }
 
@@ -1095,6 +1095,20 @@ function buildSpecsBlock(v, modelName, FY){
   }
 
   if(sp){
+    // EV/Hybrid extra info
+    if(sp && (sp.carburant||'').match(/[⚡🔌🌿]/)){
+      const kwh = eg && eg.kwh ? eg.kwh : null;
+      const isEV = (sp.carburant||'').includes('⚡');
+      const isPHEV = (sp.carburant||'').includes('🔌');
+      const isHEV = (sp.carburant||'').includes('🌿');
+      let evTag = '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">';
+      if(isEV) evTag += '<span style="background:#E3F2FD;color:#0D47A1;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">⚡ 100% Électrique</span>';
+      if(isPHEV) evTag += '<span style="background:#E8F5E9;color:#1B5E20;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">🔌 Hybride Rechargeable</span>';
+      if(isHEV) evTag += '<span style="background:#F1F8E9;color:#33691E;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">🌿 Hybride Auto-Recharge</span>';
+      if(kwh) evTag += '<span style="background:#FFF3E0;color:#E65100;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">🔋 '+kwh+'</span>';
+      evTag += '</div>';
+      html += evTag;
+    }
     // Segment & CO2
     html += '<div class="specs-grid">';
     if(sp.segment) html += '<div class="spec-item"><div class="spec-label">Segment</div><div class="spec-value">'+sp.segment+'</div></div>';
@@ -1138,7 +1152,8 @@ function verBadgesHtml(eg){
     const fc=fuelClass(eg.fuel);
     h+='<span class="vi-badge fuel-'+fc+'">'+eg.fuel+'</span>';
   }
-  if(eg.cc) h+='<span class="vi-badge">'+eg.cc+'</span>';
+  if(eg.kwh) h+='<span class="vi-badge" style="background:#FFF3E0;color:#E65100">🔋 '+eg.kwh+'</span>';
+  if(eg.cc&&!eg.kwh) h+='<span class="vi-badge">'+eg.cc+'</span>';
   if(eg.pw) h+='<span class="vi-badge pw">'+eg.pw+'</span>';
   if(eg.tx) h+='<span class="vi-badge tx">'+eg.tx+'</span>';
   h+='</div>';
