@@ -555,7 +555,9 @@ window.addEventListener('load', init);
 function yOf(d){ return parseInt((d||'').split('.')[2]||0); }
 function pctY(y){ return Math.max(0,Math.min(97,Math.round((y-2011)/15*100))); }
 function pctFY(){ return FY ? pctY(FY) : null; }
-function filt(arr,q){ if(!q)return arr; const ql=q.toLowerCase(); return arr.filter(x=>x.toLowerCase().includes(ql)); }
+// Accent-insensitive normalization so "citroen" also matches "Citroën", etc.
+function norm(s){ return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
+function filt(arr,q){ if(!q)return arr; const ql=norm(q); return arr.filter(x=>norm(x).includes(ql)); }
 
 function vCompat(v){
   if(!FY) return 'all';
@@ -648,14 +650,22 @@ function genTimeline(modelName, hist, FY){
 function buildChart(v, FY, canvasId){
   const hist=v.hist;
   if(!hist||hist.length<2) return;
+  const canvas=document.getElementById(canvasId);
+  if(!canvas) return;
+  // Chart.js is loaded from an external CDN — if there's no network (offline use,
+  // dealership wifi down, etc.) it never defines window.Chart. Fail visibly with a
+  // friendly fallback instead of leaving a silent blank box under "Évolution du prix".
+  if(typeof Chart==='undefined'){
+    const wrap=canvas.closest('.chart-wrap');
+    if(wrap) wrap.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;text-align:center;color:var(--t3);font-size:11px;padding:0 12px;line-height:1.6">📉 Graphique indisponible sans connexion internet.<br>Les prix Début/Fin ci-dessus et par génération restent à jour.</div>';
+    return;
+  }
   const labels=hist.map(h=>h.d);
   const prices=hist.map(h=>h.p);
   const years=hist.map(h=>yOf(h.d));
   const ptColors=prices.map((_,i)=>years[i]===FY?'#FF6F00':i===prices.length-1?'#2E7D32':'#1565C0');
   const minP=Math.min(...prices),maxP=Math.max(...prices);
   const pad=Math.max((maxP-minP)*.18,2000);
-  const canvas=document.getElementById(canvasId);
-  if(!canvas) return;
   if(canvas._chart){canvas._chart.destroy();canvas._chart=null;}
   const annotations={};
   if(FY){
@@ -702,12 +712,12 @@ function clearGS(){
 function showGSResults(q){
   const el=document.getElementById('gsResults');
   el.innerHTML='';
-  const ql=q.toLowerCase();
+  const ql=norm(q);
   let results=[];
   Object.keys(DB).forEach(brand=>{
     Object.keys(DB[brand]).forEach(model=>{
       const short=model.replace(brand+' ','');
-      if(model.toLowerCase().includes(ql)||short.toLowerCase().includes(ql)){
+      if(norm(model).includes(ql)||norm(short).includes(ql)){
         const vers=DB[brand][model];
         const minP=Math.min(...vers.map(v=>v.p));
         const allY0=vers.map(v=>yOf(v.d0));
@@ -845,7 +855,7 @@ function rModels(q){
 function rVersions(q){
   if(!sel.b||!sel.m){clearV();return;}
   const vers=DB[sel.b][sel.m];
-  const fl=q?vers.filter(v=>v.v.toLowerCase().includes(q.toLowerCase())):vers;
+  const fl=q?vers.filter(v=>norm(v.v).includes(norm(q))):vers;
   document.getElementById('vCnt').textContent=fl.length;
   const el=document.getElementById('listV'); el.innerHTML='';
   const sorted=FY?[...fl].sort((a,b)=>{const r={ok:0,all:1,avant:2,apres:3};return (r[vCompat(a)]||2)-(r[vCompat(b)]||2);}):fl;
@@ -881,9 +891,11 @@ function makeVI(v,cb,isSel){
 function clearRes(){
   document.getElementById('resEmpty').style.display='flex';
   document.getElementById('resContent').style.display='none';
+  document.getElementById('resCol').classList.remove('has-result');
 }
 function rResult(){
   const v=sel.v; if(!v) return;
+  document.getElementById('resCol').classList.add('has-result');
   const y0=yOf(v.d0),y1=yOf(v.d),c=vCompat(v);
   const p0=pctY(y0),p1=pctY(y1),pfy=pctFY();
   const fillCls=c==='ok'?'ok':c==='avant'?'avant':'apres';
@@ -961,8 +973,8 @@ function rResult(){
     });
   }
 
-  // On mobile: scroll to result
-  if(window.innerWidth<=768){
+  // On mobile & tablet: scroll to result (on tablet it appears full-width below the columns)
+  if(window.innerWidth<=1100){
     setTimeout(()=>{c2.closest('.res-col').scrollIntoView({behavior:'smooth',block:'start'});},100);
   }
 }
