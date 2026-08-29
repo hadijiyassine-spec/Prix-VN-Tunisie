@@ -130,7 +130,7 @@ setTimeout(() => {
     return { sens: -b, n: pts.length };
   }
 
-  let taux = P.tauxDeprAn, sens = P.malusPar10000km, majoration = 1;
+  let taux = 0.05, sens = P.malusPar10000km, majoration = 1;
   for (let i = 0; i < 10; i++) {
     const ft = fitTaux(sens); taux = ft.taux; majoration = ft.majoration;
     sens = fitSens(taux).sens;

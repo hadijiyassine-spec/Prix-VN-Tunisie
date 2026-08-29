@@ -13,18 +13,25 @@
 /* ── Reset & Variables ── */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --pr:#1565C0;--prd:#0D47A1;--pr3:#1976D2;--prl:#E3F2FD;
-  --gn:#1B5E20;--gn2:#2E7D32;--gnl:#E8F5E9;
-  --am:#E65100;--aml:#FFF3E0;
-  --bg:#F0F4F8;--sf:#FFF;--sf2:#F8FAFC;--sf3:#EEF2F7;
-  --t1:#0D1B2A;--t2:#4A5568;--t3:#8896A5;
-  --bd:#DDE3ED;--bd2:#C8D0DC;
-  --sh:0 2px 8px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
-  --shd:0 2px 8px rgba(0,0,0,.12),0 8px 24px rgba(0,0,0,.08);
-  --r:12px;--rs:8px;
-  --hdr:54px;
+  /* Bleu d'ancrage assombri et légèrement désaturé : plus proche d'un outil technique que
+     du bleu Material d'origine. Neutres volontairement biaisés vers le bleu plutôt que gris
+     purs, pour que l'ensemble se tienne comme une seule famille. */
+  --pr:#0B5FA5;--prd:#072F52;--pr3:#1478C8;--prl:#E3EFF9;
+  --gn:#14532D;--gn2:#1F7A3D;--gnl:#E7F4EC;
+  --am:#B45309;--aml:#FDF1E3;
+  /* Couleurs sémantiques, distinctes de l'accent : elles disent un état, pas une marque. */
+  --ok:#1F7A3D;--ok-d:#14532D;--warn:#B45309;--bad:#B3261E;
+  --bg:#EDF1F6;--sf:#FFF;--sf2:#F7F9FC;--sf3:#EAEFF6;
+  --t1:#0C1826;--t2:#44556A;--t3:#7A8A9E;
+  --bd:#DAE1EB;--bd2:#BFCAD8;
+  --sh:0 1px 2px rgba(12,24,38,.06),0 4px 14px rgba(12,24,38,.07);
+  --shd:0 2px 6px rgba(12,24,38,.10),0 12px 28px rgba(12,24,38,.10);
+  --r:14px;--rs:9px;
+  --hdr:56px;
   --search-h:52px;
 }
+/* Les chiffres alignés en colonnes doivent l'être vraiment. */
+.price-val,.vi-price,.or-price,.vv-prix-val,.mc-v,.cote-ecart{font-variant-numeric:tabular-nums}
 html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1)}
 
 /* ══════════════════════════════════════
@@ -33,7 +40,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 .app{display:grid;grid-template-rows:var(--hdr) 1fr;height:100vh;overflow:hidden}
 
 /* Top bar */
-.topbar{background:var(--prd);color:#fff;display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.2);z-index:50;position:relative}
+.topbar{background:linear-gradient(105deg,var(--prd) 0%,#0A4A85 55%,var(--pr) 100%);color:#fff;display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 10px rgba(7,47,82,.28);z-index:50;position:relative}
 .logo{display:flex;align-items:center;gap:9px;flex-shrink:0}
 .logo-ico{width:30px;height:30px;background:rgba(255,255,255,.18);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px}
 .logo-txt{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;white-space:nowrap}
@@ -417,6 +424,60 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--pr3);outline-offset:1px}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important;scroll-behavior:auto !important}}
 
+
+/* ══════════════════════════════════════
+   MODULE VALEUR VÉNALE — pièce maîtresse
+══════════════════════════════════════ */
+#vvSect{
+  background:linear-gradient(180deg,#FFFFFF 0%,var(--prl) 140%);
+  border:1px solid var(--pr3);
+  border-left:3px solid var(--pr);
+  box-shadow:var(--sh);
+  padding:14px 15px 12px;
+}
+#vvSect .sect-title{color:var(--pr);letter-spacing:.7px}
+.vv-prix{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:9px 0 10px;padding-top:10px;border-top:1px dashed var(--bd2)}
+.vv-prix-val{font-family:'Syne',sans-serif;font-size:27px;font-weight:800;color:var(--pr);letter-spacing:-.6px;line-height:1}
+.vv-prix-note{font-size:9.5px;color:var(--t3)}
+
+/* ── Curseur de cotation ── */
+.cote{margin:2px 0 4px}
+.cote-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.cote-label{font-size:11.5px;font-weight:700}
+.cote-ecart{font-size:11.5px;font-weight:700}
+.cote-track{position:relative;height:26px;display:flex;align-items:center}
+.cote-fill{position:absolute;left:0;right:0;height:8px;border-radius:5px;
+  background:linear-gradient(90deg,var(--bad) 0%,var(--warn) 27%,var(--pr3) 40%,var(--ok) 62%,var(--ok-d) 100%)}
+/* Repère fixe de la valeur conseillée : l'écart au conseil doit rester lisible en permanence */
+.cote-ref{position:absolute;top:1px;bottom:1px;width:2px;background:var(--t1);opacity:.55;transform:translateX(-1px);z-index:2;border-radius:1px}
+.cote-range{position:absolute;left:0;right:0;width:100%;height:26px;margin:0;padding:0;
+  background:transparent;-webkit-appearance:none;appearance:none;z-index:3;cursor:ew-resize}
+.cote-range::-webkit-slider-runnable-track{height:26px;background:transparent;border:none}
+.cote-range::-webkit-slider-thumb{-webkit-appearance:none;box-sizing:border-box;width:20px;height:20px;margin-top:3px;
+  border-radius:50%;background:#fff;border:3px solid var(--pr);box-shadow:0 1px 5px rgba(12,24,38,.35);cursor:ew-resize}
+.cote-range::-moz-range-track{height:26px;background:transparent;border:none}
+.cote-range::-moz-range-thumb{box-sizing:border-box;width:20px;height:20px;border-radius:50%;
+  background:#fff;border:3px solid var(--pr);box-shadow:0 1px 5px rgba(12,24,38,.35);cursor:ew-resize}
+.cote-range:focus-visible::-webkit-slider-thumb{outline:2px solid var(--pr3);outline-offset:2px}
+.cote-range:focus-visible::-moz-range-thumb{outline:2px solid var(--pr3);outline-offset:2px}
+.cote-scale{display:flex;justify-content:space-between;font-size:8.5px;color:var(--t3);margin-top:3px}
+.cote-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;
+  font-size:9.5px;color:var(--t3);line-height:1.6;margin-top:6px}
+.cote-foot b{color:var(--t1)}
+.cote-reset{background:var(--sf);border:1px solid var(--bd2);color:var(--pr);border-radius:6px;
+  padding:3px 9px;font-size:10px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;white-space:nowrap}
+.cote-reset:hover{background:var(--prl);border-color:var(--pr3)}
+@media (max-width:768px){
+  .cote-track{height:34px}
+  .cote-range{height:34px}
+  /* Cible tactile plus généreuse : le curseur se manipule au doigt */
+  .cote-range::-webkit-slider-runnable-track{height:34px}
+  .cote-range::-webkit-slider-thumb{width:26px;height:26px;margin-top:4px}
+  .cote-range::-moz-range-track{height:34px}
+  .cote-range::-moz-range-thumb{width:26px;height:26px}
+  .vv-prix-val{font-size:25px}
+}
+
 /* Version item badges */
 .vi-badges{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px}
 .vi-badge{font-size:9.5px;font-weight:600;padding:1px 5px;border-radius:4px}
@@ -641,7 +702,29 @@ const VVPARAMS = {
   // Rétention à 4,94 %/an : 95 % à 1 an, 78 % à 5 ans, 60 % à 10 ans, 47 % à 15 ans —
   // l'occasion se maintient bien en Tunisie (droits d'importation élevés, offre de neuf
   // contrainte), nettement plus qu'en Europe.
-  tauxDeprAn: 0.0494,
+  //
+  // La dépréciation dépend de la GAMME. Testé et confirmé sur les mêmes annonces : classées
+  // par valeur à neuf, les gammes se déprécient à des rythmes nettement différents, et le
+  // classement est monotone. Un premier test opposant SUV et citadines avait été écarté —
+  // c'était le mauvais axe (un Duster est un SUV sans être haut de gamme, une Classe C est
+  // une berline haut de gamme). L'échantillon a été complété avec BMW, Mercedes, Audi et
+  // Volvo, absents jusque-là.
+  //   Grand public   (< 100 000 DT) : 4,27 %/an — 376 annonces, 15 modèles, 19 tranches d'âge
+  //   Haut de gamme  (100-180 000)  : 6,98 %/an — 140 annonces, 12 modèles, 16 tranches
+  //   Luxe / premium (>= 180 000)   : 8,33 %/an —  46 annonces, 16 modèles, 11 tranches
+  // Rétention à 10 ans : 65 % / 48 % / 42 %.
+  //
+  // Contrôle d'artefact : l'écart premium/grand public pourrait venir d'un mauvais ancrage
+  // de la VEN sur les modèles premium. Refait sur le seul sous-échantillon dont le prix
+  // catalogue existe EXACTEMENT à l'année de mise en circulation (350 annonces), l'écart
+  // persiste : 2,83 points contre 2,98 sur l'échantillon complet. L'effet est donc réel.
+  // Jackknife par modèle à l'intérieur de chaque palier : amplitude 0,9 à 2,2 points, soit
+  // moins que l'écart entre paliers (~3 points).
+  gammes: [
+    { nom: 'Grand public',   maxVEN: 100000,   tauxDeprAn: 0.0427 },
+    { nom: 'Haut de gamme',  maxVEN: 180000,   tauxDeprAn: 0.0698 },
+    { nom: 'Luxe / premium', maxVEN: Infinity, tauxDeprAn: 0.0833 },
+  ],
   valeurResiduelle: 0.12, // plancher (ne mord qu'au-delà d'environ 33 ans)
 
   // ── F_km : écart au kilométrage normal ──
@@ -660,7 +743,7 @@ const VVPARAMS = {
   // CALIBRÉ sur les mêmes 480 annonces que le taux d'âge : régression des résidus (une fois
   // l'effet de l'âge retiré) sur l'écart kilométrique, également avec constante libre pour
   // ne pas laisser la majoration vendeur contaminer la pente.
-  malusPar10000km: 0.0077, // -0,77 % de valeur par tranche de 10 000 km au-dessus de la normale
+  malusPar10000km: 0.0070, // -0,70 % de valeur par tranche de 10 000 km au-dessus de la normale
   plafondMalusKm: 0.45,    // au-delà, le kilométrage ne pénalise plus davantage
   plafondBonusKm: 0.15,    // un kilométrage très bas valorise, mais de façon limitée
 
@@ -735,13 +818,18 @@ function computeVEN(v, anneeRef){
 }
 
 // VV = valeur vénale estimée. Nécessite FY (année de 1ère MEC, barre du haut).
-function computeVV(v, km, etatKey, usageKey){
+// `coteAjustee` (facultatif) : position de cotation forcée par l'expert via le curseur.
+// Elle remplace le `relatif` calculé, sans effacer ce dernier — la fiche affiche les deux
+// pour que l'écart entre la recommandation et le jugement de l'expert reste visible.
+function computeVV(v, km, etatKey, usageKey, coteAjustee){
   if(!FY) return null;
   const age=Math.max(0, CY-FY);
   const ven=computeVEN(v, FY); // ancré sur l'année de mise en circulation
 
-  // F_âge : géométrique, avec valeur résiduelle plancher.
-  const fAge=Math.max(Math.pow(1-VVPARAMS.tauxDeprAn, age), VVPARAMS.valeurResiduelle);
+  // F_âge : géométrique, au rythme propre à la gamme du véhicule (déterminée par sa valeur
+  // à neuf), avec valeur résiduelle plancher.
+  const gamme=VVPARAMS.gammes.find(g=>ven.VEN<g.maxVEN)||VVPARAMS.gammes[VVPARAMS.gammes.length-1];
+  const fAge=Math.max(Math.pow(1-gamme.tauxDeprAn, age), VVPARAMS.valeurResiduelle);
 
   const etat=VVPARAMS.etats[etatKey]||VVPARAMS.etats.normal;
   const fEtat=VVPARAMS.baseEtat+etat.idx/100;
@@ -760,14 +848,21 @@ function computeVV(v, km, etatKey, usageKey){
   }
 
   const fCarb = VVPARAMS.carburant[ven.fc]!==undefined ? VVPARAMS.carburant[ven.fc] : 1;
-  const ratio = fAge*fEtat*fKm*fCarb*fUsage;          // part de la VEN conservée
+  // `relatif` = ce qui est propre à CE véhicule (hors âge et hors gamme, qui sont subis).
+  const relatif = fEtat*fKm*fCarb*fUsage;
+  const ajuste = coteAjustee!=null && isFinite(coteAjustee) && Math.abs(coteAjustee-relatif)>0.001;
+  const relatifEff = ajuste ? coteAjustee : relatif;
+  const ratio = fAge*relatifEff;                      // part de la VEN conservée
   const vv = Math.round(ven.VEN*ratio/100)*100;
-  return {vv, ven, fAge, fEtat, fKm, fCarb, fUsage, ratio, age, ecartKm, kmRef, etat, usage, km};
+  // `relatif` isole ce qui est propre À CE véhicule : état, kilométrage, usage, énergie —
+  // hors âge et hors gamme, qui sont des caractéristiques subies. C'est cette part qui dit
+  // si le véhicule est bien ou mal coté POUR SON ÂGE.
+  return {vv, ven, fAge, fEtat, fKm, fCarb, fUsage, ratio, relatif, relatifEff, ajuste, gamme, age, ecartKm, kmRef, etat, usage, km};
 }
 
 // État des champs du module Valeur vénale — conservé au niveau module pour survivre
 // à un changement de finition/modèle (l'expert n'a pas à ressaisir km/état/usage à chaque clic).
-let vvInputs = {km:'', etat:'normal', usage:'particulier'};
+let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null};
 
 // Bloc HTML du module (inséré dans la fiche résultat, sous le prix neuf).
 function renderVVBlock(v){
@@ -791,65 +886,134 @@ function renderVVBlock(v){
   return html;
 }
 
-// Indicateur de cotation : part de la VEN (prix neuf actualisé) que le véhicule conserve,
-// c'est-à-dire le produit de tous les facteurs. Seuils indicatifs, à ajuster selon votre pratique.
-function coteInfo(pct){
-  if(pct>=70) return {label:'Très bien coté',       color:'#1B5E20'};
-  if(pct>=55) return {label:'Bien coté',             color:'#2E7D32'};
-  if(pct>=40) return {label:'Cote dans la moyenne',  color:'#E65100'};
-  if(pct>=25) return {label:'Décote importante',     color:'#C62828'};
-  return {label:'Forte décote', color:'#B71C1C'};
+// ── Indicateur de cotation, réglable ──
+// L'application propose une position, l'expert tranche. Le curseur se place sur la valeur
+// conseillée (calculée à partir de l'état, du kilométrage, de l'usage et de l'énergie) et
+// reste déplaçable : c'est le jugement de l'expert qui fait foi, le modèle ne fait que
+// donner un point de départ argumenté.
+//
+// La position exprime l'écart à la NORME DE L'ÂGE, pas l'âge lui-même : F_âge et la gamme
+// sont des caractéristiques subies, exclues de la lecture. Un repère fixe marque toujours la
+// valeur conseillée, pour que l'écart entre le modèle et la décision reste lisible.
+function coteInfo(rel){
+  if(rel>=1.10) return {label:'Bien coté pour son âge',        color:'var(--ok-d)'};
+  if(rel>=1.03) return {label:'Un peu au-dessus de la norme',  color:'var(--ok)'};
+  if(rel>=0.97) return {label:'Conforme à son âge',            color:'var(--pr)'};
+  if(rel>=0.90) return {label:'Un peu en dessous de la norme', color:'var(--warn)'};
+  return {label:'Décoté pour son âge', color:'var(--bad)'};
 }
-function coteGaugeHtml(pct){
-  const info=coteInfo(pct);
-  const pos=Math.max(0,Math.min(100,pct));
-  let html='<div style="margin:2px 0 10px">';
-  html+='<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">'+
-    '<span style="font-size:11px;font-weight:700;color:'+info.color+'">🎯 '+info.label+'</span>'+
-    '<span style="font-size:11px;font-weight:700;color:'+info.color+'">'+pct.toFixed(0)+'% de la valeur à neuf</span></div>';
-  html+='<div style="height:8px;border-radius:4px;position:relative;background:linear-gradient(90deg,#B71C1C 0%,#C62828 25%,#E65100 40%,#2E7D32 55%,#1B5E20 70%,#1B5E20 100%)">'+
-    '<div style="position:absolute;top:-3px;bottom:-3px;width:3px;background:#0D1B2A;border-radius:2px;left:'+pos+'%"></div></div>';
-  html+='<div style="display:flex;justify-content:space-between;font-size:8.5px;color:var(--t3);margin-top:3px">'+
-    '<span>0%</span><span>25%</span><span>40%</span><span>55%</span><span>70%</span><span>100%</span></div>';
+
+// Bornes du curseur : de -50 % à +25 % autour de la norme.
+const COTE_MIN = 0.50, COTE_MAX = 1.25;
+const cotePct = rel => Math.max(0, Math.min(100, (rel - COTE_MIN) / (COTE_MAX - COTE_MIN) * 100));
+
+// Squelette de l'indicateur — construit UNE fois par finition. Le curseur est un input range
+// natif : il reste accessible au clavier et au tactile, ce qu'un glisser-déposer maison
+// n'offrirait pas. On ne le reconstruit jamais pendant un glissement, sinon le doigt « lâche ».
+function coteGaugeHtml(relConseille, relCourant){
+  let html='<div class="cote">';
+  html+='<div class="cote-head">'+
+    '<span class="cote-label" id="vvCoteLabel"></span>'+
+    '<span class="cote-ecart" id="vvCoteEcart"></span></div>';
+  html+='<div class="cote-track">'+
+    '<div class="cote-fill"></div>'+
+    '<div class="cote-ref" id="vvCoteRef" style="left:'+cotePct(relConseille)+'%" title="Valeur conseillée par le calcul"></div>'+
+    '<input type="range" class="cote-range" id="vvCote" min="'+COTE_MIN+'" max="'+COTE_MAX+'" step="0.005" '+
+      'value="'+relCourant+'" aria-label="Cotation du véhicule par rapport à la norme de son âge">'+
+    '</div>';
+  html+='<div class="cote-scale"><span>−50 %</span><span>conseillé</span><span>+25 %</span></div>';
+  html+='<div class="cote-foot"><span id="vvCoteNote"></span>'+
+    '<button type="button" class="cote-reset" id="vvCoteReset" hidden>↺ Revenir au conseil</button></div>';
   html+='</div>';
   return html;
 }
 
-// Recalcule et réaffiche uniquement le résultat (sans reconstruire toute la fiche).
+// Construit la fiche de valeur vénale (squelette + curseur), puis délègue les chiffres.
 function renderVVOutput(v){
   const el=document.getElementById('vvOut');
   if(!el||!FY) return;
   const kmField=document.getElementById('vvKm');
   const km=kmField&&kmField.value!==''?parseFloat(kmField.value):null;
-  const r=computeVV(v, km, vvInputs.etat, vvInputs.usage);
-  if(!r){ el.innerHTML=''; return; }
-  const idxPct=((r.ven.idx-1)*100).toFixed(1);
+  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage);
+  if(!base){ el.innerHTML=''; return; }
+  const courant = vvInputs.cote!=null ? vvInputs.cote : base.relatif;
 
-  let html='<div style="display:flex;align-items:baseline;gap:7px;margin:8px 0 8px;padding-top:9px;border-top:1px dashed var(--bd)">'+
-    '<span style="font-family:Syne,sans-serif;font-size:24px;font-weight:800;color:var(--pr)">'+fmt(r.vv)+'</span>'+
-    '<span style="font-size:9.5px;color:var(--t3)">estimation — hors barème compagnie</span></div>';
-  html+=coteGaugeHtml(r.ratio*100);
+  el.innerHTML =
+    '<div class="vv-prix"><span class="vv-prix-val" id="vvPrix"></span>'+
+      '<span class="vv-prix-note">estimation — hors barème compagnie</span></div>'+
+    coteGaugeHtml(base.relatif, courant)+
+    '<details class="vv-details"><summary>Détail du calcul</summary>'+
+      '<div class="vv-details-body" id="vvDetail"></div></details>'+
+    '<div id="vvNotices"></div>';
 
-  // Détail du calcul, replié par défaut pour ne pas noyer le résultat.
-  html+='<details class="vv-details"><summary>Détail du calcul</summary><div class="vv-details-body">'+
-    '<div><b>Valeur à neuf actualisée</b> : '+fmt(Math.round(r.ven.VEN/100)*100)+
-    ' <span style="opacity:.75">(prix catalogue '+fmt(r.ven.L)+' de '+r.ven.M+(r.ven.ancre==='dernier'?' — dernier connu':'')+' × indice prix auto '+(idxPct>=0?'+':'')+idxPct+'%)</span></div>'+
-    '<div>Âge ('+r.age+' an'+(r.age>1?'s':'')+') : <b>×'+r.fAge.toFixed(3)+'</b> · État ('+r.etat.label+') : <b>×'+r.fEtat.toFixed(3)+'</b></div>'+
-    '<div>Kilométrage'+(r.km!=null?' ('+r.km.toLocaleString('fr-TN')+' km vs '+Math.round(r.kmRef).toLocaleString('fr-TN')+' km normaux à cet âge)':' <i>(non renseigné)</i>')+' : <b>×'+r.fKm.toFixed(3)+'</b></div>'+
-    '<div>Usage ('+r.usage.label+') : <b>×'+r.fUsage.toFixed(3)+'</b> · Énergie : <b>×'+r.fCarb.toFixed(3)+'</b></div>'+
-    '</div></details>';
-
-  if(r.ven.reforme2026==='phev'){
-    html+='<div class="notice ok" style="margin-top:8px">ℹ️ Le prix connu date de '+r.ven.M+'. La baisse des hybrides rechargeables de la loi de finances 2026 est intégrée : <b>-24,75 %</b> mesurés dans la base sur 29 finitions comparables (toutes en baisse).</div>';
-  } else if(r.ven.reforme2026==='elec'){
-    html+='<div class="notice ok" style="margin-top:8px">ℹ️ Le prix connu date de '+r.ven.M+'. La baisse 2026 des véhicules électriques est intégrée : <b>-8,3 %</b> mesurés dans la base sur 22 finitions comparables.</div>';
-  } else if(r.ven.fc==='hev' && r.ven.M<2026){
-    html+='<div class="notice warn" style="margin-top:8px">⚠️ Hybride non rechargeable : en 2026 les prix ont bougé de façon très inégale selon le modèle (de -12 % à +21 % dans la base). L\'abattement de taxe de consommation est désormais réservé aux moteurs ≤1700cc essence / ≤2100cc diesel, ce qui renchérit les grosses cylindrées. Vérifiez le prix catalogue actuel de ce modèle.</div>';
+  const slider=document.getElementById('vvCote');
+  if(slider){
+    slider.addEventListener('input',()=>{ vvInputs.cote=parseFloat(slider.value); refreshVVValues(v); });
   }
-  el.innerHTML=html;
+  const reset=document.getElementById('vvCoteReset');
+  if(reset) reset.addEventListener('click',()=>{
+    vvInputs.cote=null;
+    const s=document.getElementById('vvCote');
+    if(s) s.value=base.relatif;
+    refreshVVValues(v);
+  });
+  refreshVVValues(v);
 }
 
-// Câble les champs du module après (re)construction de la fiche résultat.
+// Met à jour uniquement les valeurs affichées. Appelée à chaque mouvement du curseur :
+// elle ne touche PAS au curseur lui-même, pour ne pas interrompre le glissement.
+function refreshVVValues(v){
+  if(!FY) return;
+  const kmField=document.getElementById('vvKm');
+  const km=kmField&&kmField.value!==''?parseFloat(kmField.value):null;
+  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage);
+  if(!base) return;
+  const r=computeVV(v, km, vvInputs.etat, vvInputs.usage, vvInputs.cote);
+  const info=coteInfo(r.relatifEff);
+  const ecart=(r.relatifEff-1)*100;
+
+  const prix=document.getElementById('vvPrix');
+  if(prix) prix.textContent=fmt(r.vv);
+
+  const lab=document.getElementById('vvCoteLabel');
+  if(lab){ lab.textContent='🎯 '+info.label; lab.style.color=info.color; }
+  const ec=document.getElementById('vvCoteEcart');
+  if(ec){ ec.textContent=(ecart>=0?'+':'')+ecart.toFixed(0)+' % vs norme de son âge'; ec.style.color=info.color; }
+
+  const note=document.getElementById('vvCoteNote');
+  if(note){
+    const conseille=fmt(Math.round(base.ven.VEN*base.fAge*base.relatif/100)*100);
+    note.innerHTML = r.ajuste
+      ? '<b style="color:var(--warn)">Cotation ajustée</b> — le calcul proposait '+conseille
+      : 'Conserve <b>'+(r.ratio*100).toFixed(0)+' %</b> de sa valeur à neuf · gamme <b>'+r.gamme.nom+'</b> ('+(r.gamme.tauxDeprAn*100).toFixed(1)+' %/an)';
+  }
+  const reset=document.getElementById('vvCoteReset');
+  if(reset) reset.hidden=!r.ajuste;
+
+  const det=document.getElementById('vvDetail');
+  if(det){
+    const idxPct=((r.ven.idx-1)*100).toFixed(1);
+    det.innerHTML=
+      '<div><b>Valeur à neuf actualisée</b> : '+fmt(Math.round(r.ven.VEN/100)*100)+
+        ' <span style="opacity:.75">(prix catalogue '+fmt(r.ven.L)+' de '+r.ven.M+(r.ven.ancre==='dernier'?' — dernier connu':'')+' × indice prix auto '+(idxPct>=0?'+':'')+idxPct+'%)</span></div>'+
+      '<div>Âge ('+r.age+' an'+(r.age>1?'s':'')+', '+r.gamme.nom.toLowerCase()+' à '+(r.gamme.tauxDeprAn*100).toFixed(2)+' %/an) : <b>×'+r.fAge.toFixed(3)+'</b></div>'+
+      '<div>État ('+r.etat.label+') : <b>×'+r.fEtat.toFixed(3)+'</b> · Usage ('+r.usage.label+') : <b>×'+r.fUsage.toFixed(3)+'</b> · Énergie : <b>×'+r.fCarb.toFixed(3)+'</b></div>'+
+      '<div>Kilométrage'+(r.km!=null?' ('+r.km.toLocaleString('fr-TN')+' km vs '+Math.round(r.kmRef).toLocaleString('fr-TN')+' km normaux à cet âge)':' <i>(non renseigné)</i>')+' : <b>×'+r.fKm.toFixed(3)+'</b></div>'+
+      '<div style="margin-top:3px;padding-top:4px;border-top:1px solid var(--bd)">Cotation retenue : <b>×'+r.relatifEff.toFixed(3)+'</b>'+
+        (r.ajuste?' <span style="color:var(--warn)">(ajustée ; conseil ×'+r.relatif.toFixed(3)+')</span>':' (conseil du calcul)')+'</div>';
+  }
+
+  const nz=document.getElementById('vvNotices');
+  if(nz){
+    let h='';
+    if(r.ven.reforme2026==='phev') h='<div class="notice ok" style="margin-top:8px">ℹ️ Le prix connu date de '+r.ven.M+'. La baisse des hybrides rechargeables de la loi de finances 2026 est intégrée : <b>-24,75 %</b> mesurés dans la base sur 29 finitions comparables (toutes en baisse).</div>';
+    else if(r.ven.reforme2026==='elec') h='<div class="notice ok" style="margin-top:8px">ℹ️ Le prix connu date de '+r.ven.M+'. La baisse 2026 des véhicules électriques est intégrée : <b>-8,3 %</b> mesurés sur 22 finitions comparables.</div>';
+    else if(r.ven.fc==='hev' && r.ven.M<2026) h='<div class="notice warn" style="margin-top:8px">⚠️ Hybride non rechargeable : en 2026 les prix ont bougé de façon très inégale selon le modèle (de -12 % à +21 % dans la base). L\'abattement de taxe de consommation est désormais réservé aux moteurs ≤1700cc essence / ≤2100cc diesel. Vérifiez le prix catalogue actuel de ce modèle.</div>';
+    nz.innerHTML=h;
+  }
+}
+
+// Câble les champs après (re)construction de la fiche résultat.
 function wireVVInputs(v){
   const ask=document.getElementById('vvAskMec');
   if(ask) ask.addEventListener('click',()=>{
@@ -858,12 +1022,15 @@ function wireVVInputs(v){
   });
   if(!FY) return;
   renderVVOutput(v);
+  // Modifier l'état, le kilométrage ou l'usage change la valeur CONSEILLÉE : un ajustement
+  // manuel antérieur deviendrait trompeur, on le remet donc sur le nouveau conseil.
+  const relance=()=>{ vvInputs.cote=null; renderVVOutput(v); };
   const kmField=document.getElementById('vvKm');
-  if(kmField) kmField.addEventListener('input',()=>{ vvInputs.km=kmField.value; renderVVOutput(v); });
+  if(kmField) kmField.addEventListener('input',()=>{ vvInputs.km=kmField.value; relance(); });
   const etatField=document.getElementById('vvEtat');
-  if(etatField) etatField.addEventListener('change',()=>{ vvInputs.etat=etatField.value; renderVVOutput(v); });
+  if(etatField) etatField.addEventListener('change',()=>{ vvInputs.etat=etatField.value; relance(); });
   const usageField=document.getElementById('vvUsage');
-  if(usageField) usageField.addEventListener('change',()=>{ vvInputs.usage=usageField.value; renderVVOutput(v); });
+  if(usageField) usageField.addEventListener('change',()=>{ vvInputs.usage=usageField.value; relance(); });
 }
 
 // ── Wait for data ──
@@ -874,7 +1041,7 @@ function init(){
   const nb=Object.keys(DB).length;
   const nm=Object.values(DB).reduce((a,b)=>a+Object.keys(b).length,0);
   const nv=Object.values(DB).reduce((a,b)=>a+Object.values(b).reduce((c,d)=>c+d.length,0),0);
-  document.getElementById('dbStats').textContent = nb+' marques · '+nm+' modèles · '+nv+' finitions';
+  document.getElementById('dbStats').textContent = 'Prix neuf & valeur vénale · '+nb+' marques · '+nm+' modèles';
   document.getElementById('pill1').textContent = nb+' marques';
   document.getElementById('pill2').textContent = nm+' modèles';
   document.getElementById('pill3').textContent = nv+' finitions';

@@ -117,7 +117,14 @@ setTimeout(() => {
     check('pourcentage affiché = VV / valeur à neuf',
       Math.abs(r7.ratio * 100 - (r7.vv / r7.ven.VEN * 100)) < 0.5,
       'ratio=' + (r7.ratio * 100).toFixed(1) + '% vs vv/VEN=' + (r7.vv / r7.ven.VEN * 100).toFixed(1) + '%');
-    check('le libellé suit le bon seuil', win.coteInfo(72).label === 'Très bien coté' && win.coteInfo(45).label === 'Cote dans la moyenne' && win.coteInfo(10).label === 'Forte décote');
+    check('le libellé porte sur la position relative à l\'âge, pas sur l\'âge lui-même',
+      win.coteInfo(1.15).label === 'Bien coté pour son âge' &&
+      win.coteInfo(1.00).label === 'Conforme à son âge' &&
+      win.coteInfo(0.70).label === 'Décoté pour son âge');
+    const neuf = win.computeVV(v, KM, 'normal', 'particulier');
+    check('un véhicule standard est dit conforme quel que soit son âge',
+      win.coteInfo(neuf.relatif).label === 'Conforme à son âge', 'relatif=' + neuf.relatif.toFixed(3));
+    check('la gamme est déterminée et exposée', !!neuf.gamme && neuf.gamme.tauxDeprAn > 0, neuf.gamme && neuf.gamme.nom);
 
     // ── 8. Cas limites ──
     console.log('\n8. Cas limites :');
@@ -146,7 +153,9 @@ setTimeout(() => {
     kmField.value = '120000';
     kmField.dispatchEvent(new win.Event('input', { bubbles: true }));
     const out1 = doc.getElementById('vvOut').textContent;
-    check('résultat recalculé à la saisie', /de la valeur à neuf/.test(out1));
+    // Assertion volontairement peu sensible au libellé : on vérifie qu'un montant et
+    // l'indicateur sont bien rendus, pas la formulation exacte (qui a déjà cassé ce test).
+    check('résultat recalculé à la saisie', /\bDT\b/.test(out1) && /norme de son âge/.test(out1));
     const usageSel = doc.getElementById('vvUsage');
     usageSel.value = 'taxi';
     usageSel.dispatchEvent(new win.Event('change', { bubbles: true }));
@@ -157,6 +166,63 @@ setTimeout(() => {
       check('saisies conservées en changeant de finition',
         doc.getElementById('vvKm').value === '120000' && doc.getElementById('vvUsage').value === 'taxi');
     }
+    doc.getElementById('mecClr').click();
+    // ── 10. Curseur de cotation réglable ──
+    console.log('\n10. Curseur de cotation réglable :');
+    setFY(2018);
+    // La section précédente a laissé l'usage sur « taxi » : on repart d'un état connu,
+    // sinon on compare le curseur à un conseil calculé pour un autre usage.
+    const us10 = doc.getElementById('vvUsage');
+    us10.value = 'particulier'; us10.dispatchEvent(new win.Event('change', { bubbles: true }));
+    const km10 = doc.getElementById('vvKm'); km10.value = '90000';
+    km10.dispatchEvent(new win.Event('input', { bubbles: true }));
+    const slider = doc.getElementById('vvCote');
+    check('le curseur est présent et accessible (input range natif)',
+      !!slider && slider.type === 'range' && !!slider.getAttribute('aria-label'));
+    const prixInitial = doc.getElementById('vvPrix').textContent;
+    const posConseil = parseFloat(slider.value);
+    check('le curseur démarre sur la valeur conseillée par le calcul',
+      Math.abs(posConseil - win.computeVV(v, 90000, 'normal', 'particulier').relatif) < 0.001,
+      'position=' + posConseil.toFixed(3));
+    check('le repère du conseil est posé', !!doc.getElementById('vvCoteRef'));
+    check('aucun bouton de retour au conseil tant que rien n\'est ajusté',
+      doc.getElementById('vvCoteReset').hidden === true);
+
+    // Déplacement vers la droite : le véhicule est jugé mieux coté que la norme
+    slider.value = String(Math.min(1.25, posConseil + 0.15));
+    slider.dispatchEvent(new win.Event('input', { bubbles: true }));
+    const prixHaut = doc.getElementById('vvPrix').textContent;
+    check('déplacer le curseur à droite augmente la valeur vénale', prixHaut !== prixInitial,
+      prixInitial + ' -> ' + prixHaut);
+    check('l\'ajustement manuel est signalé', /ajust/i.test(doc.getElementById('vvCoteNote').textContent));
+    check('le bouton de retour au conseil apparaît', doc.getElementById('vvCoteReset').hidden === false);
+    check('le curseur n\'est pas reconstruit pendant le réglage (le glissement ne se coupe pas)',
+      doc.getElementById('vvCote') === slider);
+
+    // Déplacement vers la gauche
+    slider.value = String(Math.max(0.50, posConseil - 0.15));
+    slider.dispatchEvent(new win.Event('input', { bubbles: true }));
+    const prixBas = doc.getElementById('vvPrix').textContent;
+    const n = x => parseFloat(x.replace(/[^0-9]/g, ''));
+    check('déplacer le curseur à gauche diminue la valeur vénale', n(prixBas) < n(prixHaut),
+      prixHaut + ' -> ' + prixBas);
+
+    // Retour au conseil
+    doc.getElementById('vvCoteReset').dispatchEvent(new win.Event('click', { bubbles: true }));
+    check('le retour au conseil restaure la valeur calculée',
+      doc.getElementById('vvPrix').textContent === prixInitial);
+
+    // Changer un champ doit repartir du nouveau conseil, pas d'un ajustement périmé
+    const s2 = doc.getElementById('vvCote');
+    s2.value = String(Math.min(1.25, posConseil + 0.12));
+    s2.dispatchEvent(new win.Event('input', { bubbles: true }));
+    const etat10 = doc.getElementById('vvEtat');
+    etat10.value = 'bon'; etat10.dispatchEvent(new win.Event('change', { bubbles: true }));
+    const s3 = doc.getElementById('vvCote');
+    check('modifier l\'état remet le curseur sur le nouveau conseil',
+      Math.abs(parseFloat(s3.value) - win.computeVV(v, 90000, 'bon', 'particulier').relatif) < 0.001 &&
+      doc.getElementById('vvCoteReset').hidden === true);
+
     doc.getElementById('mecClr').click();
     check('effacement de la MEC : retour à l\'invitation, sans erreur', !!doc.getElementById('vvAskMec'));
 
