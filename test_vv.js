@@ -340,6 +340,28 @@ setTimeout(() => {
     doc.getElementById('mecClr').click();
     check('effacement de la MEC : retour à l\'invitation, sans erreur', !!doc.getElementById('vvAskMec'));
 
+    // ── 13. Présence des règles de style essentielles ──
+    // Un remaniement du CSS a déjà supprimé par accident les règles du montant et de la
+    // carte du module : le rendu se dégradait sans qu'aucun test ne bronche. Ces
+    // assertions sont volontairement grossières — elles ne jugent pas l'esthétique,
+    // elles vérifient seulement que les règles n'ont pas disparu.
+    console.log('\n13. Règles de style essentielles :');
+    const css = [...doc.querySelectorAll('style')].map(x => x.textContent).join('\n');
+    const regles = [
+      ['#vvSect{', 'carte du module'],
+      ['.vv-prix-val{', 'typographie du montant'],
+      ['.vv-prix-note{', 'mention sous le montant'],
+      ['.vv-chip{', 'pastilles de synthèse'],
+      ['.cote-track{', 'piste du curseur'],
+      ['.cote-range::-webkit-slider-thumb', 'poignée du curseur'],
+      ['.vv-annee{', 'sélecteur d\'année'],
+      ['.vv-fields{', 'grille des champs'],
+    ];
+    for (const [sel, quoi] of regles) check('règle présente : ' + quoi, css.includes(sel), sel);
+    // Le montant et sa mention doivent être des blocs distincts, sinon ils se collent.
+    check('le montant et sa mention sont sur des lignes séparées',
+      /\.vv-prix-val\{display:block/.test(css) && /\.vv-prix-note\{display:block/.test(css));
+
     console.log('\n' + (fails === 0 ? '=== TOUS LES TESTS PASSENT ===' : '=== ' + fails + ' ÉCHEC(S) ==='));
   } catch (e) {
     console.log('EXCEPTION:', e.message);

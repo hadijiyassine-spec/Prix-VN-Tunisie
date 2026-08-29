@@ -273,7 +273,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
   /* La grille du module est déjà sur deux colonnes ; on élargit seulement les cibles
      tactiles et on réduit un peu le montant pour qu'il tienne sur 375px. */
   .vv-input{padding:9px 10px;font-size:13px}
-  .vv-prix-val{font-size:25px}
+  .vv-prix-val{font-size:27px}
 }
 
 /* ══════════════════════════════════════
@@ -431,6 +431,38 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 .vv-details summary:hover{text-decoration:underline}
 .vv-details-body{font-size:10px;color:var(--t2);line-height:1.85;padding:5px 0 2px;display:flex;flex-direction:column;gap:1px}
 .vv-details-body b{color:var(--t1)}
+
+/* ══════════════════════════════════════
+   MODULE VALEUR VÉNALE — pièce maîtresse
+   (ces règles avaient été supprimées par erreur lors d'un remaniement du CSS :
+    le montant perdait sa typographie et se collait à sa mention)
+══════════════════════════════════════ */
+#vvSect{
+  background:linear-gradient(180deg,#FFFFFF 0%,var(--prl) 190%);
+  border:1px solid var(--pr3);
+  border-left:3px solid var(--pr);
+  box-shadow:var(--sh);
+  padding:14px 15px 12px;
+}
+#vvSect .sect-title{color:var(--pr);letter-spacing:.7px}
+
+/* Le montant occupe sa propre ligne, la mention vient dessous. Les deux étaient
+   côte à côte en flex : sur mobile ils se collaient l'un à l'autre. */
+.vv-resultat{margin-top:11px;padding-top:12px;border-top:1px dashed var(--bd2)}
+.vv-prix{margin-bottom:12px}
+.vv-prix-val{display:block;font-family:'Syne',sans-serif;font-size:30px;font-weight:800;
+  color:var(--pr);line-height:1.05;letter-spacing:-.2px}
+.vv-prix-note{display:block;font-size:9.5px;color:var(--t3);margin-top:4px}
+
+/* Pastilles : ce qui a pesé sur le calcul, en un coup d'œil. Les règles elles-mêmes
+   sont repliées dans « Détail du calcul » — une fiche doit livrer un résultat,
+   pas un exposé de méthode. */
+.vv-chips{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0 2px}
+.vv-chip{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:600;
+  padding:3px 9px;border-radius:20px;background:var(--sf3);color:var(--t2);border:1px solid var(--bd);white-space:nowrap}
+.vv-chip.info{background:var(--prl);color:var(--pr);border-color:#BCD9F0}
+.vv-chip.warn{background:var(--aml);color:var(--am);border-color:#F0D6B0}
+.vv-chip b{font-weight:800}
 
 /* ── Curseur de cotation ── */
 .cote{margin:2px 0 4px}
@@ -1100,13 +1132,20 @@ function renderVVOutput(v){
   if(!base){ el.innerHTML=''; return; }
   const courant = vvInputs.cote!=null ? vvInputs.cote : base.relatif;
 
+  // Les notices explicatives (régime populaire, date d'évaluation, péremption) passent
+  // À L'INTÉRIEUR du bloc replié : la fiche donne un résultat, les règles se consultent
+  // à la demande. Ce qui reste visible est réduit à des pastilles.
   el.innerHTML =
-    '<div class="vv-prix"><span class="vv-prix-val" id="vvPrix"></span>'+
-      '<span class="vv-prix-note">estimation — hors barème compagnie</span></div>'+
-    coteGaugeHtml(base.relatif, courant)+
-    '<details class="vv-details"><summary>Détail du calcul</summary>'+
-      '<div class="vv-details-body" id="vvDetail"></div></details>'+
-    '<div id="vvNotices"></div>';
+    '<div class="vv-resultat">'+
+      '<div class="vv-prix"><span class="vv-prix-val" id="vvPrix"></span>'+
+        '<span class="vv-prix-note">estimation — hors barème compagnie</span></div>'+
+      coteGaugeHtml(base.relatif, courant)+
+      '<div class="vv-chips" id="vvChips"></div>'+
+      '<details class="vv-details"><summary>Détail du calcul et règles appliquées</summary>'+
+        '<div class="vv-details-body" id="vvDetail"></div>'+
+        '<div id="vvNotices"></div>'+
+      '</details>'+
+    '</div>';
 
   const slider=document.getElementById('vvCote');
   if(slider){
@@ -1147,8 +1186,24 @@ function refreshVVValues(v){
     const conseille=fmt(Math.round(base.ven.VEN*base.fAge*base.relatif/100)*100);
     note.innerHTML = r.ajuste
       ? '<b style="color:var(--warn)">Cotation ajustée</b> — le calcul proposait '+conseille
-      : 'Conserve <b>'+(r.ratio*100).toFixed(0)+' %</b> de sa valeur à neuf<br>'+
-        'Gamme <b>'+r.gamme.nom.toLowerCase()+'</b> · '+(r.gamme.tauxDeprAn*100).toFixed(2).replace('.',',')+' %/an';
+      : '';
+  }
+
+  // Pastilles : l'essentiel de ce qui a joué, sans phrase.
+  const chipsEl=document.getElementById('vvChips');
+  if(chipsEl){
+    const c=[];
+    c.push('<span class="vv-chip"><b>'+(r.ratio*100).toFixed(0)+' %</b> du neuf</span>');
+    c.push('<span class="vv-chip">'+r.gamme.nom+'</span>');
+    if(r.ven.popStatut==='majore')
+      c.push('<span class="vv-chip info">🏷️ Populaire · +'+Math.round(VVPARAMS.populaire.majorationDouane*100)+' %</span>');
+    else if(r.ven.popStatut==='incessible')
+      c.push('<span class="vv-chip warn">🏷️ Populaire · incessible</span>');
+    if(r.ven.reforme) c.push('<span class="vv-chip info">⚖️ Réforme '+r.ven.reforme.annee+'</span>');
+    if(r.anneeEval<CY) c.push('<span class="vv-chip warn">📆 Évaluation '+r.anneeEval+'</span>');
+    if(r.anneeEval>ANNEE_DONNEES) c.push('<span class="vv-chip warn">⚠️ Tarifs '+ANNEE_DONNEES+'</span>');
+    if(r.ajuste) c.push('<span class="vv-chip warn">✏️ Cotation ajustée</span>');
+    chipsEl.innerHTML=c.join('');
   }
   const reset=document.getElementById('vvCoteReset');
   if(reset) reset.hidden=!r.ajuste;

@@ -1,4 +1,4 @@
-# Prix VN Tunisie — rapport technique (v20)
+# Prix VN Tunisie — rapport technique (v21)
 
 Relecture du code, refonte des formules d'évaluation, **calibration et validation sur le marché réel de l'occasion**, et travail d'ergonomie sur `app.html` + `data.js`.
 
@@ -340,6 +340,20 @@ L'application devait montrer qu'elle a changé de nature : d'un consultateur de 
 - **Module de valeur vénale traité comme la pièce maîtresse** — surface propre en léger dégradé, filet d'accent à gauche, élévation, titre en couleur d'accent. Il ne se confond plus avec les autres sections de la fiche.
 - **Chiffres en chasse fixe** (`tabular-nums`) partout où des montants s'alignent en colonnes — prix, deltas, écarts : les colonnes cessent de danser d'une ligne à l'autre.
 - **Rayons et ombres** revus : ombres plus douces et en deux couches, angles légèrement plus généreux.
+
+### Affichage du résultat : le calcul se replie
+
+La fiche exposait sa méthode au même rang que son résultat — trois paragraphes explicatifs (régime populaire, date d'évaluation, péremption des tarifs) déroulés sous le montant, plus une ligne détaillant la gamme et son taux annuel. Une fiche d'expertise doit livrer un résultat, pas un exposé.
+
+Ce qui reste visible tient maintenant en trois éléments : le **montant**, la **jauge de cotation**, et une rangée de **pastilles** résumant ce qui a pesé — `74 % du neuf`, `Grand public`, `🏷️ Populaire · +30 %`, `📆 Évaluation 2023`, `⚖️ Réforme 2026`, `✏️ Cotation ajustée`. Les règles complètes sont repliées dans « Détail du calcul et règles appliquées », consultables à la demande.
+
+Le montant a par ailleurs été remonté à 30 px et posé sur sa propre ligne.
+
+### 🔴 Régression corrigée : les styles du module avaient disparu
+
+Une substitution CSS d'une version précédente a supprimé, en même temps que les règles qu'elle visait, celles de la carte du module (`#vvSect`) et du montant (`.vv-prix`, `.vv-prix-val`, `.vv-prix-note`). Conséquence visible sur capture : le montant avait perdu sa typographie et se collait à sa mention — *« 38 200 DTestimation — hors barème compagnie »* — et la carte avait perdu son traitement de pièce maîtresse.
+
+Aucun test ne l'avait détecté, et je ne pouvais pas le voir : la liaison avec l'ordinateur étant coupée, je n'ai aucun rendu visuel. **Une série d'assertions vérifie désormais la présence des règles de style essentielles** — carte du module, typographie du montant, mention séparée, pastilles, piste et poignée du curseur, sélecteur d'année, grille des champs. Elles ne jugent pas l'esthétique, elles garantissent qu'une règle ne disparaît plus en silence.
 
 **Corrigé** : zoom tactile réactivé (il était bloqué, avec des textes de 8,5 px) · 16 tailles de police relevées, plus rien sous 9,5 px · bouton « ↑ Retour à la sélection » sur tablette · module de valeur vénale rendu découvrable (bouton amenant le focus sur le champ MEC au lieu d'une phrase passive) · champs réagencés sur mobile (kilométrage pleine largeur) · détail du calcul repliable pour ne plus noyer le montant · focus clavier visible, `<label>` liés, respect de `prefers-reduced-motion`.
 
