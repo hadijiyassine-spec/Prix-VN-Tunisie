@@ -611,6 +611,15 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .bat-legend{display:flex;justify-content:space-between;gap:6px;margin-top:5px;font-size:9px;color:var(--t2);
   font-variant-numeric:tabular-nums}
 .bat-legend b{color:var(--t1);font-weight:700}
+/* La dévalorisation est un chiffre que l'expert doit pouvoir citer : elle a donc son
+   propre rang, séparée du reste par un filet, et non noyée dans une phrase. */
+.bat-depr{display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+  margin-top:8px;padding-top:7px;border-top:1px solid var(--elb)}
+.bat-depr-t{font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--t2)}
+.bat-depr-v{font-size:14px;font-weight:800;color:var(--el);font-variant-numeric:tabular-nums;
+  font-family:'Syne','Inter','Segoe UI',system-ui,sans-serif}
+.bat-depr-d{font-size:9px;color:var(--t2);line-height:1.6;margin-top:2px}
+.bat-depr-d b{color:var(--t1)}
 .bat-foot{margin-top:5px;font-size:9.5px;color:var(--t2);line-height:1.6}
 .bat-foot b{color:var(--t1)}
 .soh-wrap{position:relative;display:flex;align-items:center}
@@ -640,7 +649,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   <div class="logo">
     <div class="logo-ico">🚗</div>
     <div>
-      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v25</span></div>
+      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v26</span></div>
       <div class="logo-sub" id="dbStats">Chargement…</div>
     </div>
   </div>
@@ -767,9 +776,9 @@ let sel = {b:null, m:null, v:null};
 let FY  = null;
 // ── Version de l'application ──
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
-const VERSION = 'v25';
+const VERSION = 'v26';
 const VERSION_DATE = '29/08/2026';
-const VERSION_NOTES = 'batterie de traction · plafond prix neuf du jour · cohérence des millésimes · parcours téléphone · thème sombre';
+const VERSION_NOTES = 'ligne de dévalorisation chiffrée · batterie de traction · plafond prix neuf du jour · cohérence des millésimes · parcours téléphone · thème sombre';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -1633,9 +1642,19 @@ function refreshVVValues(v){
             '<span><b>'+Math.round(att*100)+' %</b> attendu à '+r.age+' an'+(r.age>1?'s':'')+'</span>'+
             '<span><b>'+Math.round(B.sohGarantie*100)+' %</b> seuil garantie</span>'+
           '</div>'+
+          '<div class="bat-depr">'+
+            '<span class="bat-depr-t">Dévalorisation retenue</span>'+
+            '<span class="bat-depr-v">'+(r.tauxDepr*100).toFixed(2).replace('.',',')+'\u00a0%/an</span>'+
+          '</div>'+
+          '<div class="bat-depr-d">'+r.gamme.nom.toLowerCase()+' '+
+            (r.gamme.tauxDeprAn*100).toFixed(2).replace('.',',')+'\u00a0%'+
+            (r.surcout>1?' <b>+'+Math.round((r.surcout-1)*100)+'\u00a0%</b> au titre du véhicule à batterie'
+                        :' (aucune majoration)')+
+            ' \u2192 <b>\u00d7'+r.fAge.toFixed(3).replace('.',',')+'</b> à '+r.age+'\u00a0an'+(r.age>1?'s':'')+'</div>'+
           '<div class="bat-foot">'+etatTxt+
             (mes!=null?' · effet sur la valeur <b>'+signePct((r.fBat-1)*100)+'</b>':'')+
-            (P.coutRemplacement?' · remplacement ≈ <b>'+fmt(P.coutRemplacement)+'</b>':'')+
+            (P.coutRemplacement?' · remplacement ≈ <b>'+fmt(P.coutRemplacement)
+                               :' · capacité non renseignée dans la base, part <b>forfaitaire')+'</b>'+
           '</div>'+
         '</div>';
     }
