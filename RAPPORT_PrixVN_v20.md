@@ -1,4 +1,4 @@
-# Prix VN Tunisie — rapport technique (v18)
+# Prix VN Tunisie — rapport technique (v20)
 
 Relecture du code, refonte des formules d'évaluation, **calibration et validation sur le marché réel de l'occasion**, et travail d'ergonomie sur `app.html` + `data.js`.
 
@@ -156,6 +156,27 @@ Trois conséquences, toutes traitées :
 La pastille d'année vire à l'ambre dès qu'on s'écarte de l'année courante, et un rappel apparaît : *« pensez à saisir le kilométrage à cette date, et non celui d'aujourd'hui »*. Un défaut trouvé au passage : changer l'année ne reconstruit que la zone de résultat, si bien que l'en-tête restait figé — il est maintenant mis à jour séparément, sans reconstruire le bloc (ce qui refermerait le détail du calcul et ferait perdre le focus).
 
 L'écart à l'année courante est signalé explicitement dans la fiche : *« Évaluation au 2022 et non à l'année courante (2026). L'âge retenu est de 6 ans, et l'évolution des prix postérieure à 2022 — réformes fiscales comprises — n'est pas appliquée. »*
+
+### 3.10 Véhicules populaires : réintégration de la taxe douanière
+
+Le véhicule populaire est vendu **hors taxe douanière**, sous conditions de revenu et de puissance (≤ 4 CV fiscaux), et il est **incessible pendant 2 ans**, sauf cas particuliers (mise à l'épave notamment). Passé ce délai il s'échange sur le marché normal — sa valeur vénale doit donc se comparer à un prix à neuf **taxé**, et non au prix subventionné du catalogue. Partir du prix subventionné sous-estimait mécaniquement ces véhicules.
+
+**27 finitions sont concernées** dans la base : 24 réparties sur 17 modèles dédiés (Picanto, 208, C3, Clio, Ibiza, Grand i10, Celerio, Agya, Polo…), plus 3 finitions « Populaire » isolées à l'intérieur de modèles ordinaires. Le repérage se fait sur le nom, au démarrage.
+
+**Règle appliquée**, conforme au régime :
+
+| Ancienneté à la date d'évaluation | Valeur à neuf de référence |
+|---|---|
+| Moins de 2 ans — véhicule incessible | Prix **subventionné**, sans majoration |
+| 2 ans et plus — marché normal | Prix subventionné **majoré de 30 %** (taxe douanière réintégrée) |
+
+**Le taux de 30 % est celui des concessionnaires**, confirmé par Yassine Hadiji. C'est la référence retenue, et elle ne provient pas d'une déduction de ma part : les sources publiques ne permettaient pas de l'établir. Le portail des douanes (douane.gov.tn) refuse la consultation automatisée, les guides publics (automobile.tn) décrivent les conditions d'éligibilité sans détailler le barème, et le seul chiffre trouvé — « 25 ou 30 % des taxes douanières », sur argusautomobile.tn — porte sur le régime **FCR** (résidents à l'étranger), qui est autre chose.
+
+Pour mémoire, j'avais tenté de le mesurer dans la base, qui contient les deux versions de plusieurs modèles : l'écart ressort à **+56 % en médiane sur 43 couples**. Ce chiffre n'est **pas** utilisable comme taux — la version normale est souvent bien mieux équipée, l'écart mélange donc l'exonération fiscale et la différence de finition, ce que confirme sa dispersion de +11 % à +102 %. Les couples les plus proches en équipement (VW Polo 2017 +11 %, Clio 2017 +15 %, Chery QQ 2016 +22 %) sont en revanche cohérents avec les 30 % retenus.
+
+Le paramètre reste isolé dans `VVPARAMS.populaire` et se corrige d'une ligne si le taux évolue.
+
+**Une discontinuité assumée.** À la levée de l'incessibilité, la valeur vénale *augmente* : sur une Chery QQ populaire, 21 200 DT à 1 an contre 26 100 DT à 3 ans. Ce n'est pas une anomalie de calcul — la majoration de 30 % dépasse deux années de dépréciation, et elle traduit un fait réel : le véhicule vient d'entrer sur un marché où il vaut ce que vaut son équivalent taxé. La fiche l'explique dans les deux états.
 
 ---
 

@@ -293,6 +293,50 @@ setTimeout(() => {
       !doc.querySelector('#vvSect .vv-annee').classList.contains('passe') &&
       doc.getElementById('vvAnneeRappel').hidden === true);
 
+    // ── 12. Véhicules populaires ──
+    console.log('\n12. Véhicules populaires (exonération douanière) :');
+    let pop = null, popMod = null, normale = null;
+    for (const b of Object.keys(win.DB)) for (const m of Object.keys(win.DB[b])) {
+      if (/populaire$/i.test(m) && !pop) {
+        const base = m.replace(/\s*populaire$/i, '');
+        if (win.DB[b][base]) { pop = win.DB[b][m][0]; popMod = m; normale = win.DB[b][base][0]; }
+      }
+    }
+    check('les finitions populaires sont repérées', !!pop && pop.pop === true, popMod);
+    const nonPop = win.DB[Object.keys(win.DB)[0]];
+    let unePasPop = null;
+    for (const b of Object.keys(win.DB)) for (const m of Object.keys(win.DB[b])) for (const f of win.DB[b][m])
+      if (!unePasPop && !/populaire/i.test(m) && !/populaire/i.test(f.v)) unePasPop = f;
+    check('les autres ne le sont pas', unePasPop.pop === false);
+
+    if (pop) {
+      const M = win.yOf(pop.d);
+      // Moins de 2 ans : incessible, pas de majoration
+      const jeune = win.computeVEN(pop, M, M + 1);
+      // Au-delà : majoration douanière
+      const mur = win.computeVEN(pop, M, M + 5);
+      console.log('   ' + popMod + ' — MEC ' + M);
+      console.log('   évalué à ' + (M + 1) + ' (1 an)  : ' + Math.round(jeune.VEN).toLocaleString('fr-FR') + ' DT · ' + jeune.popStatut);
+      console.log('   évalué à ' + (M + 5) + ' (5 ans) : ' + Math.round(mur.VEN).toLocaleString('fr-FR') + ' DT · ' + mur.popStatut);
+      check('avant 2 ans : incessible, valeur à neuf non majorée',
+        jeune.popStatut === 'incessible' && jeune.majPop === 1);
+      check('après 2 ans : taxe douanière réintégrée',
+        mur.popStatut === 'majore' && Math.abs(mur.majPop - 1.30) < 1e-9);
+      const seuil2 = win.computeVEN(pop, M, M + 2);
+      check('la bascule se fait bien à 2 ans révolus', seuil2.popStatut === 'majore');
+
+      // Effet sur la valeur vénale
+      setFY(M);
+      const vvJeune = win.computeVV(pop, 20000, 'normal', 'particulier', null, M + 1);
+      const vvMur = win.computeVV(pop, 20000, 'normal', 'particulier', null, M + 3);
+      console.log('   valeur vénale à 1 an : ' + vvJeune.vv.toLocaleString('fr-FR') +
+        ' DT | à 3 ans : ' + vvMur.vv.toLocaleString('fr-FR') + ' DT');
+      check('la majoration remonte bien jusqu\'à la valeur vénale', vvMur.ven.majPop > 1);
+    }
+    // Un véhicule non populaire n'est jamais majoré
+    const venNormal = win.computeVEN(unePasPop, 2018, 2026);
+    check('un véhicule normal n\'est pas majoré', venNormal.majPop === 1 && venNormal.popStatut === null);
+
     doc.getElementById('mecClr').click();
     check('effacement de la MEC : retour à l\'invitation, sans erreur', !!doc.getElementById('vvAskMec'));
 

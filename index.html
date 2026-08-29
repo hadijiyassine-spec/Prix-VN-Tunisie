@@ -672,6 +672,32 @@ const VVPARAMS = {
   // Ce taux est signalé comme prédit dans la fiche, pour qu'il ne passe jamais pour une mesure.
   prediction: { nbAnnees: 5 },
 
+  // ── Véhicules populaires ──
+  // Le véhicule populaire est vendu hors taxe douanière, sous conditions de revenu et de
+  // puissance (<= 4 CV fiscaux). Il est INCESSIBLE pendant 2 ans à compter de l'achat, sauf
+  // cas particuliers (mise à l'épave notamment).
+  //   · avant 2 ans  : sa valeur suit le prix SUBVENTIONNÉ — il est invendable, il n'existe
+  //                    pas de marché auquel le comparer ;
+  //   · après 2 ans  : il rejoint le marché normal, sa valeur suit donc un prix à neuf TAXÉ.
+  // Sans cette réintégration, l'estimation serait mécaniquement trop basse d'un tiers.
+  //
+  // Taux douanier : 30 % pour les concessionnaires, confirmé par Yassine Hadiji (expert
+  // automobile) — c'est la référence retenue. Les sources publiques ne permettaient pas de
+  // l'établir : le portail des douanes refuse la consultation automatisée, les guides publics
+  // décrivent l'éligibilité sans le barème, et le « 25 ou 30 % » d'argusautomobile.tn porte
+  // sur le régime FCR (résidents à l'étranger), qui est autre chose.
+  //
+  // Pour mémoire, l'écart mesuré dans la base entre version populaire et version normale du
+  // même modèle la même année ressort à +56 % en médiane (43 couples, de +11 % à +102 %).
+  // Il n'est PAS utilisable comme taux : la version normale est souvent bien mieux équipée,
+  // l'écart mélange donc l'exonération fiscale et la différence de finition. Les couples les
+  // plus proches en équipement (VW Polo 2017 +11 %, Clio 2017 +15 %, Chery QQ +22 %) sont
+  // cohérents avec les 30 % retenus.
+  populaire: {
+    dureeIncessibilite: 2,     // années pendant lesquelles le véhicule ne peut être revendu
+    majorationDouane: 0.30,    // taux douanier concessionnaire, réintégré une fois le délai écoulé
+  },
+
   // ── F_âge : dépréciation liée à l'âge ──
   // Décroissance GÉOMÉTRIQUE et non linéaire : un véhicule perd un pourcentage de sa
   // valeur restante chaque année, pas un montant fixe. Une dépréciation linéaire plafonnée
@@ -810,6 +836,21 @@ function calculerIndice(){
   return {annees, parEnergie, derniere, tauxPredit:med(dernieres), nbAnnees:mesurees.length, auto:true};
 }
 
+// Repérage des véhicules populaires. Le régime est porté par le nom du modèle
+// (« KIA Picanto Populaire ») ou, plus rarement, par celui de la finition. On pose un
+// drapeau une fois pour toutes au démarrage plutôt que de refaire le test à chaque calcul.
+function marquerPopulaires(){
+  let n=0;
+  for(const b of Object.keys(DB)) for(const m of Object.keys(DB[b])){
+    const modPop=/populaire/i.test(m);
+    for(const f of DB[b][m]){
+      f.pop = modPop || /populaire/i.test(f.v||'');
+      if(f.pop) n++;
+    }
+  }
+  return n;
+}
+
 // Indice effectivement utilisé : celui calculé, ou le filet de sécurité.
 function indice(){
   return INDEX || {annees:VVPARAMS.indiceSecours, parEnergie:VVPARAMS.energieSecours,
@@ -882,7 +923,20 @@ function computeVEN(v, anneeRef, anneeEval){
         reforme={annee:y, taux:pe[fc], divergence, fc};
     }
   }
-  return {VEN:L*idx, idx, L, M, fc, reforme, predites, ancre, anneeEval:AE};
+  // Véhicule populaire : une fois le délai d'incessibilité passé, il s'échange sur le marché
+  // normal — la valeur à neuf de référence doit donc réintégrer la taxe douanière dont il a
+  // été exonéré. Avant ce délai, il est invendable : on reste au prix subventionné.
+  let majPop=1, popStatut=null;
+  if(v.pop){
+    const ageEval = (anneeRef!=null && isFinite(anneeRef)) ? (AE-anneeRef) : null;
+    if(ageEval!=null && ageEval < VVPARAMS.populaire.dureeIncessibilite){
+      popStatut='incessible';
+    } else {
+      majPop = 1+VVPARAMS.populaire.majorationDouane;
+      popStatut='majore';
+    }
+  }
+  return {VEN:L*idx*majPop, idx, L, M, fc, reforme, predites, ancre, anneeEval:AE, majPop, popStatut};
 }
 
 // VV = valeur vénale estimée. Nécessite FY (année de 1ère MEC, barre du haut).
@@ -1104,7 +1158,8 @@ function refreshVVValues(v){
     const idxPct=((r.ven.idx-1)*100).toFixed(1);
     det.innerHTML=
       '<div><b>Valeur à neuf actualisée</b> : '+fmt(Math.round(r.ven.VEN/100)*100)+
-        ' <span style="opacity:.75">(prix catalogue '+fmt(r.ven.L)+' de '+r.ven.M+(r.ven.ancre==='dernier'?' — dernier connu':'')+' × indice prix auto '+(idxPct>=0?'+':'')+idxPct+'%)</span></div>'+
+        ' <span style="opacity:.75">(prix catalogue '+fmt(r.ven.L)+' de '+r.ven.M+(r.ven.ancre==='dernier'?' — dernier connu':'')+' × indice prix auto '+(idxPct>=0?'+':'')+idxPct+'%'+
+        (r.ven.majPop>1?' × taxe douanière réintégrée +'+Math.round((r.ven.majPop-1)*100)+'%':'')+')</span></div>'+
       '<div>Âge ('+r.age+' an'+(r.age>1?'s':'')+', '+r.gamme.nom.toLowerCase()+' à '+(r.gamme.tauxDeprAn*100).toFixed(2)+' %/an) : <b>×'+r.fAge.toFixed(3)+'</b></div>'+
       '<div>État ('+r.etat.label+') : <b>×'+r.fEtat.toFixed(3)+'</b> · Usage ('+r.usage.label+') : <b>×'+r.fUsage.toFixed(3)+'</b> · Énergie : <b>×'+r.fCarb.toFixed(3)+'</b></div>'+
       '<div>Kilométrage'+(r.km!=null?' ('+r.km.toLocaleString('fr-TN')+' km vs '+Math.round(r.kmRef).toLocaleString('fr-TN')+' km normaux à cet âge)':' <i>(non renseigné)</i>')+' : <b>×'+r.fKm.toFixed(3)+'</b></div>'+
@@ -1127,6 +1182,15 @@ function refreshVVValues(v){
     }
     if(r.ven.fc==='hev' && r.ven.M<ANNEE_DONNEES){
       h+='<div class="notice warn" style="margin-top:8px">⚠️ Hybride non rechargeable : les prix ont bougé de façon très inégale selon le modèle lors de la réforme 2026 (de -12 % à +21 % dans la base). L\'abattement de taxe de consommation est réservé aux moteurs ≤1700cc essence / ≤2100cc diesel. Vérifiez le prix catalogue actuel de ce modèle.</div>';
+    }
+    // Régime populaire : dire ce qui est appliqué, et pourquoi.
+    if(r.ven.popStatut==='majore'){
+      h+='<div class="notice ok" style="margin-top:8px">🏷️ <b>Véhicule populaire</b> — son prix catalogue est exonéré de taxe douanière. Le délai d\'incessibilité de '+
+        VVPARAMS.populaire.dureeIncessibilite+' ans étant écoulé, le véhicule s\'échange sur le marché normal : la valeur à neuf de référence est majorée de <b>'+
+        Math.round(VVPARAMS.populaire.majorationDouane*100)+' %</b> (taux douanier concessionnaire) pour réintégrer cette taxe et le comparer au marché normal.</div>';
+    } else if(r.ven.popStatut==='incessible'){
+      h+='<div class="notice warn" style="margin-top:8px">🏷️ <b>Véhicule populaire encore incessible</b> — moins de '+
+        VVPARAMS.populaire.dureeIncessibilite+' ans depuis la mise en circulation. Il ne peut être revendu, sauf cas particulier (mise à l\'épave notamment). La valeur à neuf reste le prix subventionné, sans réintégration de la taxe douanière.</div>';
     }
     // Évaluation à une date passée : le dire clairement, c'est une décision d'expertise.
     if(r.anneeEval<CY){
@@ -1184,6 +1248,7 @@ function init(){
 
   // Indice de prix recalculé depuis la base à chaque démarrage : mettre à jour data.js met
   // l'indice à jour du même coup, sans intervention.
+  marquerPopulaires();
   INDEX = calculerIndice();
   const IX = indice();
   ANNEE_DONNEES = IX.derniere;
