@@ -725,9 +725,15 @@ const VVPARAMS = {
   // l'écart mélange donc l'exonération fiscale et la différence de finition. Les couples les
   // plus proches en équipement (VW Polo 2017 +11 %, Clio 2017 +15 %, Chery QQ +22 %) sont
   // cohérents avec les 30 % retenus.
+  //
+  // Enfin, la réintégration est PLAFONNÉE par la version normale du même modèle quand la base
+  // en contient une (voir venJumelle). Une populaire ne peut pas ressortir mieux valorisée que
+  // la voiture non subventionnée dont elle est la déclinaison : c'est le même véhicule, en
+  // moins bien équipé et avec un historique de revente contraint.
   populaire: {
     dureeIncessibilite: 2,     // années pendant lesquelles le véhicule ne peut être revendu
     majorationDouane: 0.30,    // taux douanier concessionnaire, réintégré une fois le délai écoulé
+    plafondJumelle: true,      // ne jamais dépasser la version normale équivalente
   },
 
   // ── F_âge : dépréciation liée à l'âge ──
@@ -871,16 +877,50 @@ function calculerIndice(){
 // Repérage des véhicules populaires. Le régime est porté par le nom du modèle
 // (« KIA Picanto Populaire ») ou, plus rarement, par celui de la finition. On pose un
 // drapeau une fois pour toutes au démarrage plutôt que de refaire le test à chaque calcul.
+// On mémorise au passage la JUMELLE non populaire, qui servira de plafond de valeur :
+//   · « Chery QQ Populaire » -> les finitions de « Chery QQ » ;
+//   · quand le régime est porté par la finition (« KIA Picanto » / « 1.0 L Populaire »),
+//     la jumelle est simplement l'ensemble des finitions normales du même modèle.
+// 15 des 17 modèles populaires de la base ont une jumelle ; les deux autres (Chery Tiggo 1X,
+// Renault Kwid) n'existent qu'en version populaire et gardent la majoration simple.
 function marquerPopulaires(){
-  let n=0;
+  let n=0, avecJumelle=0;
   for(const b of Object.keys(DB)) for(const m of Object.keys(DB[b])){
     const modPop=/populaire/i.test(m);
+    const nomNormal=m.replace(/\s*populaire\s*$/i,'').trim();
+    const jumelles = (modPop ? (DB[b][nomNormal]||[]) : DB[b][m])
+                       .filter(f=>!/populaire/i.test(f.v||''));
     for(const f of DB[b][m]){
       f.pop = modPop || /populaire/i.test(f.v||'');
-      if(f.pop) n++;
+      if(f.pop){
+        n++;
+        if(jumelles.length){ f.popJum=jumelles; avecJumelle++; }
+      }
     }
   }
+  POP_JUMELEES=avecJumelle;
   return n;
+}
+let POP_JUMELEES=0;
+
+// Valeur à neuf de la version NORMALE équivalente — plafond de la version populaire.
+// On retient la finition la MOINS CHÈRE disponible à l'année de référence : une populaire est
+// par construction une entrée de gamme, la comparer à une finition haute la surévaluerait.
+// Pas de récursion possible : les finitions retenues ici ne sont jamais populaires.
+function venJumelle(v, anneeRef, anneeEval){
+  const j=v.popJum;
+  if(!j||!j.length) return null;
+  let pool=j;
+  if(anneeRef!=null && isFinite(anneeRef)){
+    const dispo=j.filter(x=>yOf(x.d0)<=anneeRef && anneeRef<=yOf(x.d)+1);
+    if(dispo.length) pool=dispo;
+  }
+  let best=null;
+  for(const x of pool){
+    const r=computeVEN(x, anneeRef, anneeEval);
+    if(r && isFinite(r.VEN) && (best===null || r.VEN<best)) best=r.VEN;
+  }
+  return best;
 }
 
 // Indice effectivement utilisé : celui calculé, ou le filet de sécurité.
@@ -958,7 +998,7 @@ function computeVEN(v, anneeRef, anneeEval){
   // Véhicule populaire : une fois le délai d'incessibilité passé, il s'échange sur le marché
   // normal — la valeur à neuf de référence doit donc réintégrer la taxe douanière dont il a
   // été exonéré. Avant ce délai, il est invendable : on reste au prix subventionné.
-  let majPop=1, popStatut=null;
+  let majPop=1, popStatut=null, venJum=null, plafonne=false;
   if(v.pop){
     const ageEval = (anneeRef!=null && isFinite(anneeRef)) ? (AE-anneeRef) : null;
     if(ageEval!=null && ageEval < VVPARAMS.populaire.dureeIncessibilite){
@@ -967,8 +1007,22 @@ function computeVEN(v, anneeRef, anneeEval){
       majPop = 1+VVPARAMS.populaire.majorationDouane;
       popStatut='majore';
     }
+    if(VVPARAMS.populaire.plafondJumelle) venJum=venJumelle(v, anneeRef, AE);
   }
-  return {VEN:L*idx*majPop, idx, L, M, fc, reforme, predites, ancre, anneeEval:AE, majPop, popStatut};
+  let VEN=L*idx*majPop;
+  // Garde-fou métier : la réintégration de la taxe ramène la populaire SUR le marché normal,
+  // elle ne peut pas la placer AU-DESSUS. Sur une Chery QQ 2016, +30 % appliqués au prix
+  // subventionné (18 760) donnaient 24 388, soit plus que le prix catalogue réel de la version
+  // normale la même année (22 900) : la populaire ressortait mieux valorisée que la voiture
+  // non subventionnée, ce qui est l'inverse de ce que fait le marché. On plafonne donc.
+  if(popStatut==='majore' && venJum!=null && VEN>venJum){ VEN=venJum; plafonne=true; }
+  // La GAMME (donc le rythme de dépréciation) se lit sur la version normale quand elle existe :
+  // c'est le segment de marché du véhicule, pas son prix subventionné, qui commande sa décote.
+  // Cela garantit aussi que populaire et normale partagent exactement la même courbe d'âge —
+  // sans quoi un simple franchissement de palier de gamme pourrait réinverser les deux.
+  const venGamme = venJum!=null ? venJum : VEN;
+  return {VEN, idx, L, M, fc, reforme, predites, ancre, anneeEval:AE, majPop, popStatut,
+          venJum, plafonne, venGamme};
 }
 
 // VV = valeur vénale estimée. Nécessite FY (année de 1ère MEC, barre du haut).
@@ -984,7 +1038,8 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval){
 
   // F_âge : géométrique, au rythme propre à la gamme du véhicule (déterminée par sa valeur
   // à neuf), avec valeur résiduelle plancher.
-  const gamme=VVPARAMS.gammes.find(g=>ven.VEN<g.maxVEN)||VVPARAMS.gammes[VVPARAMS.gammes.length-1];
+  const venClass = (ven.venGamme!=null && isFinite(ven.venGamme)) ? ven.venGamme : ven.VEN;
+  const gamme=VVPARAMS.gammes.find(g=>venClass<g.maxVEN)||VVPARAMS.gammes[VVPARAMS.gammes.length-1];
   const fAge=Math.max(Math.pow(1-gamme.tauxDeprAn, age), VVPARAMS.valeurResiduelle);
 
   const etat=VVPARAMS.etats[etatKey]||VVPARAMS.etats.normal;
@@ -1196,7 +1251,9 @@ function refreshVVValues(v){
     c.push('<span class="vv-chip"><b>'+(r.ratio*100).toFixed(0)+' %</b> du neuf</span>');
     c.push('<span class="vv-chip">'+r.gamme.nom+'</span>');
     if(r.ven.popStatut==='majore')
-      c.push('<span class="vv-chip info">🏷️ Populaire · +'+Math.round(VVPARAMS.populaire.majorationDouane*100)+' %</span>');
+      c.push('<span class="vv-chip info">🏷️ Populaire · '+(r.ven.plafonne
+        ? 'alignée sur la version normale'
+        : '+'+Math.round(VVPARAMS.populaire.majorationDouane*100)+' %')+'</span>');
     else if(r.ven.popStatut==='incessible')
       c.push('<span class="vv-chip warn">🏷️ Populaire · incessible</span>');
     if(r.ven.reforme) c.push('<span class="vv-chip info">⚖️ Réforme '+r.ven.reforme.annee+'</span>');
@@ -1214,7 +1271,8 @@ function refreshVVValues(v){
     det.innerHTML=
       '<div><b>Valeur à neuf actualisée</b> : '+fmt(Math.round(r.ven.VEN/100)*100)+
         ' <span style="opacity:.75">(prix catalogue '+fmt(r.ven.L)+' de '+r.ven.M+(r.ven.ancre==='dernier'?' — dernier connu':'')+' × indice prix auto '+(idxPct>=0?'+':'')+idxPct+'%'+
-        (r.ven.majPop>1?' × taxe douanière réintégrée +'+Math.round((r.ven.majPop-1)*100)+'%':'')+')</span></div>'+
+        (r.ven.majPop>1?' × taxe douanière réintégrée +'+Math.round((r.ven.majPop-1)*100)+'%':'')+')</span>'+
+        (r.ven.plafonne?' <span style="opacity:.75">— plafonnée à la valeur à neuf de la version normale ('+fmt(Math.round(r.ven.venJum/100)*100)+')</span>':'')+'</div>'+
       '<div>Âge ('+r.age+' an'+(r.age>1?'s':'')+', '+r.gamme.nom.toLowerCase()+' à '+(r.gamme.tauxDeprAn*100).toFixed(2)+' %/an) : <b>×'+r.fAge.toFixed(3)+'</b></div>'+
       '<div>État ('+r.etat.label+') : <b>×'+r.fEtat.toFixed(3)+'</b> · Usage ('+r.usage.label+') : <b>×'+r.fUsage.toFixed(3)+'</b> · Énergie : <b>×'+r.fCarb.toFixed(3)+'</b></div>'+
       '<div>Kilométrage'+(r.km!=null?' ('+r.km.toLocaleString('fr-TN')+' km vs '+Math.round(r.kmRef).toLocaleString('fr-TN')+' km normaux à cet âge)':' <i>(non renseigné)</i>')+' : <b>×'+r.fKm.toFixed(3)+'</b></div>'+
@@ -1242,7 +1300,10 @@ function refreshVVValues(v){
     if(r.ven.popStatut==='majore'){
       h+='<div class="notice ok" style="margin-top:8px">🏷️ <b>Véhicule populaire</b> — son prix catalogue est exonéré de taxe douanière. Le délai d\'incessibilité de '+
         VVPARAMS.populaire.dureeIncessibilite+' ans étant écoulé, le véhicule s\'échange sur le marché normal : la valeur à neuf de référence est majorée de <b>'+
-        Math.round(VVPARAMS.populaire.majorationDouane*100)+' %</b> (taux douanier concessionnaire) pour réintégrer cette taxe et le comparer au marché normal.</div>';
+        Math.round(VVPARAMS.populaire.majorationDouane*100)+' %</b> (taux douanier concessionnaire) pour réintégrer cette taxe et le comparer au marché normal.'+
+        (r.ven.plafonne
+          ? ' Cette majoration dépassait ici le prix à neuf de la <b>version normale du même modèle</b> : elle a été ramenée à ce niveau, la populaire ne pouvant valoir davantage que la voiture non subventionnée dont elle est la déclinaison.'
+          : '')+'</div>';
     } else if(r.ven.popStatut==='incessible'){
       h+='<div class="notice warn" style="margin-top:8px">🏷️ <b>Véhicule populaire encore incessible</b> — moins de '+
         VVPARAMS.populaire.dureeIncessibilite+' ans depuis la mise en circulation. Il ne peut être revendu, sauf cas particulier (mise à l\'épave notamment). La valeur à neuf reste le prix subventionné, sans réintégration de la taxe douanière.</div>';
