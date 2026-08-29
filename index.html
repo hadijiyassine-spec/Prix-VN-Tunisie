@@ -454,7 +454,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
   <!-- MEC year filter -->
   <div class="mec-filter">
     <label>📅 1ère MEC :</label>
-    <input type="number" id="mecIn" placeholder="Année" min="2011" max="2026" inputmode="numeric">
+    <input type="number" id="mecIn" placeholder="Année" min="1990" max="2026" inputmode="numeric">
     <button class="mec-clr" id="mecClr" onclick="clearMEC()">✕</button>
     <span id="mecBadge" class="mec-badge" style="display:none"></span>
   </div>
@@ -567,6 +567,12 @@ let sel = {b:null, m:null, v:null};
 let FY  = null;
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 const CY  = 2026;
+// Année de 1ère MEC la plus ancienne acceptée. La base de prix commence en 2011, mais
+// l'évaluation d'une valeur vénale, elle, doit rester possible sur des véhicules plus
+// anciens : le marché de l'occasion et les dossiers d'expertise en comportent beaucoup.
+// Au-delà de la profondeur de la base, la fiche signale simplement que le véhicule n'y
+// était pas encore référencé, et le calcul de valeur vénale reste opérant.
+const MIN_MEC = 1990;
 
 // ══════════════════════════════════════════════════════════════════
 // ── Valeur vénale (module d'estimation) ──
@@ -608,11 +614,35 @@ const VVPARAMS = {
   // Décroissance GÉOMÉTRIQUE et non linéaire : un véhicule perd un pourcentage de sa
   // valeur restante chaque année, pas un montant fixe. Une dépréciation linéaire plafonnée
   // donnait la même valeur à un véhicule de 9 ans et à un véhicule de 20 ans, ce qui est faux.
-  // 10 %/an correspond à une rétention de ~90 % à 1 an, 59 % à 5 ans, 35 % à 10 ans,
-  // 21 % à 15 ans — cohérent avec un marché tunisien où l'occasion se maintient bien
-  // (droits d'importation élevés, offre de neuf contrainte).
-  tauxDeprAn: 0.10,
-  valeurResiduelle: 0.12, // plancher : un véhicule en état de rouler garde une valeur
+  //
+  // CALIBRÉ sur le marché réel (script calibrate4.js) : 480 annonces d'occasion tunisiennes
+  // relevées sur autoprix.tn le 28/08/2026, 18 modèles (208, 301, Picanto, Golf 6/7/8, Polo,
+  // Tiguan, Clio, Symbol, i10, i20, Tucson, Yaris, Ibiza, C3, Sandero, Duster, Qashqai, Swift).
+  //
+  // Point de méthode essentiel : un prix d'annonce est MAJORÉ par le vendeur et ne peut pas
+  // servir de référence de niveau. On n'en tire donc que la FORME de la courbe : la régression
+  // de log(F_âge) sur l'âge est faite avec une CONSTANTE LIBRE, qui absorbe la majoration et
+  // les biais de niveau (mélange de finitions, base VEN) ; seule la PENTE est retenue. Le
+  // niveau reste ancré sur le prix catalogue, où F_âge(0) = 1 par construction.
+  // Forcer la droite par l'origine, comme dans la version précédente, obligeait au contraire
+  // la pente à absorber la majoration : le taux en ressortait surestimé (5,36 % au lieu de 4,94 %).
+  //
+  // Robustesse : en retirant un modèle à la fois, le taux ne varie qu'entre 4,56 et 5,36 %/an
+  // (amplitude 0,79 point) — aucun modèle ne porte le résultat à lui seul.
+  // Ajustement de la courbe : écart absolu médian 8,1 % sur 19 tranches d'âge de 1 à 19 ans.
+  //
+  // Un écart apparent entre segments a été testé (citadines 4,44 %/an vs SUV 7,10 %/an) mais
+  // NON retenu : les taux ajustés modèle par modèle sont trop dispersés (de -6 % à +8 %, la
+  // VEN de chaque modèle dépendant de la qualité de son historique catalogue) et deux
+  // citadines (Golf 5,8 %, 301 6,1 %) atteignent le niveau des SUV. L'échantillon SUV ne
+  // compte que 2 modèles exploitables : conclure à un effet de segment serait sur-ajuster.
+  //
+  // La valeur initiale de 10 %/an, posée par hypothèse, sous-estimait le marché de 35 %.
+  // Rétention à 4,94 %/an : 95 % à 1 an, 78 % à 5 ans, 60 % à 10 ans, 47 % à 15 ans —
+  // l'occasion se maintient bien en Tunisie (droits d'importation élevés, offre de neuf
+  // contrainte), nettement plus qu'en Europe.
+  tauxDeprAn: 0.0494,
+  valeurResiduelle: 0.12, // plancher (ne mord qu'au-delà d'environ 33 ans)
 
   // ── F_km : écart au kilométrage normal ──
   // Référence UNIQUE et absolue (pas par usage) : 200 000 km au compteur, c'est 200 000 km,
@@ -627,9 +657,12 @@ const VVPARAMS = {
   // malus maximal — le véhicule de 2 ans ressortait alors MOINS cher qu'un véhicule de
   // 5 ans au même kilométrage, ce qui est faux. Sur le marché, 50 000 km de trop coûtent
   // à peu près la même chose quel que soit l'âge.
-  malusPar10000km: 0.012, // -1,2 % de valeur par tranche de 10 000 km au-dessus de la normale
-  plafondMalusKm: 0.45,   // au-delà, le kilométrage ne pénalise plus davantage
-  plafondBonusKm: 0.15,   // un kilométrage très bas valorise, mais de façon limitée
+  // CALIBRÉ sur les mêmes 480 annonces que le taux d'âge : régression des résidus (une fois
+  // l'effet de l'âge retiré) sur l'écart kilométrique, également avec constante libre pour
+  // ne pas laisser la majoration vendeur contaminer la pente.
+  malusPar10000km: 0.0077, // -0,77 % de valeur par tranche de 10 000 km au-dessus de la normale
+  plafondMalusKm: 0.45,    // au-delà, le kilométrage ne pénalise plus davantage
+  plafondBonusKm: 0.15,    // un kilométrage très bas valorise, mais de façon limitée
 
   // ── F_usage : décote professionnelle ──
   // Indépendante du kilométrage : à compteur égal, un ex-taxi ou ex-location vaut moins
@@ -675,20 +708,37 @@ function indexMultiplier(fromYear, fuelClassKey){
 }
 
 // VEN = prix neuf actualisé (Valeur Équivalente à Neuf) pour une finition donnée.
-function computeVEN(v){
-  const L=v.p, M=yOf(v.d);
+//
+// `anneeRef` (en pratique l'année de 1ère MEC) sert à choisir QUEL prix catalogue actualiser.
+// C'est déterminant : une finition vendue de 2012 à 2026 a un historique de prix, et le prix
+// pertinent est celui de l'époque du véhicule, pas le dernier connu. Partir systématiquement
+// du dernier prix revenait à comparer une Peugeot 208 de 2018 au tarif de la génération
+// actuelle — d'où une surestimation mesurée de 24 à 36 % sur ce modèle, et une sous-estimation
+// symétrique sur les modèles dont le tarif catalogue est resté figé à une année ancienne.
+// C'est aussi la définition du skill : L est le prix neuf daté d'une année de référence M,
+// que l'on actualise ensuite jusqu'à aujourd'hui.
+function computeVEN(v, anneeRef){
   const fc=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
+  let L=v.p, M=yOf(v.d), ancre='dernier';
+  if(anneeRef && v.hist && v.hist.length){
+    let best=null, bestGap=Infinity;
+    for(const h of v.hist){
+      const gap=Math.abs(yOf(h.d)-anneeRef);
+      if(gap<bestGap){ bestGap=gap; best=h; }
+    }
+    if(best){ L=best.p; M=yOf(best.d); ancre=(bestGap===0?'exact':'proche'); }
+  }
   const idx=indexMultiplier(M+1, fc);
-  // Le mouvement 2026 est-il déjà inclus dans le prix connu, ou vient-il d'être appliqué ?
+  // Le mouvement 2026 est-il déjà inclus dans le prix retenu, ou vient-il d'être appliqué ?
   const reforme2026 = (M<2026 && Math.abs(VVPARAMS.index2026[fc]||0)>=0.05) ? fc : null;
-  return {VEN:L*idx, idx, L, M, fc, reforme2026};
+  return {VEN:L*idx, idx, L, M, fc, reforme2026, ancre};
 }
 
 // VV = valeur vénale estimée. Nécessite FY (année de 1ère MEC, barre du haut).
 function computeVV(v, km, etatKey, usageKey){
   if(!FY) return null;
   const age=Math.max(0, CY-FY);
-  const ven=computeVEN(v);
+  const ven=computeVEN(v, FY); // ancré sur l'année de mise en circulation
 
   // F_âge : géométrique, avec valeur résiduelle plancher.
   const fAge=Math.max(Math.pow(1-VVPARAMS.tauxDeprAn, age), VVPARAMS.valeurResiduelle);
@@ -783,7 +833,7 @@ function renderVVOutput(v){
   // Détail du calcul, replié par défaut pour ne pas noyer le résultat.
   html+='<details class="vv-details"><summary>Détail du calcul</summary><div class="vv-details-body">'+
     '<div><b>Valeur à neuf actualisée</b> : '+fmt(Math.round(r.ven.VEN/100)*100)+
-    ' <span style="opacity:.75">('+fmt(r.ven.L)+' en '+r.ven.M+' × indice prix auto '+(idxPct>=0?'+':'')+idxPct+'%)</span></div>'+
+    ' <span style="opacity:.75">(prix catalogue '+fmt(r.ven.L)+' de '+r.ven.M+(r.ven.ancre==='dernier'?' — dernier connu':'')+' × indice prix auto '+(idxPct>=0?'+':'')+idxPct+'%)</span></div>'+
     '<div>Âge ('+r.age+' an'+(r.age>1?'s':'')+') : <b>×'+r.fAge.toFixed(3)+'</b> · État ('+r.etat.label+') : <b>×'+r.fEtat.toFixed(3)+'</b></div>'+
     '<div>Kilométrage'+(r.km!=null?' ('+r.km.toLocaleString('fr-TN')+' km vs '+Math.round(r.kmRef).toLocaleString('fr-TN')+' km normaux à cet âge)':' <i>(non renseigné)</i>')+' : <b>×'+r.fKm.toFixed(3)+'</b></div>'+
     '<div>Usage ('+r.usage.label+') : <b>×'+r.fUsage.toFixed(3)+'</b> · Énergie : <b>×'+r.fCarb.toFixed(3)+'</b></div>'+
@@ -965,7 +1015,7 @@ function buildChart(v, FY, canvasId){
 // ── MEC filter ──
 document.getElementById('mecIn').addEventListener('input',function(){
   const y=parseInt(this.value);
-  if(y>=2011&&y<=CY){FY=y;document.getElementById('mecClr').style.display='block';document.getElementById('mecBadge').style.display='inline-flex';document.getElementById('mecBadge').textContent=y;}
+  if(y>=MIN_MEC&&y<=CY){FY=y;document.getElementById('mecClr').style.display='block';document.getElementById('mecBadge').style.display='inline-flex';document.getElementById('mecBadge').textContent=y;}
   else{FY=null;document.getElementById('mecClr').style.display='none';document.getElementById('mecBadge').style.display='none';}
   rBrands(document.getElementById('srchB').value.trim());
   if(sel.b) rModels(document.getElementById('srchM').value.trim());
