@@ -81,6 +81,11 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .logo{display:flex;align-items:center;gap:9px;flex-shrink:0}
 .logo-ico{width:30px;height:30px;background:rgba(255,255,255,.18);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px}
 .logo-txt{font-family:'Syne','Inter','Segoe UI',system-ui,sans-serif;font-size:15px;font-weight:800;white-space:nowrap}
+/* Numéro de build : discret, mais jamais masqué — c'est le seul moyen de vérifier d'un
+   regard que le fichier remplacé est bien celui qui s'exécute. */
+.ver{font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:9px;font-weight:700;
+  letter-spacing:.4px;vertical-align:middle;margin-left:5px;padding:1px 5px;border-radius:5px;
+  background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);cursor:help}
 .logo-sub{font-size:10px;opacity:.65;margin-top:1px;white-space:nowrap}
 
 /* Global search in topbar */
@@ -218,6 +223,10 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 
 /* Empty / loading */
 .le{padding:18px 10px;text-align:center;color:var(--t3);font-size:12px}
+/* La flèche pointe vers la colonne de gauche sur grand écran, vers la barre du dessus sur
+   téléphone où les colonnes sont empilées. */
+.le-dir::before{content:"← "}
+@media (max-width:768px){ .le-dir::before{content:"↑ "} }
 .badge{display:inline-flex;background:var(--prl);color:var(--pr);font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px}
 .gen-badge{display:inline-flex;background:#E3F2FD;color:#0D47A1;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;margin-right:4px;flex-shrink:0}
 .kbd{font-size:9.5px;color:var(--t3);padding:4px 10px 6px;text-align:center;flex-shrink:0}
@@ -361,11 +370,29 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   padding:3px 8px;
   white-space:nowrap;
 }
+/* Sur téléphone la colonne des marques n'existe pas : cette barre EST le sélecteur de
+   marque, et elle doit donc rester visible même avant tout choix. Auparavant elle
+   n'apparaissait qu'une fois la marque choisie — l'écran d'accueil n'offrait alors aucune
+   trace de la première étape, seulement un hamburger et un « ← Sélectionnez une marque »
+   qui désignait une colonne absente. */
 @media (max-width:768px){
-  .mob-brand-chip.visible{display:flex}
+  .mob-brand-chip{display:flex;width:100%;text-align:left;font-family:inherit}
   /* Models column: no top border when chip is shown */
   .col.models-col{border-top:none !important}
 }
+/* État « aucune marque choisie » : c'est une invitation, pas un état sélectionné. */
+.mob-brand-chip.vide{background:var(--pr);border-bottom-color:var(--pr3)}
+.mob-brand-chip.vide .chip-name{font-weight:700}
+.mob-brand-chip.vide .chip-change{background:#fff;color:var(--pr);border-color:#fff;font-weight:700;opacity:1}
+.mob-brand-chip:focus-visible{outline:2px solid var(--pr3);outline-offset:-3px}
+
+/* Numérotation des étapes : ici l'ordre porte une information réelle — on ne peut pas
+   choisir un modèle avant une marque, ni une finition avant un modèle. */
+.step{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;
+  border-radius:50%;background:var(--pr);color:#fff;font-size:9px;font-weight:800;
+  margin-right:5px;flex-shrink:0;letter-spacing:0}
+.col-label.fait .step{background:var(--ok)}
+.col-label.attente .step{background:var(--t3)}
 
 @media (max-width:768px){
   /* Model column collapse after model selection */
@@ -584,6 +611,15 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .bat-legend{display:flex;justify-content:space-between;gap:6px;margin-top:5px;font-size:9px;color:var(--t2);
   font-variant-numeric:tabular-nums}
 .bat-legend b{color:var(--t1);font-weight:700}
+/* La dévalorisation est un chiffre que l'expert doit pouvoir citer : elle a donc son
+   propre rang, séparée du reste par un filet, et non noyée dans une phrase. */
+.bat-depr{display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+  margin-top:8px;padding-top:7px;border-top:1px solid var(--elb)}
+.bat-depr-t{font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--t2)}
+.bat-depr-v{font-size:14px;font-weight:800;color:var(--el);font-variant-numeric:tabular-nums;
+  font-family:'Syne','Inter','Segoe UI',system-ui,sans-serif}
+.bat-depr-d{font-size:9px;color:var(--t2);line-height:1.6;margin-top:2px}
+.bat-depr-d b{color:var(--t1)}
 .bat-foot{margin-top:5px;font-size:9.5px;color:var(--t2);line-height:1.6}
 .bat-foot b{color:var(--t1)}
 .soh-wrap{position:relative;display:flex;align-items:center}
@@ -613,7 +649,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   <div class="logo">
     <div class="logo-ico">🚗</div>
     <div>
-      <div class="logo-txt">Prix VN Tunisie</div>
+      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v27</span></div>
       <div class="logo-sub" id="dbStats">Chargement…</div>
     </div>
   </div>
@@ -647,7 +683,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   <!-- COL 1: Brands (desktop only) -->
   <div class="col brand-col">
     <div class="col-head">
-      <div class="col-label">Marque <span class="badge" id="bCnt">–</span></div>
+      <div class="col-label" id="labelB"><span class="step">1</span>Marque <span class="badge" id="bCnt">–</span></div>
       <div class="col-srch">
         <span style="color:var(--t3);font-size:11px">🔍</span>
         <input id="srchB" placeholder="Filtrer…" autocomplete="off">
@@ -663,19 +699,20 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
     <!-- Models -->
     <div class="col models-col" style="flex:1;overflow:hidden;border-right:none">
       <!-- Mobile brand chip -->
-      <div class="mob-brand-chip" id="mobBrandChip" onclick="toggleDrawer()">
+      <button type="button" class="mob-brand-chip vide" id="mobBrandChip" onclick="toggleDrawer()"
+              aria-label="Choisir la marque">
         <div class="chip-ico" id="mobChipIco">🚗</div>
-        <span class="chip-name" id="mobChipName">Marque sélectionnée</span>
-        <span class="chip-change">⇄ Changer</span>
-      </div>
+        <span class="chip-name" id="mobChipName">Choisir une marque</span>
+        <span class="chip-change" id="mobChipAction">Parcourir</span>
+      </button>
       <div class="col-head">
-        <div class="col-label" id="modelLabel">Modèle <span class="badge" id="mCnt">–</span></div>
+        <div class="col-label attente" id="modelLabel"><span class="step">2</span>Modèle <span class="badge" id="mCnt">–</span></div>
         <div class="col-srch">
           <span style="color:var(--t3);font-size:11px">🔍</span>
           <input id="srchM" placeholder="Filtrer les modèles…" autocomplete="off">
         </div>
       </div>
-      <div class="col-list" id="listM"><div class="le">← Sélectionnez une marque</div></div>
+      <div class="col-list" id="listM"><div class="le"><span class="le-dir"></span>Choisissez d’abord une marque</div></div>
     </div>
 
     <!-- Versions -->
@@ -687,13 +724,13 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
         <span class="mchip-change" onclick="expandModels()">⇄ Changer</span>
       </div>
       <div class="col-head">
-        <div class="col-label">Finition <span class="badge" id="vCnt">–</span></div>
+        <div class="col-label attente" id="labelV"><span class="step">3</span>Finition <span class="badge" id="vCnt">–</span></div>
         <div class="col-srch">
           <span style="color:var(--t3);font-size:11px">🔍</span>
           <input id="srchV" placeholder="Filtrer les finitions…" autocomplete="off">
         </div>
       </div>
-      <div class="col-list" id="listV"><div class="le">← Sélectionnez un modèle</div></div>
+      <div class="col-list" id="listV"><div class="le"><span class="le-dir"></span>Choisissez d’abord un modèle</div></div>
     </div>
 
   </div>
@@ -737,6 +774,12 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 // ── Globals ──
 let sel = {b:null, m:null, v:null};
 let FY  = null;
+// ── Version de l'application ──
+// Affichée dans la barre du haut et écrite dans la console au démarrage.
+const VERSION = 'v27';
+const VERSION_DATE = '29/08/2026';
+const VERSION_NOTES = 'batterie des hybrides simples · ligne de dévalorisation chiffrée · batterie de traction · plafond prix neuf du jour · cohérence des millésimes · parcours téléphone · thème sombre';
+
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
 const signePct = x => (x>=0?'+':'\u2212')+Math.abs(x).toFixed(1)+'\u00a0%';
@@ -1246,11 +1289,17 @@ function kwhDe(v){
   return (isFinite(k)&&k>0&&k<300)?k:null;
 }
 
+// Une SEULE définition de « véhicule à batterie », partagée par le formulaire et le calcul.
+// Deux listes séparées avaient déjà divergé : l'hybride simple obtenait un panneau batterie
+// (le calcul le reconnaissait) mais aucun champ pour saisir l'état de santé (le formulaire ne
+// le reconnaissait pas) — une jauge qu'il était impossible de renseigner.
+function aBatterie(fc){ return fc==='elec' || fc==='phev' || fc==='hev'; }
+
 // Part de la batterie dans la valeur à neuf. Mesurée quand la capacité est connue
 // (capacité × coût de remplacement / valeur à neuf), forfaitaire sinon.
 function partBatterie(v, fc, VEN){
   const B=VVPARAMS.batterie;
-  if(!(fc==='elec'||fc==='phev'||fc==='hev')) return null;
+  if(!aBatterie(fc)) return null;
   const kwh=kwhDe(v);
   let part = (kwh && VEN>0) ? (kwh*B.coutPackDTparKwh)/VEN : B.partDefaut[fc];
   if(!isFinite(part)) part=B.partDefaut[fc];
@@ -1407,7 +1456,7 @@ function renderVVBlock(v){
   // État de santé de la batterie : proposé uniquement là où il a un sens. Sur un véhicule à
   // batterie c'est la mesure la plus discriminante entre deux exemplaires de même âge.
   const fcV=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
-  if(fcV==='elec'||fcV==='phev'){
+  if(aBatterie(fcV)){
     const kwh=kwhDe(v);
     const attendu=Math.round(sohAttendu(Math.max(0,(vvInputs.anneeEval||CY)-FY))*100);
     html+='<div class="vv-f-soh"><label class="spec-label" for="vvSoh">'+
@@ -1599,9 +1648,19 @@ function refreshVVValues(v){
             '<span><b>'+Math.round(att*100)+' %</b> attendu à '+r.age+' an'+(r.age>1?'s':'')+'</span>'+
             '<span><b>'+Math.round(B.sohGarantie*100)+' %</b> seuil garantie</span>'+
           '</div>'+
+          '<div class="bat-depr">'+
+            '<span class="bat-depr-t">Dévalorisation retenue</span>'+
+            '<span class="bat-depr-v">'+(r.tauxDepr*100).toFixed(2).replace('.',',')+'\u00a0%/an</span>'+
+          '</div>'+
+          '<div class="bat-depr-d">'+r.gamme.nom.toLowerCase()+' '+
+            (r.gamme.tauxDeprAn*100).toFixed(2).replace('.',',')+'\u00a0%'+
+            (r.surcout>1?' <b>+'+Math.round((r.surcout-1)*100)+'\u00a0%</b> au titre du véhicule à batterie'
+                        :' (aucune majoration)')+
+            ' \u2192 <b>\u00d7'+r.fAge.toFixed(3).replace('.',',')+'</b> à '+r.age+'\u00a0an'+(r.age>1?'s':'')+'</div>'+
           '<div class="bat-foot">'+etatTxt+
             (mes!=null?' · effet sur la valeur <b>'+signePct((r.fBat-1)*100)+'</b>':'')+
-            (P.coutRemplacement?' · remplacement ≈ <b>'+fmt(P.coutRemplacement)+'</b>':'')+
+            (P.coutRemplacement?' · remplacement ≈ <b>'+fmt(P.coutRemplacement)
+                               :' · capacité non renseignée dans la base, part <b>forfaitaire')+'</b>'+
           '</div>'+
         '</div>';
     }
@@ -1740,6 +1799,11 @@ function init(){
 
   // Indice de prix recalculé depuis la base à chaque démarrage : mettre à jour data.js met
   // l'indice à jour du même coup, sans intervention.
+  const vb=document.getElementById('verBadge');
+  if(vb){ vb.textContent=VERSION; vb.title='Version '+VERSION+' du '+VERSION_DATE+'\n'+VERSION_NOTES; }
+  console.log('Prix VN Tunisie '+VERSION+' ('+VERSION_DATE+') — '+VERSION_NOTES);
+
+  majBarreMarque(null);
   marquerPopulaires();
   INDEX = calculerIndice();
   const IX = indice();
@@ -1983,21 +2047,51 @@ function rBrands(q){
     el.appendChild(d);
   });
 }
+// Barre marque (téléphone) : deux états, jamais absente.
+//   · aucune marque  -> invitation « Choisir une marque », en accent plein ;
+//   · marque choisie -> initiales, nom, et l'action devient « Changer ».
+function majBarreMarque(b){
+  const chip=document.getElementById('mobBrandChip');
+  if(!chip) return;
+  const ico=document.getElementById('mobChipIco');
+  const nom=document.getElementById('mobChipName');
+  const act=document.getElementById('mobChipAction');
+  if(b){
+    chip.classList.remove('vide');
+    chip.setAttribute('aria-label','Marque : '+b+'. Changer de marque');
+    ico.textContent=b.substring(0,2).toUpperCase();
+    nom.textContent=b;
+    act.textContent='\u21c4 Changer';
+  } else {
+    chip.classList.add('vide');
+    chip.setAttribute('aria-label','Choisir la marque');
+    ico.textContent='🚗';
+    nom.textContent='Choisir une marque';
+    act.textContent='Parcourir';
+  }
+  majEtapes();
+}
+
+// Les pastilles d'étape disent où l'on en est : franchie, en cours, ou pas encore ouverte.
+function majEtapes(){
+  const etat=(id,fait,actif)=>{
+    const el=document.getElementById(id); if(!el) return;
+    el.classList.toggle('fait', !!fait);
+    el.classList.toggle('attente', !fait && !actif);
+  };
+  etat('labelB', !!sel.b, true);
+  etat('modelLabel', !!sel.m, !!sel.b);
+  etat('labelV', !!sel.v, !!sel.m);
+}
+
 function selectBrand(b){
   sel.b=b; sel.m=null; sel.v=null;
   rBrands(document.getElementById('srchB').value.trim());
   rModels(''); clearV(); clearRes();
   document.getElementById('srchM').value='';
   document.getElementById('srchV').value='';
-  // Update mobile chip
-  const chip=document.getElementById('mobBrandChip');
-  const chipIco=document.getElementById('mobChipIco');
-  const chipName=document.getElementById('mobChipName');
-  if(chip){
-    chipIco.textContent=b.substring(0,2).toUpperCase();
-    chipName.textContent=b;
-    chip.classList.add('visible');
-  }
+  // Barre marque du téléphone : elle passe de l'invitation au nom de la marque retenue.
+  majBarreMarque(b);
   // Reset model collapse state
   const mc=document.querySelector('.models-col');
   if(mc) mc.classList.remove('collapsed');
@@ -2008,7 +2102,7 @@ function selectBrand(b){
 
 // ── Models ──
 function rModels(q){
-  if(!sel.b){document.getElementById('listM').innerHTML='<div class="le">← Sélectionnez une marque</div>';document.getElementById('mCnt').textContent='–';return;}
+  if(!sel.b){document.getElementById('listM').innerHTML='<div class="le"><span class="le-dir"></span>Choisissez d’abord une marque</div>';document.getElementById('mCnt').textContent='–';return;}
   const models=Object.keys(DB[sel.b]).sort();
   const fl=filt(models,q);
   document.getElementById('mCnt').textContent=fl.length;
@@ -2032,6 +2126,7 @@ function rModels(q){
       '</div><span class="item-arr">›</span>';
     d.addEventListener('click',()=>{
       sel.m=m; sel.v=null;
+      majEtapes();
       rModels(document.getElementById('srchM').value.trim());
       rVersions('');
       clearRes();
@@ -2061,9 +2156,9 @@ function rVersions(q){
   document.getElementById('vCnt').textContent=fl.length;
   const el=document.getElementById('listV'); el.innerHTML='';
   const sorted=FY?[...fl].sort((a,b)=>{const r={ok:0,all:1,avant:2,apres:3};return (r[vCompat(a)]||2)-(r[vCompat(b)]||2);}):fl;
-  sorted.forEach(v=>{ el.appendChild(makeVI(v,()=>{sel.v=v;rVersions(document.getElementById('srchV').value.trim());rResult();},(sel.v&&sel.v.v===v.v))); });
+  sorted.forEach(v=>{ el.appendChild(makeVI(v,()=>{sel.v=v;majEtapes();rVersions(document.getElementById('srchV').value.trim());rResult();},(sel.v&&sel.v.v===v.v))); });
 }
-function clearV(){document.getElementById('listV').innerHTML='<div class="le">← Sélectionnez un modèle</div>';document.getElementById('vCnt').textContent='–';}
+function clearV(){document.getElementById('listV').innerHTML='<div class="le"><span class="le-dir"></span>Choisissez d’abord un modèle</div>';document.getElementById('vCnt').textContent='–';}
 
 function makeVI(v,cb,isSel){
   const y0=yOf(v.d0),y1=yOf(v.d),c=vCompat(v);
