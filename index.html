@@ -964,6 +964,17 @@ function indexMultiplier(anneePrix, anneeEval, fuelClassKey){
 // `anneeEval` : année à laquelle on se place pour évaluer (par défaut l'année courante).
 // En expertise, un sinistre doit être évalué à SA date — et une réforme fiscale postérieure
 // ne doit donc pas s'appliquer, ce que la borne de l'indice garantit.
+// Prix du véhicule NEUF à la date d'évaluation, quand la finition est encore commercialisée
+// à cette date. C'est la valeur de remplacement à neuf : ce qu'il en coûte d'aller chercher
+// le même véhicule en concession ce jour-là.
+function prixNeufCourant(v, anneeEval){
+  if(!v.hist || !v.hist.length) return null;
+  if(yOf(v.d) < anneeEval) return null;          // finition retirée du catalogue : pas de prix du jour
+  let dernier=null;
+  for(const h of v.hist) if(yOf(h.d)<=anneeEval) dernier=h;   // hist trié par date croissante
+  return dernier ? dernier.p : null;
+}
+
 function computeVEN(v, anneeRef, anneeEval){
   const fc=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
   let L=v.p, M=yOf(v.d), ancre='dernier';
@@ -1009,7 +1020,20 @@ function computeVEN(v, anneeRef, anneeEval){
     }
     if(VVPARAMS.populaire.plafondJumelle) venJum=venJumelle(v, anneeRef, AE);
   }
-  let VEN=L*idx*majPop;
+  // ── Plafond « prix neuf du jour » ──
+  // La valeur à neuf de référence ne peut pas dépasser ce que coûte réellement le véhicule
+  // neuf à la date d'évaluation, quand il est encore vendu. C'est une borne économique dure :
+  // personne ne paie une voiture d'occasion plus cher que la même voiture neuve disponible en
+  // concession. Le cas se produit dès que le TARIF BAISSE — 221 des 394 finitions encore
+  // commercialisées en 2026 sont dans ce cas. Chery Tiggo 4 Pro : 88 490 DT en janvier 2025,
+  // 75 000 DT en mars 2026 ; la valeur vénale d'un véhicule d'un an ressortait à 81 900 DT,
+  // soit davantage que son prix neuf du jour.
+  // Le plafond s'applique AVANT la réintégration douanière des véhicules populaires : le prix
+  // catalogue d'une populaire est le prix subventionné, la taxe se réintègre par-dessus.
+  const plafondNeuf=prixNeufCourant(v, AE);
+  let VEN=L*idx, neufPlafonne=false;
+  if(plafondNeuf!=null && VEN>plafondNeuf){ VEN=plafondNeuf; neufPlafonne=true; }
+  VEN*=majPop;
   // Garde-fou métier : la réintégration de la taxe ramène la populaire SUR le marché normal,
   // elle ne peut pas la placer AU-DESSUS. Sur une Chery QQ 2016, +30 % appliqués au prix
   // subventionné (18 760) donnaient 24 388, soit plus que le prix catalogue réel de la version
@@ -1022,7 +1046,7 @@ function computeVEN(v, anneeRef, anneeEval){
   // sans quoi un simple franchissement de palier de gamme pourrait réinverser les deux.
   const venGamme = venJum!=null ? venJum : VEN;
   return {VEN, idx, L, M, fc, reforme, predites, ancre, anneeEval:AE, majPop, popStatut,
-          venJum, plafonne, venGamme};
+          venJum, plafonne, venGamme, plafondNeuf, neufPlafonne};
 }
 
 // VV = valeur vénale estimée. Nécessite FY (année de 1ère MEC, barre du haut).
@@ -1064,11 +1088,21 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval){
   const ajuste = coteAjustee!=null && isFinite(coteAjustee) && Math.abs(coteAjustee-relatif)>0.001;
   const relatifEff = ajuste ? coteAjustee : relatif;
   const ratio = fAge*relatifEff;                      // part de la VEN conservée
-  const vv = Math.round(ven.VEN*ratio/100)*100;
+  // ── Borne haute : le prix neuf du jour ──
+  // Une occasion ne peut pas valoir davantage que le même véhicule neuf disponible en
+  // concession. Le plafond sur la valeur à neuf ne suffit pas : sur un véhicule quasi neuf,
+  // fAge vaut 1 et les bonus d'état (jusqu'à +10 %) et de kilométrage (jusqu'à +15 %) font
+  // repasser le total au-dessus. On borne donc aussi le résultat.
+  // Exception : une populaire au-delà de son délai d'incessibilité s'échange précisément sur
+  // le marché TAXÉ, donc AU-DESSUS de son prix subventionné — c'est tout l'objet de la
+  // réintégration douanière, et la borne n'a pas lieu d'être.
+  const borneNeuf = (ven.popStatut==='majore') ? null : ven.plafondNeuf;
+  let vv = Math.round(ven.VEN*ratio/100)*100, vvPlafonnee=false;
+  if(borneNeuf!=null && vv>borneNeuf){ vv=Math.floor(borneNeuf/100)*100; vvPlafonnee=true; }
   // `relatif` isole ce qui est propre À CE véhicule : état, kilométrage, usage, énergie —
   // hors âge et hors gamme, qui sont des caractéristiques subies. C'est cette part qui dit
   // si le véhicule est bien ou mal coté POUR SON ÂGE.
-  return {vv, ven, fAge, fEtat, fKm, fCarb, fUsage, ratio, relatif, relatifEff, ajuste, gamme, age, ecartKm, kmRef, etat, usage, km, anneeEval:AE};
+  return {vv, ven, fAge, fEtat, fKm, fCarb, fUsage, ratio, relatif, relatifEff, ajuste, gamme, age, ecartKm, kmRef, etat, usage, km, anneeEval:AE, vvPlafonnee, borneNeuf};
 }
 
 // État des champs du module Valeur vénale — conservé au niveau module pour survivre
@@ -1256,6 +1290,7 @@ function refreshVVValues(v){
         : '+'+Math.round(VVPARAMS.populaire.majorationDouane*100)+' %')+'</span>');
     else if(r.ven.popStatut==='incessible')
       c.push('<span class="vv-chip warn">🏷️ Populaire · incessible</span>');
+    if(r.vvPlafonnee || r.ven.neufPlafonne) c.push('<span class="vv-chip info">🔻 Plafonnée au prix neuf du jour</span>');
     if(r.ven.reforme) c.push('<span class="vv-chip info">⚖️ Réforme '+r.ven.reforme.annee+'</span>');
     if(r.anneeEval<CY) c.push('<span class="vv-chip warn">📆 Évaluation '+r.anneeEval+'</span>');
     if(r.anneeEval>ANNEE_DONNEES) c.push('<span class="vv-chip warn">⚠️ Tarifs '+ANNEE_DONNEES+'</span>');
@@ -1272,6 +1307,7 @@ function refreshVVValues(v){
       '<div><b>Valeur à neuf actualisée</b> : '+fmt(Math.round(r.ven.VEN/100)*100)+
         ' <span style="opacity:.75">(prix catalogue '+fmt(r.ven.L)+' de '+r.ven.M+(r.ven.ancre==='dernier'?' — dernier connu':'')+' × indice prix auto '+(idxPct>=0?'+':'')+idxPct+'%'+
         (r.ven.majPop>1?' × taxe douanière réintégrée +'+Math.round((r.ven.majPop-1)*100)+'%':'')+')</span>'+
+        (r.ven.neufPlafonne?' <span style="opacity:.75">— ramenée au prix neuf du jour ('+fmt(r.ven.plafondNeuf)+', tarif '+r.anneeEval+')</span>':'')+
         (r.ven.plafonne?' <span style="opacity:.75">— plafonnée à la valeur à neuf de la version normale ('+fmt(Math.round(r.ven.venJum/100)*100)+')</span>':'')+'</div>'+
       '<div>Âge ('+r.age+' an'+(r.age>1?'s':'')+', '+r.gamme.nom.toLowerCase()+' à '+(r.gamme.tauxDeprAn*100).toFixed(2)+' %/an) : <b>×'+r.fAge.toFixed(3)+'</b></div>'+
       '<div>État ('+r.etat.label+') : <b>×'+r.fEtat.toFixed(3)+'</b> · Usage ('+r.usage.label+') : <b>×'+r.fUsage.toFixed(3)+'</b> · Énergie : <b>×'+r.fCarb.toFixed(3)+'</b></div>'+
@@ -1296,6 +1332,15 @@ function refreshVVValues(v){
     if(r.ven.fc==='hev' && r.ven.M<ANNEE_DONNEES){
       h+='<div class="notice warn" style="margin-top:8px">⚠️ Hybride non rechargeable : les prix ont bougé de façon très inégale selon le modèle lors de la réforme 2026 (de -12 % à +21 % dans la base). L\'abattement de taxe de consommation est réservé aux moteurs ≤1700cc essence / ≤2100cc diesel. Vérifiez le prix catalogue actuel de ce modèle.</div>';
     }
+    // Tarif en baisse : le plafond « prix neuf du jour » a joué, il faut le dire.
+    if(r.ven.neufPlafonne || r.vvPlafonnee){
+      h+='<div class="notice ok" style="margin-top:8px">🔻 <b>Plafonnement au prix neuf du jour</b> — ce modèle est encore commercialisé en '+
+        r.anneeEval+' à <b>'+fmt(r.ven.plafondNeuf)+'</b>'+
+        (r.ven.neufPlafonne? ', alors qu\'il valait '+fmt(r.ven.L)+' en '+r.ven.M+' : le tarif a BAISSÉ' : '')+
+        '. Un véhicule d\'occasion ne peut pas valoir plus que le même véhicule neuf disponible en concession — '+
+        (r.vvPlafonnee? 'l\'estimation a donc été ramenée à ce prix.' : 'la valeur à neuf de référence a donc été ramenée au prix du jour.')+'</div>';
+    }
+
     // Régime populaire : dire ce qui est appliqué, et pourquoi.
     if(r.ven.popStatut==='majore'){
       h+='<div class="notice ok" style="margin-top:8px">🏷️ <b>Véhicule populaire</b> — son prix catalogue est exonéré de taxe douanière. Le délai d\'incessibilité de '+
