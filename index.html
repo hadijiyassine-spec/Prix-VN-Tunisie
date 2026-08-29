@@ -218,6 +218,10 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 
 /* Empty / loading */
 .le{padding:18px 10px;text-align:center;color:var(--t3);font-size:12px}
+/* La flèche pointe vers la colonne de gauche sur grand écran, vers la barre du dessus sur
+   téléphone où les colonnes sont empilées. */
+.le-dir::before{content:"← "}
+@media (max-width:768px){ .le-dir::before{content:"↑ "} }
 .badge{display:inline-flex;background:var(--prl);color:var(--pr);font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px}
 .gen-badge{display:inline-flex;background:#E3F2FD;color:#0D47A1;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;margin-right:4px;flex-shrink:0}
 .kbd{font-size:9.5px;color:var(--t3);padding:4px 10px 6px;text-align:center;flex-shrink:0}
@@ -361,11 +365,29 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   padding:3px 8px;
   white-space:nowrap;
 }
+/* Sur téléphone la colonne des marques n'existe pas : cette barre EST le sélecteur de
+   marque, et elle doit donc rester visible même avant tout choix. Auparavant elle
+   n'apparaissait qu'une fois la marque choisie — l'écran d'accueil n'offrait alors aucune
+   trace de la première étape, seulement un hamburger et un « ← Sélectionnez une marque »
+   qui désignait une colonne absente. */
 @media (max-width:768px){
-  .mob-brand-chip.visible{display:flex}
+  .mob-brand-chip{display:flex;width:100%;text-align:left;font-family:inherit}
   /* Models column: no top border when chip is shown */
   .col.models-col{border-top:none !important}
 }
+/* État « aucune marque choisie » : c'est une invitation, pas un état sélectionné. */
+.mob-brand-chip.vide{background:var(--pr);border-bottom-color:var(--pr3)}
+.mob-brand-chip.vide .chip-name{font-weight:700}
+.mob-brand-chip.vide .chip-change{background:#fff;color:var(--pr);border-color:#fff;font-weight:700;opacity:1}
+.mob-brand-chip:focus-visible{outline:2px solid var(--pr3);outline-offset:-3px}
+
+/* Numérotation des étapes : ici l'ordre porte une information réelle — on ne peut pas
+   choisir un modèle avant une marque, ni une finition avant un modèle. */
+.step{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;
+  border-radius:50%;background:var(--pr);color:#fff;font-size:9px;font-weight:800;
+  margin-right:5px;flex-shrink:0;letter-spacing:0}
+.col-label.fait .step{background:var(--ok)}
+.col-label.attente .step{background:var(--t3)}
 
 @media (max-width:768px){
   /* Model column collapse after model selection */
@@ -647,7 +669,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   <!-- COL 1: Brands (desktop only) -->
   <div class="col brand-col">
     <div class="col-head">
-      <div class="col-label">Marque <span class="badge" id="bCnt">–</span></div>
+      <div class="col-label" id="labelB"><span class="step">1</span>Marque <span class="badge" id="bCnt">–</span></div>
       <div class="col-srch">
         <span style="color:var(--t3);font-size:11px">🔍</span>
         <input id="srchB" placeholder="Filtrer…" autocomplete="off">
@@ -663,19 +685,20 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
     <!-- Models -->
     <div class="col models-col" style="flex:1;overflow:hidden;border-right:none">
       <!-- Mobile brand chip -->
-      <div class="mob-brand-chip" id="mobBrandChip" onclick="toggleDrawer()">
+      <button type="button" class="mob-brand-chip vide" id="mobBrandChip" onclick="toggleDrawer()"
+              aria-label="Choisir la marque">
         <div class="chip-ico" id="mobChipIco">🚗</div>
-        <span class="chip-name" id="mobChipName">Marque sélectionnée</span>
-        <span class="chip-change">⇄ Changer</span>
-      </div>
+        <span class="chip-name" id="mobChipName">Choisir une marque</span>
+        <span class="chip-change" id="mobChipAction">Parcourir</span>
+      </button>
       <div class="col-head">
-        <div class="col-label" id="modelLabel">Modèle <span class="badge" id="mCnt">–</span></div>
+        <div class="col-label attente" id="modelLabel"><span class="step">2</span>Modèle <span class="badge" id="mCnt">–</span></div>
         <div class="col-srch">
           <span style="color:var(--t3);font-size:11px">🔍</span>
           <input id="srchM" placeholder="Filtrer les modèles…" autocomplete="off">
         </div>
       </div>
-      <div class="col-list" id="listM"><div class="le">← Sélectionnez une marque</div></div>
+      <div class="col-list" id="listM"><div class="le"><span class="le-dir"></span>Choisissez d’abord une marque</div></div>
     </div>
 
     <!-- Versions -->
@@ -687,13 +710,13 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
         <span class="mchip-change" onclick="expandModels()">⇄ Changer</span>
       </div>
       <div class="col-head">
-        <div class="col-label">Finition <span class="badge" id="vCnt">–</span></div>
+        <div class="col-label attente" id="labelV"><span class="step">3</span>Finition <span class="badge" id="vCnt">–</span></div>
         <div class="col-srch">
           <span style="color:var(--t3);font-size:11px">🔍</span>
           <input id="srchV" placeholder="Filtrer les finitions…" autocomplete="off">
         </div>
       </div>
-      <div class="col-list" id="listV"><div class="le">← Sélectionnez un modèle</div></div>
+      <div class="col-list" id="listV"><div class="le"><span class="le-dir"></span>Choisissez d’abord un modèle</div></div>
     </div>
 
   </div>
@@ -1740,6 +1763,7 @@ function init(){
 
   // Indice de prix recalculé depuis la base à chaque démarrage : mettre à jour data.js met
   // l'indice à jour du même coup, sans intervention.
+  majBarreMarque(null);
   marquerPopulaires();
   INDEX = calculerIndice();
   const IX = indice();
@@ -1983,21 +2007,51 @@ function rBrands(q){
     el.appendChild(d);
   });
 }
+// Barre marque (téléphone) : deux états, jamais absente.
+//   · aucune marque  -> invitation « Choisir une marque », en accent plein ;
+//   · marque choisie -> initiales, nom, et l'action devient « Changer ».
+function majBarreMarque(b){
+  const chip=document.getElementById('mobBrandChip');
+  if(!chip) return;
+  const ico=document.getElementById('mobChipIco');
+  const nom=document.getElementById('mobChipName');
+  const act=document.getElementById('mobChipAction');
+  if(b){
+    chip.classList.remove('vide');
+    chip.setAttribute('aria-label','Marque : '+b+'. Changer de marque');
+    ico.textContent=b.substring(0,2).toUpperCase();
+    nom.textContent=b;
+    act.textContent='\u21c4 Changer';
+  } else {
+    chip.classList.add('vide');
+    chip.setAttribute('aria-label','Choisir la marque');
+    ico.textContent='🚗';
+    nom.textContent='Choisir une marque';
+    act.textContent='Parcourir';
+  }
+  majEtapes();
+}
+
+// Les pastilles d'étape disent où l'on en est : franchie, en cours, ou pas encore ouverte.
+function majEtapes(){
+  const etat=(id,fait,actif)=>{
+    const el=document.getElementById(id); if(!el) return;
+    el.classList.toggle('fait', !!fait);
+    el.classList.toggle('attente', !fait && !actif);
+  };
+  etat('labelB', !!sel.b, true);
+  etat('modelLabel', !!sel.m, !!sel.b);
+  etat('labelV', !!sel.v, !!sel.m);
+}
+
 function selectBrand(b){
   sel.b=b; sel.m=null; sel.v=null;
   rBrands(document.getElementById('srchB').value.trim());
   rModels(''); clearV(); clearRes();
   document.getElementById('srchM').value='';
   document.getElementById('srchV').value='';
-  // Update mobile chip
-  const chip=document.getElementById('mobBrandChip');
-  const chipIco=document.getElementById('mobChipIco');
-  const chipName=document.getElementById('mobChipName');
-  if(chip){
-    chipIco.textContent=b.substring(0,2).toUpperCase();
-    chipName.textContent=b;
-    chip.classList.add('visible');
-  }
+  // Barre marque du téléphone : elle passe de l'invitation au nom de la marque retenue.
+  majBarreMarque(b);
   // Reset model collapse state
   const mc=document.querySelector('.models-col');
   if(mc) mc.classList.remove('collapsed');
@@ -2008,7 +2062,7 @@ function selectBrand(b){
 
 // ── Models ──
 function rModels(q){
-  if(!sel.b){document.getElementById('listM').innerHTML='<div class="le">← Sélectionnez une marque</div>';document.getElementById('mCnt').textContent='–';return;}
+  if(!sel.b){document.getElementById('listM').innerHTML='<div class="le"><span class="le-dir"></span>Choisissez d’abord une marque</div>';document.getElementById('mCnt').textContent='–';return;}
   const models=Object.keys(DB[sel.b]).sort();
   const fl=filt(models,q);
   document.getElementById('mCnt').textContent=fl.length;
@@ -2032,6 +2086,7 @@ function rModels(q){
       '</div><span class="item-arr">›</span>';
     d.addEventListener('click',()=>{
       sel.m=m; sel.v=null;
+      majEtapes();
       rModels(document.getElementById('srchM').value.trim());
       rVersions('');
       clearRes();
@@ -2061,9 +2116,9 @@ function rVersions(q){
   document.getElementById('vCnt').textContent=fl.length;
   const el=document.getElementById('listV'); el.innerHTML='';
   const sorted=FY?[...fl].sort((a,b)=>{const r={ok:0,all:1,avant:2,apres:3};return (r[vCompat(a)]||2)-(r[vCompat(b)]||2);}):fl;
-  sorted.forEach(v=>{ el.appendChild(makeVI(v,()=>{sel.v=v;rVersions(document.getElementById('srchV').value.trim());rResult();},(sel.v&&sel.v.v===v.v))); });
+  sorted.forEach(v=>{ el.appendChild(makeVI(v,()=>{sel.v=v;majEtapes();rVersions(document.getElementById('srchV').value.trim());rResult();},(sel.v&&sel.v.v===v.v))); });
 }
-function clearV(){document.getElementById('listV').innerHTML='<div class="le">← Sélectionnez un modèle</div>';document.getElementById('vCnt').textContent='–';}
+function clearV(){document.getElementById('listV').innerHTML='<div class="le"><span class="le-dir"></span>Choisissez d’abord un modèle</div>';document.getElementById('vCnt').textContent='–';}
 
 function makeVI(v,cb,isSel){
   const y0=yOf(v.d0),y1=yOf(v.d),c=vCompat(v);
