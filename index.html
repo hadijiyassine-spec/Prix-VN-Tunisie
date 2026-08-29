@@ -6,7 +6,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0D47A1">
+<meta name="theme-color" content="#0B5FA5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#08243F" media="(prefers-color-scheme: dark)">
 <title>Prix VN Tunisie</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
@@ -26,13 +27,49 @@
   --bd:#DAE1EB;--bd2:#BFCAD8;
   --sh:0 1px 2px rgba(12,24,38,.06),0 4px 14px rgba(12,24,38,.07);
   --shd:0 2px 6px rgba(12,24,38,.10),0 12px 28px rgba(12,24,38,.10);
+  /* Accent propre aux véhicules à batterie : un cyan profond, distinct du bleu de marque
+     comme des couleurs sémantiques, pour que « électrique » se lise sans ambiguïté. */
+  --el:#0E7490;--ell:#E0F5F9;--elb:#A9DDE8;
+  --chip-info-bd:#BCD9F0;--chip-warn-bd:#F0D6B0;
   --r:14px;--rs:9px;
   --hdr:56px;
   --search-h:52px;
 }
+/* Thème sombre. Les composants ne lisent QUE des jetons : on ne redéfinit ici que les
+   jetons, jamais une couleur de composant — sinon elle ne s'appliquerait pas dans l'état
+   « système » où la racine ne porte aucun attribut. Les deux blocs (préférence système et
+   choix explicite) portent exactement la même liste. */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --pr:#5CA8EE;--prd:#08243F;--pr3:#8AC6FF;--prl:#14293F;
+    --gn:#7CD9A4;--gn2:#2E9D5F;--gnl:#122A1E;
+    --am:#E9A23B;--aml:#33240F;
+    --ok:#4ADE80;--ok-d:#7CD9A4;--warn:#E9A23B;--bad:#F0736B;
+    --bg:#080D16;--sf:#111A28;--sf2:#0D1522;--sf3:#1A2537;
+    --t1:#E8EEF7;--t2:#A6B5C9;--t3:#7387A0;
+    --bd:#22314A;--bd2:#33455F;
+    --sh:0 1px 2px rgba(0,0,0,.5),0 4px 14px rgba(0,0,0,.4);
+    --shd:0 2px 6px rgba(0,0,0,.55),0 12px 28px rgba(0,0,0,.45);
+    --el:#3FC4DC;--ell:#0E2A31;--elb:#1D5766;
+    --chip-info-bd:#27486B;--chip-warn-bd:#5A431C;
+  }
+}
+:root[data-theme="dark"]{
+  --pr:#5CA8EE;--prd:#08243F;--pr3:#8AC6FF;--prl:#14293F;
+  --gn:#7CD9A4;--gn2:#2E9D5F;--gnl:#122A1E;
+  --am:#E9A23B;--aml:#33240F;
+  --ok:#4ADE80;--ok-d:#7CD9A4;--warn:#E9A23B;--bad:#F0736B;
+  --bg:#080D16;--sf:#111A28;--sf2:#0D1522;--sf3:#1A2537;
+  --t1:#E8EEF7;--t2:#A6B5C9;--t3:#7387A0;
+  --bd:#22314A;--bd2:#33455F;
+  --sh:0 1px 2px rgba(0,0,0,.5),0 4px 14px rgba(0,0,0,.4);
+  --shd:0 2px 6px rgba(0,0,0,.55),0 12px 28px rgba(0,0,0,.45);
+  --el:#3FC4DC;--ell:#0E2A31;--elb:#1D5766;
+  --chip-info-bd:#27486B;--chip-warn-bd:#5A431C;
+}
 /* Les chiffres alignés en colonnes doivent l'être vraiment. */
 .price-val,.vi-price,.or-price,.vv-prix-val,.mc-v,.cote-ecart{font-variant-numeric:tabular-nums}
-html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1)}
+html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--t1)}
 
 /* ══════════════════════════════════════
    DESKTOP LAYOUT  (≥ 900px)
@@ -43,12 +80,12 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 .topbar{background:linear-gradient(105deg,var(--prd) 0%,#0A4A85 55%,var(--pr) 100%);color:#fff;display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 10px rgba(7,47,82,.28);z-index:50;position:relative}
 .logo{display:flex;align-items:center;gap:9px;flex-shrink:0}
 .logo-ico{width:30px;height:30px;background:rgba(255,255,255,.18);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px}
-.logo-txt{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;white-space:nowrap}
+.logo-txt{font-family:'Syne','Inter','Segoe UI',system-ui,sans-serif;font-size:15px;font-weight:800;white-space:nowrap}
 .logo-sub{font-size:10px;opacity:.65;margin-top:1px;white-space:nowrap}
 
 /* Global search in topbar */
 .global-search{flex:1;max-width:420px;display:flex;align-items:center;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);border-radius:9px;padding:6px 12px;gap:7px}
-.global-search input{flex:1;background:none;border:none;outline:none;color:#fff;font-size:13px;font-family:'Inter',sans-serif}
+.global-search input{flex:1;background:none;border:none;outline:none;color:#fff;font-size:13px;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif}
 .global-search input::placeholder{color:rgba(255,255,255,.5)}
 .global-search .gs-ico{color:rgba(255,255,255,.7);font-size:14px;flex-shrink:0}
 .global-search .gs-clear{background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:14px;padding:0;display:none}
@@ -56,7 +93,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 /* MEC filter */
 .mec-filter{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:8px;padding:5px 10px;flex-shrink:0}
 .mec-filter label{font-size:11px;opacity:.8;white-space:nowrap}
-.mec-filter input{background:none;border:none;outline:none;color:#fff;font-size:12.5px;font-family:'Inter',sans-serif;width:52px}
+.mec-filter input{background:none;border:none;outline:none;color:#fff;font-size:12.5px;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;width:52px}
 .mec-filter input::placeholder{color:rgba(255,255,255,.4)}
 .mec-clr{background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:13px;display:none}
 .mec-badge{background:#FF6F00;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:7px;white-space:nowrap}
@@ -72,7 +109,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 .col-head{padding:11px 14px 8px;border-bottom:1px solid var(--bd);background:var(--sf);flex-shrink:0}
 .col-label{font-size:9.5px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}
 .col-srch{display:flex;align-items:center;gap:6px;background:var(--sf3);border:1px solid var(--bd);border-radius:7px;padding:5px 9px}
-.col-srch input{flex:1;background:none;border:none;outline:none;font-size:12px;color:var(--t1);font-family:'Inter',sans-serif}
+.col-srch input{flex:1;background:none;border:none;outline:none;font-size:12px;color:var(--t1);font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif}
 .col-srch input::placeholder{color:var(--t3)}
 .col-list{flex:1;overflow-y:auto;padding:5px}
 .col-list::-webkit-scrollbar{width:3px}
@@ -129,11 +166,11 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 .rcard-head{background:linear-gradient(135deg,var(--gn) 0%,var(--gn2) 100%);padding:14px 16px;color:#fff}
 .rcard-badge{display:inline-flex;background:rgba(255,255,255,.2);border-radius:8px;padding:2px 8px;font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px}
 .rcard-brand{font-size:10.5px;opacity:.85;font-weight:500;margin-bottom:1px}
-.rcard-model{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;line-height:1.2;margin-bottom:1px}
+.rcard-model{font-family:'Syne','Inter','Segoe UI',system-ui,sans-serif;font-size:17px;font-weight:800;line-height:1.2;margin-bottom:1px}
 .rcard-ver{font-size:11.5px;opacity:.85}
 .rcard-body{padding:16px}
 .price-block{display:flex;align-items:baseline;gap:5px;margin-bottom:13px;padding-bottom:13px;border-bottom:1px solid var(--bd)}
-.price-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--gn);letter-spacing:-.5px}
+.price-val{font-family:'Syne','Inter','Segoe UI',system-ui,sans-serif;font-size:28px;font-weight:800;color:var(--gn);letter-spacing:-.5px}
 .price-unit{font-size:14px;color:var(--t2);font-weight:600}
 .price-lbl{font-size:10px;color:var(--t3);margin-left:2px}
 .compat-banner{border-radius:var(--rs);padding:8px 11px;font-size:11px;font-weight:600;margin-bottom:11px;border:1.5px solid;line-height:1.5}
@@ -217,7 +254,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 .drawer-title{font-size:14px;font-weight:700}
 .drawer-close{background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
 .drawer-srch{display:flex;align-items:center;background:rgba(255,255,255,.15);border-radius:9px;padding:7px 11px;gap:7px}
-.drawer-srch input{flex:1;background:none;border:none;outline:none;color:#fff;font-size:13px;font-family:'Inter',sans-serif}
+.drawer-srch input{flex:1;background:none;border:none;outline:none;color:#fff;font-size:13px;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif}
 .drawer-srch input::placeholder{color:rgba(255,255,255,.5)}
 .drawer-list{flex:1;overflow-y:auto;padding:6px}
 .drawer-item{display:flex;align-items:center;justify-content:space-between;padding:11px 12px;border-radius:10px;margin-bottom:2px;cursor:pointer;transition:all .12s;border:1px solid transparent}
@@ -407,24 +444,24 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
   border-radius:7px;padding:2px 4px 2px 8px;cursor:pointer;flex-shrink:0}
 .vv-annee:hover{border-color:var(--pr3)}
 .vv-annee-ico{font-size:11px;line-height:1}
-.vv-annee select{border:none;background:none;outline:none;font-family:'Inter',sans-serif;font-size:12px;
+.vv-annee select{border:none;background:none;outline:none;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;font-size:12px;
   font-weight:700;color:var(--t1);cursor:pointer;padding:3px 2px}
 /* Une évaluation à une date passée est une décision d'expertise : elle doit se voir. */
 .vv-annee.passe{background:var(--aml);border-color:var(--am)}
 .vv-annee.passe select{color:var(--am)}
-.vv-annee-rappel{font-size:10px;color:var(--am);background:var(--aml);border:1px solid #F0D6B0;
+.vv-annee-rappel{font-size:10px;color:var(--am);background:var(--aml);border:1px solid var(--chip-warn-bd);
   border-radius:6px;padding:5px 8px;margin-bottom:9px;line-height:1.5}
 
 /* Trois saisies sur deux rangées : le kilométrage prend la largeur (six chiffres à lire),
    état et usage se partagent la suivante. Quatre colonnes tronquaient tout. */
-.vv-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px 7px;margin-bottom:2px}
+.vv-fields{display:grid;grid-template-columns:1fr 1fr;gap:9px 8px;margin-bottom:3px}
 .vv-fields .vv-f-km{grid-column:1/-1}
 .vv-fields label{display:block;margin-bottom:3px}
 .vv-input{width:100%;padding:7px 9px;border:1px solid var(--bd2);border-radius:7px;font-size:12.5px;
-  font-family:'Inter',sans-serif;background:var(--sf);color:var(--t1)}
+  font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;background:var(--sf);color:var(--t1)}
 .vv-input:focus{outline:2px solid var(--pr3);outline-offset:1px;border-color:var(--pr3)}
 .vv-cta{width:100%;padding:9px 12px;border:1px solid var(--pr3);background:var(--prl);color:var(--pr);
-  border-radius:8px;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer}
+  border-radius:8px;font-size:12px;font-weight:600;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;cursor:pointer}
 .vv-cta:hover{background:var(--pr3);color:#fff}
 .vv-details{margin-top:2px}
 .vv-details summary{font-size:10.5px;color:var(--pr);cursor:pointer;padding:3px 0;user-select:none;font-weight:600}
@@ -448,11 +485,14 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 
 /* Le montant occupe sa propre ligne, la mention vient dessous. Les deux étaient
    côte à côte en flex : sur mobile ils se collaient l'un à l'autre. */
-.vv-resultat{margin-top:11px;padding-top:12px;border-top:1px dashed var(--bd2)}
-.vv-prix{margin-bottom:12px}
-.vv-prix-val{display:block;font-family:'Syne',sans-serif;font-size:30px;font-weight:800;
-  color:var(--pr);line-height:1.05;letter-spacing:-.2px}
-.vv-prix-note{display:block;font-size:9.5px;color:var(--t3);margin-top:4px}
+.vv-resultat{margin-top:12px;padding:13px 13px 12px;border-radius:var(--r);
+  background:linear-gradient(180deg,var(--sf2),var(--sf));border:1px solid var(--bd);box-shadow:var(--sh)}
+/* Le montant est le seul élément de la fiche qui a droit à cette échelle : il se lit d'un
+   bout de la pièce, l'unité reste une unité, et un filet d'accent tient le bloc à gauche. */
+.vv-prix{margin-bottom:13px;padding-left:11px;border-left:3px solid var(--pr);border-radius:1px}
+.vv-prix-val{display:block;font-family:'Syne','Inter','Segoe UI',system-ui,sans-serif;
+  font-size:clamp(30px,7.2vw,38px);font-weight:800;color:var(--pr);line-height:1.02;letter-spacing:-.8px}
+.vv-prix-note{display:block;font-size:9.5px;color:var(--t3);margin-top:5px}
 
 /* Pastilles : ce qui a pesé sur le calcul, en un coup d'œil. Les règles elles-mêmes
    sont repliées dans « Détail du calcul » — une fiche doit livrer un résultat,
@@ -460,8 +500,8 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 .vv-chips{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0 2px}
 .vv-chip{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:600;
   padding:3px 9px;border-radius:20px;background:var(--sf3);color:var(--t2);border:1px solid var(--bd);white-space:nowrap}
-.vv-chip.info{background:var(--prl);color:var(--pr);border-color:#BCD9F0}
-.vv-chip.warn{background:var(--aml);color:var(--am);border-color:#F0D6B0}
+.vv-chip.info{background:var(--prl);color:var(--pr);border-color:var(--chip-info-bd)}
+.vv-chip.warn{background:var(--aml);color:var(--am);border-color:var(--chip-warn-bd)}
 .vv-chip b{font-weight:800}
 
 /* ── Curseur de cotation ── */
@@ -490,7 +530,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 .cote-foot>span{flex:1;min-width:150px}
 .cote-foot b{color:var(--t1)}
 .cote-reset{background:var(--sf);border:1px solid var(--bd2);color:var(--pr);border-radius:6px;
-  padding:3px 9px;font-size:10px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;white-space:nowrap}
+  padding:3px 9px;font-size:10px;font-weight:600;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;cursor:pointer;white-space:nowrap}
 .cote-reset:hover{background:var(--prl);border-color:var(--pr3)}
 @media (max-width:768px){
   .cote-track{height:34px}
@@ -514,6 +554,52 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 .vi-badge.fuel-ess{background:#FCE4EC;color:#880E4F}
 .vi-badge.tx{background:var(--sf3);color:var(--t2)}
 .vi-badge.pw{background:var(--aml);color:var(--am)}
+
+/* ══════════════════════════════════════
+   Bloc résultat : lire un montant, pas un paragraphe
+══════════════════════════════════════ */
+.vv-prix-lbl{display:block;font-size:9.5px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;
+  color:var(--t3);margin-bottom:2px}
+.vv-prix-val em{font-style:normal;font-size:.52em;font-weight:700;letter-spacing:.5px;margin-left:6px;color:var(--t2)}
+
+/* ══════════════════════════════════════
+   Batterie de traction
+   Une jauge, pas un tableau : l'expert compare d'un coup d'œil la capacité mesurée à ce
+   qu'on attend de cet âge, et au seuil de garantie.
+══════════════════════════════════════ */
+.bat{margin-top:11px;background:var(--ell);border:1px solid var(--elb);border-radius:var(--rs);padding:9px 11px 8px}
+.bat-hd{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:7px}
+.bat-t{font-size:11.5px;font-weight:700;color:var(--el);display:flex;align-items:center;gap:5px}
+.bat-t::before{content:"🔋";font-size:12px}
+.bat-part{font-size:9.5px;color:var(--t2);font-variant-numeric:tabular-nums}
+.bat-part i{font-style:normal;opacity:.75}
+.bat-bar{position:relative;height:10px;border-radius:5px;background:var(--sf3);
+  border:1px solid var(--bd);overflow:hidden}
+.bat-fill{position:absolute;top:0;bottom:0;left:0;background:linear-gradient(90deg,var(--el),var(--pr3));
+  border-radius:5px 0 0 5px;transition:width .18s ease}
+.bat.bas .bat-fill{background:linear-gradient(90deg,var(--bad),var(--am))}
+.bat.moyen .bat-fill{background:linear-gradient(90deg,var(--am),var(--el))}
+.bat-ref{position:absolute;top:-1px;bottom:-1px;width:2px;background:var(--t1);opacity:.6;z-index:2}
+.bat-seuil{position:absolute;top:-1px;bottom:-1px;width:2px;background:var(--bad);opacity:.75;z-index:2}
+.bat-legend{display:flex;justify-content:space-between;gap:6px;margin-top:5px;font-size:9px;color:var(--t2);
+  font-variant-numeric:tabular-nums}
+.bat-legend b{color:var(--t1);font-weight:700}
+.bat-foot{margin-top:5px;font-size:9.5px;color:var(--t2);line-height:1.6}
+.bat-foot b{color:var(--t1)}
+.soh-wrap{position:relative;display:flex;align-items:center}
+.soh-wrap .vv-input{padding-right:26px}
+.soh-unit{position:absolute;right:9px;font-size:11.5px;color:var(--t3);pointer-events:none}
+.lbl-kwh{font-weight:600;color:var(--el);letter-spacing:0;text-transform:none}
+.vv-fields .vv-f-soh{grid-column:1/-1}
+
+/* ══════════════════════════════════════
+   Finitions transverses
+══════════════════════════════════════ */
+:focus-visible{outline:2px solid var(--pr3);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;scroll-behavior:auto !important}
+}
 </style>
 </head>
 <body>
@@ -652,6 +738,8 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 let sel = {b:null, m:null, v:null};
 let FY  = null;
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
+// Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
+const signePct = x => (x>=0?'+':'\u2212')+Math.abs(x).toFixed(1)+'\u00a0%';
 // Année de calcul. Déterminée au démarrage : max(année système, dernière année de la base).
 // Elle n'est plus figée — un rapport établi plus tard vieillira correctement les véhicules.
 let CY = 2026;
@@ -836,6 +924,52 @@ const VVPARAMS = {
   // ── F_carburant ── prime/décote de l'énergie sur le marché de l'OCCASION (le neuf est
   // déjà traité par l'indice ci-dessus). Estimation de départ, non calibrée.
   carburant: {essence:1.00, diesel:0.98, hev:1.00, phev:0.97, elec:0.95, gpl:0.98},
+
+  // ── Batterie de traction ──
+  // Sur un véhicule électrique, la batterie est le premier poste de valeur et le seul dont
+  // l'usure se mesure : c'est elle qui fait l'écart entre deux VE de même âge. Elle entre donc
+  // dans la formule par un facteur propre, F_batterie, construit comme F_km — sur l'ÉCART à
+  // la norme de l'âge, pas sur l'état absolu. Sans mesure d'état de santé (SOH), le facteur
+  // vaut 1 et rien ne change : on ne présume pas d'une usure qu'on n'a pas constatée.
+  batterie: {
+    // Coût de remplacement installé. 130 à 150 $/kWh au prix client final (Recharged, 2025 —
+    // contre ~115 $/kWh au coût industriel), soit 380 à 440 DT/kWh au cours BCT du 19/08/2026
+    // (1 USD = 2,9226 TND), auxquels s'ajoutent transport, main-d'œuvre et marge locale. Les
+    // VE tunisiens sont désormais à 0 % de droits de douane et 7 % de TVA, ce qui limite la
+    // majoration à l'import. ORDRE DE GRANDEUR à réviser sur devis concessionnaire réel.
+    // Deux bases distinctes, et il ne faut pas les confondre :
+    //  · coutPackDTparKwh sert à PONDÉRER la batterie dans la valeur du véhicule. On prend le
+    //    bas de la fourchette client (130 $/kWh × 2,9226 = 380 DT/kWh) : la marge et la
+    //    main-d'œuvre d'un remplacement ne sont pas de la valeur incorporée au véhicule.
+    //  · coutRemplacementDTparKwh est le devis indicatif AFFICHÉ à l'expert, pose comprise
+    //    (150 $/kWh, majoré du transport et de la main-d'œuvre locale).
+    coutPackDTparKwh: 380,
+    coutRemplacementDTparKwh: 480,
+    // Part de la batterie dans la valeur à neuf quand la capacité n'est pas renseignée
+    // (60 des 130 finitions électriques de la base n'ont pas de kWh exploitable).
+    partDefaut: {elec:0.25, phev:0.12, hev:0.03},
+    partMin: 0.05, partMax: 0.40,
+    // Dégradation ATTENDUE : 2,3 %/an tous véhicules confondus, 2,0 %/an pour les voitures
+    // particulières (Geotab 2025, 22 700 VE, 21 modèles), + 0,4 point en climat chaud —
+    // la Tunisie en est un. On retient 2,4 %/an. Le même travail donne 81,6 % de capacité
+    // restante à 8 ans, que cette courbe reproduit à 82,3 %.
+    degradationAnnuelle: 0.024,
+    // Garantie constructeur usuelle : 8 ans ou 160 000 km jusqu'à 70 % de capacité. En deçà
+    // de ce seuil ET dans la garantie, la batterie est remplacée — ce qui relève la valeur au
+    // lieu de l'abaisser. La fiche le signale, le calcul ne le présume pas.
+    sohGarantie: 0.70, dureeGarantie: 8, kmGarantie: 160000,
+    sohMin: 0.40, sohMax: 1.02,
+  },
+
+  // Surcroît de dévalorisation des véhicules à batterie. Les VE se déprécient plus vite que
+  // les thermiques : 38 à 42 % à trois ans contre 35 à 40 % (Cox Automotive, novembre 2025),
+  // soit un rythme annuel supérieur d'environ 8 %. On applique ce RAPPORT au taux de la gamme
+  // — jamais les taux européens eux-mêmes, qui n'ont rien à voir avec le marché tunisien.
+  // Le niveau, lui, reste porté par l'indice par énergie et le plafond du prix neuf du jour,
+  // qui captent déjà l'effondrement tarifaire tunisien de 2025-2026.
+  // À REMESURER dès qu'un marché de l'occasion électrique existera en Tunisie : la base ne
+  // contient aujourd'hui qu'une finition électrique antérieure à 2023.
+  surcoutDeprBatterie: {elec:1.08, phev:1.08},
 };
 
 // ── Calcul automatique de l'indice depuis la base ──
@@ -975,19 +1109,72 @@ function prixNeufCourant(v, anneeEval){
   return dernier ? dernier.p : null;
 }
 
+// Série des valeurs à neuf d'une finition, millésime par millésime, rendue cohérente.
+// Mise en cache : la série ne dépend que de la finition, de l'année d'évaluation et de la
+// classe d'énergie, alors que computeVEN est appelé des milliers de fois par les contrôles.
+function venSerie(v, AE, fc){
+  const cle=AE+'|'+fc;
+  if(v.__vs && v.__vs[cle]) return v.__vs[cle];
+  const y0=yOf(v.hist[0].d), y1=Math.max(yOf(v.hist[v.hist.length-1].d), AE);
+  const par={};
+  for(let y=y0; y<=y1; y++){
+    let best=null, gap=Infinity;
+    for(const h of v.hist){ const g=Math.abs(yOf(h.d)-y); if(g<gap){ gap=g; best=h; } }
+    const r=indexMultiplier(yOf(best.d), AE, fc);
+    par[y]={p:best.p, y:yOf(best.d), idx:r.m, predites:r.predites, gap, ven:best.p*r.m, env:false};
+  }
+  // Balayage à rebours : VEN(a) ne peut pas dépasser VEN(a+1) / (1 − taux le plus lent).
+  // Marge autorisée par année : ce que l'âge fait GAGNER au millésime plus récent, moins ce
+  // que le kilométrage lui fait PERDRE. À kilométrage égal, le repère normal d'un véhicule
+  // plus récent est plus bas, donc son bonus kilométrique est plus faible — de
+  // malusPar10000km × kmRefAnnuel/10 000 par année, soit 1,05 %/an. Sans en tenir compte,
+  // l'enveloppe consommait toute la marge et l'ordre s'inversait quand même (Ford Ka 1.2
+  // Titanium à 120 000 km : 25 800 DT en 2013 contre 25 400 DT en 2016).
+  const tMin=Math.min.apply(null, VVPARAMS.gammes.map(g=>g.tauxDeprAn));
+  const penteKm=VVPARAMS.malusPar10000km*VVPARAMS.kmRefAnnuel/10000;
+  const borneRel=(1/(1-tMin))*(1-penteKm)*0.995;
+  for(let y=y1-1; y>=y0; y--){
+    const max=par[y+1].ven*borneRel;
+    if(par[y].ven>max){ par[y].ven=max; par[y].env=true; }
+  }
+  const out={par, y0, y1};
+  (v.__vs=v.__vs||{})[cle]=out;
+  return out;
+}
+
 function computeVEN(v, anneeRef, anneeEval){
   const fc=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
-  let L=v.p, M=yOf(v.d), ancre='dernier';
-  if(anneeRef && v.hist && v.hist.length){
-    let best=null, bestGap=Infinity;
-    for(const h of v.hist){
-      const gap=Math.abs(yOf(h.d)-anneeRef);
-      if(gap<bestGap){ bestGap=gap; best=h; }
-    }
-    if(best){ L=best.p; M=yOf(best.d); ancre=(bestGap===0?'exact':'proche'); }
-  }
   const AE = (anneeEval!=null && isFinite(anneeEval)) ? anneeEval : CY;
-  const {m:idx, predites}=indexMultiplier(M, AE, fc);
+
+  // ── Choix du prix catalogue de référence ──
+  // On part du relevé le plus proche du millésime du véhicule (voir plus bas pourquoi), puis
+  // on impose que la série des valeurs à neuf soit COHÉRENTE d'un millésime au suivant.
+  //
+  // Pourquoi. Le tarif d'une finition ne monte pas toujours : restylage dépouillé, changement
+  // de fiscalité, baisse commerciale. Sans précaution, un véhicule PLUS RÉCENT ressortait
+  // MOINS cher que son aîné — Renault Laguna Coupé 2.0 170 BVA, 79 900 DT au tarif 2012 contre
+  // 65 900 DT en 2013, d'où 56 300 DT pour un 2012 et 46 100 DT pour un 2013. Sur le marché de
+  // l'occasion, personne ne paie davantage un millésime plus ancien parce qu'il coûtait plus
+  // cher neuf : ce qui les sépare, c'est l'âge. 63 inversions de ce type existaient sur un
+  // échantillon de 211 finitions, jusqu'à −21 %.
+  //
+  // Ce qu'on corrige, ce n'est PAS que le tarif baisse — c'est que la valeur VÉNALE s'inverse.
+  // L'âge accorde déjà un écart : VV(a) < VV(a+1) tant que VEN(a) < VEN(a+1)/(1−taux). On
+  // balaie donc la série des millésimes à rebours en n'imposant que cette borne, avec le taux
+  // de la gamme qui se déprécie le PLUS LENTEMENT (contrainte la plus serrée, valable pour
+  // toutes les gammes) et une marge de sécurité de 0,5 % qui absorbe l'arrondi à la centaine.
+  // Les creux de tarif légitimes sont ainsi préservés : seules les vraies inversions cèdent.
+  let L=v.p, M=yOf(v.d), ancre='dernier', idx, predites, envAppliquee=false;
+  if(anneeRef && v.hist && v.hist.length){
+    const serie=venSerie(v, AE, fc);
+    const y=Math.max(serie.y0, Math.min(anneeRef, serie.y1));
+    const e=serie.par[y];
+    L=e.p; M=e.y; idx=e.idx; predites=e.predites; envAppliquee=e.env;
+    ancre = e.gap===0 ? 'exact' : 'proche';
+    if(envAppliquee) ancre='enveloppe';
+    idx = e.ven/e.p;   // multiplicateur effectif, enveloppe comprise
+  }
+  if(idx===undefined){ const r=indexMultiplier(M, AE, fc); idx=r.m; predites=r.predites; }
   // Détection AUTOMATIQUE d'une réforme fiscale ciblée : une année où le prix de cette
   // énergie a bougé d'au moins 5 % alors que le prix retenu lui est antérieur. Plus besoin de
   // coder une réforme au cas par cas — celle de 2026 sur les hybrides rechargeables est
@@ -1049,11 +1236,51 @@ function computeVEN(v, anneeRef, anneeEval){
           venJum, plafonne, venGamme, plafondNeuf, neufPlafonne};
 }
 
+// Capacité de la batterie, en kWh. Le champ de la base est une CHAÎNE avec son unité
+// (« 100kWh », « 42.5 kWh ») : toute arithmétique directe dessus donne NaN.
+function kwhDe(v){
+  const src=(v.eg&&v.eg.kwh)||(v.sp&&v.sp.batterie);
+  if(src==null) return null;
+  const m=String(src).replace(',','.').match(/([\d.]+)/);
+  const k=m?parseFloat(m[1]):NaN;
+  return (isFinite(k)&&k>0&&k<300)?k:null;
+}
+
+// Part de la batterie dans la valeur à neuf. Mesurée quand la capacité est connue
+// (capacité × coût de remplacement / valeur à neuf), forfaitaire sinon.
+function partBatterie(v, fc, VEN){
+  const B=VVPARAMS.batterie;
+  if(!(fc==='elec'||fc==='phev'||fc==='hev')) return null;
+  const kwh=kwhDe(v);
+  let part = (kwh && VEN>0) ? (kwh*B.coutPackDTparKwh)/VEN : B.partDefaut[fc];
+  if(!isFinite(part)) part=B.partDefaut[fc];
+  return {part:Math.max(B.partMin, Math.min(part, B.partMax)), kwh, mesuree:!!(kwh&&VEN>0),
+          coutRemplacement: kwh ? Math.round(kwh*B.coutRemplacementDTparKwh/100)*100 : null};
+}
+
+// État de santé ATTENDU à un âge donné, en l'absence de mesure.
+function sohAttendu(age){
+  if(!(age>0)) return 1;
+  return Math.pow(1-VVPARAMS.batterie.degradationAnnuelle, age);
+}
+
+// F_batterie : écart de l'état de santé mesuré à la norme de l'âge, pondéré par le poids de
+// la batterie dans le véhicule. La valeur d'une batterie suit sa capacité utile — une
+// batterie à 70 % rend 70 % de l'autonomie — donc l'écart relatif de SOH se transmet à la
+// part de valeur qu'elle représente. Aux extrêmes, la forme est juste : batterie morte
+// (SOH → 0) = perte de toute la part batterie, batterie neuve = part intacte.
+function facteurBatterie(soh, age, part){
+  if(soh==null || !isFinite(soh) || part==null) return {f:1, attendu:sohAttendu(age), ecart:null};
+  const att=sohAttendu(age);
+  const ecart=soh/att-1;
+  return {f:1+part.part*ecart, attendu:att, ecart, soh};
+}
+
 // VV = valeur vénale estimée. Nécessite FY (année de 1ère MEC, barre du haut).
 // `coteAjustee` (facultatif) : position de cotation forcée par l'expert via le curseur.
 // Elle remplace le `relatif` calculé, sans effacer ce dernier — la fiche affiche les deux
 // pour que l'écart entre la recommandation et le jugement de l'expert reste visible.
-function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval){
+function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh){
   if(!FY) return null;
   const AE = (anneeEval!=null && isFinite(anneeEval)) ? anneeEval : CY;
   // L'âge se compte à la date d'évaluation, pas à aujourd'hui.
@@ -1064,7 +1291,10 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval){
   // à neuf), avec valeur résiduelle plancher.
   const venClass = (ven.venGamme!=null && isFinite(ven.venGamme)) ? ven.venGamme : ven.VEN;
   const gamme=VVPARAMS.gammes.find(g=>venClass<g.maxVEN)||VVPARAMS.gammes[VVPARAMS.gammes.length-1];
-  const fAge=Math.max(Math.pow(1-gamme.tauxDeprAn, age), VVPARAMS.valeurResiduelle);
+  // Les véhicules à batterie se déprécient plus vite : on majore le taux de la gamme.
+  const surcout=VVPARAMS.surcoutDeprBatterie[ven.fc]||1;
+  const tauxDepr=gamme.tauxDeprAn*surcout;
+  const fAge=Math.max(Math.pow(1-tauxDepr, age), VVPARAMS.valeurResiduelle);
 
   const etat=VVPARAMS.etats[etatKey]||VVPARAMS.etats.normal;
   const fEtat=VVPARAMS.baseEtat+etat.idx/100;
@@ -1083,8 +1313,17 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval){
   }
 
   const fCarb = VVPARAMS.carburant[ven.fc]!==undefined ? VVPARAMS.carburant[ven.fc] : 1;
+
+  // F_batterie : neutre tant qu'aucun état de santé n'a été mesuré.
+  const partBat=partBatterie(v, ven.fc, ven.VEN);
+  const bat=facteurBatterie(soh, age, partBat);
+  const fBat=bat.f;
+  // Batterie sous garantie et sous le seuil : elle sera remplacée, ce qui RELÈVE la valeur.
+  // On ne le chiffre pas — cela dépend du contrat — mais on le signale.
+  const garantieBat = !!(partBat && soh!=null && soh<VVPARAMS.batterie.sohGarantie &&
+    age<=VVPARAMS.batterie.dureeGarantie && (km==null||km<=VVPARAMS.batterie.kmGarantie));
   // `relatif` = ce qui est propre à CE véhicule (hors âge et hors gamme, qui sont subis).
-  const relatif = fEtat*fKm*fCarb*fUsage;
+  const relatif = fEtat*fKm*fCarb*fUsage*fBat;
   const ajuste = coteAjustee!=null && isFinite(coteAjustee) && Math.abs(coteAjustee-relatif)>0.001;
   const relatifEff = ajuste ? coteAjustee : relatif;
   const ratio = fAge*relatifEff;                      // part de la VEN conservée
@@ -1102,12 +1341,14 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval){
   // `relatif` isole ce qui est propre À CE véhicule : état, kilométrage, usage, énergie —
   // hors âge et hors gamme, qui sont des caractéristiques subies. C'est cette part qui dit
   // si le véhicule est bien ou mal coté POUR SON ÂGE.
-  return {vv, ven, fAge, fEtat, fKm, fCarb, fUsage, ratio, relatif, relatifEff, ajuste, gamme, age, ecartKm, kmRef, etat, usage, km, anneeEval:AE, vvPlafonnee, borneNeuf};
+  return {vv, ven, fAge, fEtat, fKm, fCarb, fUsage, fBat, ratio, relatif, relatifEff, ajuste,
+          gamme, tauxDepr, surcout, age, ecartKm, kmRef, etat, usage, km, anneeEval:AE,
+          vvPlafonnee, borneNeuf, partBat, bat, garantieBat};
 }
 
 // État des champs du module Valeur vénale — conservé au niveau module pour survivre
 // à un changement de finition/modèle (l'expert n'a pas à ressaisir km/état/usage à chaque clic).
-let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null, anneeEval:null};
+let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null, anneeEval:null, soh:''};
 
 // Bloc HTML du module (inséré dans la fiche résultat, sous le prix neuf).
 //
@@ -1163,6 +1404,20 @@ function renderVVBlock(v){
   html+='<div><label class="spec-label" for="vvUsage">Usage</label><select id="vvUsage" class="vv-input">'+
     Object.keys(VVPARAMS.usages).map(k=>'<option value="'+k+'"'+(vvInputs.usage===k?' selected':'')+'>'+VVPARAMS.usages[k].label+'</option>').join('')+
     '</select></div>';
+  // État de santé de la batterie : proposé uniquement là où il a un sens. Sur un véhicule à
+  // batterie c'est la mesure la plus discriminante entre deux exemplaires de même âge.
+  const fcV=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
+  if(fcV==='elec'||fcV==='phev'){
+    const kwh=kwhDe(v);
+    const attendu=Math.round(sohAttendu(Math.max(0,(vvInputs.anneeEval||CY)-FY))*100);
+    html+='<div class="vv-f-soh"><label class="spec-label" for="vvSoh">'+
+      'État de santé batterie (SOH)'+(kwh?' <span class="lbl-kwh">'+kwh+' kWh</span>':'')+'</label>'+
+      '<div class="soh-wrap">'+
+        '<input type="number" id="vvSoh" min="40" max="102" step="1" inputmode="numeric" '+
+          'placeholder="attendu à cet âge : '+attendu+'" value="'+(vvInputs.soh||'')+'" class="vv-input">'+
+        '<span class="soh-unit">%</span>'+
+      '</div></div>';
+  }
   html+='</div>';
   html+='<div id="vvOut"></div>';
   html+='</div>';
@@ -1212,12 +1467,22 @@ function coteGaugeHtml(relConseille, relCourant){
 }
 
 // Construit la fiche de valeur vénale (squelette + curseur), puis délègue les chiffres.
+// SOH saisi, en fraction. Une case vide vaut « non mesuré », pas « zéro ».
+function sohSaisi(){
+  const el=document.getElementById('vvSoh');
+  if(!el || el.value==='') return null;
+  const v=parseFloat(el.value);
+  if(!isFinite(v)) return null;
+  const B=VVPARAMS.batterie;
+  return Math.max(B.sohMin, Math.min(v/100, B.sohMax));
+}
+
 function renderVVOutput(v){
   const el=document.getElementById('vvOut');
   if(!el||!FY) return;
   const kmField=document.getElementById('vvKm');
   const km=kmField&&kmField.value!==''?parseFloat(kmField.value):null;
-  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage, null, vvInputs.anneeEval);
+  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage, null, vvInputs.anneeEval, sohSaisi());
   if(!base){ el.innerHTML=''; return; }
   const courant = vvInputs.cote!=null ? vvInputs.cote : base.relatif;
 
@@ -1226,9 +1491,12 @@ function renderVVOutput(v){
   // à la demande. Ce qui reste visible est réduit à des pastilles.
   el.innerHTML =
     '<div class="vv-resultat">'+
-      '<div class="vv-prix"><span class="vv-prix-val" id="vvPrix"></span>'+
+      '<div class="vv-prix">'+
+        '<span class="vv-prix-lbl">Valeur vénale estimée</span>'+
+        '<span class="vv-prix-val" id="vvPrix"></span>'+
         '<span class="vv-prix-note">estimation — hors barème compagnie</span></div>'+
       coteGaugeHtml(base.relatif, courant)+
+      '<div id="vvBat"></div>'+
       '<div class="vv-chips" id="vvChips"></div>'+
       '<details class="vv-details"><summary>Détail du calcul et règles appliquées</summary>'+
         '<div class="vv-details-body" id="vvDetail"></div>'+
@@ -1256,14 +1524,16 @@ function refreshVVValues(v){
   if(!FY) return;
   const kmField=document.getElementById('vvKm');
   const km=kmField&&kmField.value!==''?parseFloat(kmField.value):null;
-  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage, null, vvInputs.anneeEval);
+  const soh=sohSaisi();
+  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage, null, vvInputs.anneeEval, soh);
   if(!base) return;
-  const r=computeVV(v, km, vvInputs.etat, vvInputs.usage, vvInputs.cote, vvInputs.anneeEval);
+  const r=computeVV(v, km, vvInputs.etat, vvInputs.usage, vvInputs.cote, vvInputs.anneeEval, soh);
   const info=coteInfo(r.relatifEff);
   const ecart=(r.relatifEff-1)*100;
 
   const prix=document.getElementById('vvPrix');
-  if(prix) prix.textContent=fmt(r.vv);
+  // L'unité est composée à part : elle doit se lire comme une unité, pas concurrencer le montant.
+  if(prix) prix.innerHTML=r.vv.toLocaleString('fr-TN')+'<em>DT</em>';
 
   const lab=document.getElementById('vvCoteLabel');
   if(lab){ lab.textContent='🎯 '+info.label; lab.style.color=info.color; }
@@ -1290,6 +1560,9 @@ function refreshVVValues(v){
         : '+'+Math.round(VVPARAMS.populaire.majorationDouane*100)+' %')+'</span>');
     else if(r.ven.popStatut==='incessible')
       c.push('<span class="vv-chip warn">🏷️ Populaire · incessible</span>');
+    if(r.bat && r.bat.soh!=null)
+      c.push('<span class="vv-chip '+(r.bat.ecart<=-0.08?'warn':'info')+'">🔋 SOH '+Math.round(r.bat.soh*100)+' %</span>');
+    if(r.surcout>1) c.push('<span class="vv-chip info">⚡ Décote VE renforcée</span>');
     if(r.vvPlafonnee || r.ven.neufPlafonne) c.push('<span class="vv-chip info">🔻 Plafonnée au prix neuf du jour</span>');
     if(r.ven.reforme) c.push('<span class="vv-chip info">⚖️ Réforme '+r.ven.reforme.annee+'</span>');
     if(r.anneeEval<CY) c.push('<span class="vv-chip warn">📆 Évaluation '+r.anneeEval+'</span>');
@@ -1297,6 +1570,43 @@ function refreshVVValues(v){
     if(r.ajuste) c.push('<span class="vv-chip warn">✏️ Cotation ajustée</span>');
     chipsEl.innerHTML=c.join('');
   }
+  // ── Panneau batterie ──
+  const batEl=document.getElementById('vvBat');
+  if(batEl){
+    const P=r.partBat;
+    if(!P){ batEl.innerHTML=''; }
+    else {
+      const B=VVPARAMS.batterie;
+      const att=r.bat.attendu, mes=r.bat.soh;
+      const pct=x=>Math.max(0,Math.min(100,x*100));
+      const etatTxt = mes==null ? 'non mesuré'
+        : r.bat.ecart>=0.01 ? 'au-dessus de la norme de son âge'
+        : r.bat.ecart<=-0.08 ? 'nettement en dessous'
+        : r.bat.ecart<=-0.01 ? 'un peu en dessous' : 'conforme à son âge';
+      const ton = mes==null ? '' : r.bat.ecart>=-0.01 ? ' bon' : r.bat.ecart<=-0.08 ? ' bas' : ' moyen';
+      batEl.innerHTML=
+        '<div class="bat'+ton+'">'+
+          '<div class="bat-hd"><span class="bat-t">Batterie de traction</span>'+
+            '<span class="bat-part">'+Math.round(P.part*100)+' % de la valeur'+
+              (P.mesuree?'':' <i>(forfait)</i>')+'</span></div>'+
+          '<div class="bat-bar" role="img" aria-label="État de santé de la batterie">'+
+            '<div class="bat-fill" style="width:'+pct(mes!=null?mes:att)+'%"></div>'+
+            '<div class="bat-ref" style="left:'+pct(att)+'%" title="attendu à cet âge"></div>'+
+            '<div class="bat-seuil" style="left:'+pct(B.sohGarantie)+'%" title="seuil de garantie"></div>'+
+          '</div>'+
+          '<div class="bat-legend">'+
+            '<span><b>'+(mes!=null?Math.round(mes*100)+' %':'—')+'</b> mesuré</span>'+
+            '<span><b>'+Math.round(att*100)+' %</b> attendu à '+r.age+' an'+(r.age>1?'s':'')+'</span>'+
+            '<span><b>'+Math.round(B.sohGarantie*100)+' %</b> seuil garantie</span>'+
+          '</div>'+
+          '<div class="bat-foot">'+etatTxt+
+            (mes!=null?' · effet sur la valeur <b>'+signePct((r.fBat-1)*100)+'</b>':'')+
+            (P.coutRemplacement?' · remplacement ≈ <b>'+fmt(P.coutRemplacement)+'</b>':'')+
+          '</div>'+
+        '</div>';
+    }
+  }
+
   const reset=document.getElementById('vvCoteReset');
   if(reset) reset.hidden=!r.ajuste;
 
@@ -1309,9 +1619,13 @@ function refreshVVValues(v){
         (r.ven.majPop>1?' × taxe douanière réintégrée +'+Math.round((r.ven.majPop-1)*100)+'%':'')+')</span>'+
         (r.ven.neufPlafonne?' <span style="opacity:.75">— ramenée au prix neuf du jour ('+fmt(r.ven.plafondNeuf)+', tarif '+r.anneeEval+')</span>':'')+
         (r.ven.plafonne?' <span style="opacity:.75">— plafonnée à la valeur à neuf de la version normale ('+fmt(Math.round(r.ven.venJum/100)*100)+')</span>':'')+'</div>'+
-      '<div>Âge ('+r.age+' an'+(r.age>1?'s':'')+', '+r.gamme.nom.toLowerCase()+' à '+(r.gamme.tauxDeprAn*100).toFixed(2)+' %/an) : <b>×'+r.fAge.toFixed(3)+'</b></div>'+
+      '<div>Âge ('+r.age+' an'+(r.age>1?'s':'')+', '+r.gamme.nom.toLowerCase()+' à '+(r.tauxDepr*100).toFixed(2)+' %/an'+
+        (r.surcout>1?', majoré de '+Math.round((r.surcout-1)*100)+' % — véhicule à batterie':'')+') : <b>×'+r.fAge.toFixed(3)+'</b></div>'+
       '<div>État ('+r.etat.label+') : <b>×'+r.fEtat.toFixed(3)+'</b> · Usage ('+r.usage.label+') : <b>×'+r.fUsage.toFixed(3)+'</b> · Énergie : <b>×'+r.fCarb.toFixed(3)+'</b></div>'+
       '<div>Kilométrage'+(r.km!=null?' ('+r.km.toLocaleString('fr-TN')+' km vs '+Math.round(r.kmRef).toLocaleString('fr-TN')+' km normaux à cet âge)':' <i>(non renseigné)</i>')+' : <b>×'+r.fKm.toFixed(3)+'</b></div>'+
+      (r.partBat?'<div>Batterie ('+(r.bat.soh!=null
+          ? Math.round(r.bat.soh*100)+' % mesurés vs '+Math.round(r.bat.attendu*100)+' % attendus, pesant '+Math.round(r.partBat.part*100)+' % de la valeur'
+          : 'état de santé non mesuré — facteur neutre')+') : <b>×'+r.fBat.toFixed(3)+'</b></div>':'')+
       '<div style="margin-top:3px;padding-top:4px;border-top:1px solid var(--bd)">Cotation retenue : <b>×'+r.relatifEff.toFixed(3)+'</b>'+
         (r.ajuste?' <span style="color:var(--warn)">(ajustée ; conseil ×'+r.relatif.toFixed(3)+')</span>':' (conseil du calcul)')+'</div>';
   }
@@ -1339,6 +1653,21 @@ function refreshVVValues(v){
         (r.ven.neufPlafonne? ', alors qu\'il valait '+fmt(r.ven.L)+' en '+r.ven.M+' : le tarif a BAISSÉ' : '')+
         '. Un véhicule d\'occasion ne peut pas valoir plus que le même véhicule neuf disponible en concession — '+
         (r.vvPlafonnee? 'l\'estimation a donc été ramenée à ce prix.' : 'la valeur à neuf de référence a donc été ramenée au prix du jour.')+'</div>';
+    }
+
+    // Batterie : la garantie change la donne, il faut le dire à l'expert.
+    if(r.garantieBat){
+      h+='<div class="notice ok" style="margin-top:8px">🔋 <b>Batterie sous le seuil de garantie</b> — l\'état de santé mesuré est inférieur à '+
+        Math.round(VVPARAMS.batterie.sohGarantie*100)+' %, alors que le véhicule est encore dans les '+
+        VVPARAMS.batterie.dureeGarantie+' ans et '+VVPARAMS.batterie.kmGarantie.toLocaleString('fr-TN')+
+        ' km de la garantie constructeur usuelle. Si la garantie s\'applique, la batterie est remplacée : la valeur remonte au lieu de baisser. Le calcul ne le présume pas — vérifiez le contrat.</div>';
+    } else if(r.partBat && r.bat.soh==null){
+      h+='<div class="notice" style="margin-top:8px">🔋 <b>État de santé de la batterie non mesuré</b> — le facteur batterie est neutre. Sur un véhicule à batterie, c\'est la mesure qui sépare le plus deux exemplaires de même âge : un relevé SOH (valise diagnostic ou application constructeur) rendra l\'estimation nettement plus sûre.</div>';
+    } else if(r.partBat && r.bat.soh!=null && r.bat.soh<VVPARAMS.batterie.sohGarantie){
+      h+='<div class="notice warn" style="margin-top:8px">🔋 <b>Batterie très dégradée</b> — sous '+
+        Math.round(VVPARAMS.batterie.sohGarantie*100)+' % de capacité, un remplacement est généralement envisagé'+
+        (r.partBat.coutRemplacement?' (ordre de grandeur : '+fmt(r.partBat.coutRemplacement)+')':'')+
+        '. Le modèle applique une décote proportionnelle à la capacité perdue ; au-delà de ce seuil, confrontez-la au devis réel.</div>';
     }
 
     // Régime populaire : dire ce qui est appliqué, et pourquoi.
@@ -1391,6 +1720,8 @@ function wireVVInputs(v){
   if(etatField) etatField.addEventListener('change',()=>{ vvInputs.etat=etatField.value; relance(); });
   const usageField=document.getElementById('vvUsage');
   if(usageField) usageField.addEventListener('change',()=>{ vvInputs.usage=usageField.value; relance(); });
+  const sohField=document.getElementById('vvSoh');
+  if(sohField) sohField.addEventListener('input',()=>{ vvInputs.soh=sohField.value; relance(); });
 }
 
 // ── Wait for data ──
