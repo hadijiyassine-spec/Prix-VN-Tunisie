@@ -1,4 +1,4 @@
-# Prix VN Tunisie — rapport technique (v17)
+# Prix VN Tunisie — rapport technique (v18)
 
 Relecture du code, refonte des formules d'évaluation, **calibration et validation sur le marché réel de l'occasion**, et travail d'ergonomie sur `app.html` + `data.js`.
 
@@ -150,6 +150,10 @@ Trois conséquences, toutes traitées :
 **L'évolution des prix s'arrête à cette date** — et c'est le point le plus important. Une réforme fiscale postérieure ne doit pas s'appliquer rétroactivement. Vérifié sur un hybride rechargeable : valeur à neuf de **346 286 DT** en évaluation 2024 contre **260 583 DT** en 2026, l'écart étant exactement la baisse de la loi de finances 2026. Évaluer un sinistre de 2024 avec les prix d'après-réforme aurait sous-estimé l'indemnisation d'un quart.
 
 **Le calcul fonctionne dans les deux sens.** Si le prix catalogue retenu est postérieur à la date d'évaluation, l'indice **déflate** au lieu d'actualiser, au lieu de prendre le prix tel quel.
+
+**Mise en page.** L'année d'évaluation est un *contexte* pour tout le bloc, pas une saisie au même rang que le kilométrage : elle est placée dans l'en-tête, à droite du titre. Les quatre champs alignés qui l'y précédaient ne laissaient que ~104 px chacun dans un panneau de 420 px — les intitulés s'enroulaient sur deux lignes et les menus tronquaient leur contenu. Les trois saisies restantes tiennent maintenant sur deux rangées : le kilométrage prend la largeur (six chiffres à lire), état et usage se partagent la suivante. Le libellé d'usage le plus long a été raccourci pour tenir sans troncature.
+
+La pastille d'année vire à l'ambre dès qu'on s'écarte de l'année courante, et un rappel apparaît : *« pensez à saisir le kilométrage à cette date, et non celui d'aujourd'hui »*. Un défaut trouvé au passage : changer l'année ne reconstruit que la zone de résultat, si bien que l'en-tête restait figé — il est maintenant mis à jour séparément, sans reconstruire le bloc (ce qui refermerait le détail du calcul et ferait perdre le focus).
 
 L'écart à l'année courante est signalé explicitement dans la fiche : *« Évaluation au 2022 et non à l'année courante (2026). L'âge retenu est de 6 ans, et l'évolution des prix postérieure à 2022 — réformes fiscales comprises — n'est pas appliquée. »*
 

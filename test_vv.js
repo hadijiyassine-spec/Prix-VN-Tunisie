@@ -282,6 +282,16 @@ setTimeout(() => {
       prixAvant + ' -> ' + doc.getElementById('vvPrix').textContent);
     check('l\'évaluation à une date passée est signalée',
       /Évaluation au/.test(doc.getElementById('vvNotices').textContent));
+    // L'en-tête n'est pas reconstruit quand l'année change : il doit tout de même suivre.
+    check('la pastille d\'année passe en état « date antérieure »',
+      doc.querySelector('#vvSect .vv-annee').classList.contains('passe'));
+    check('le rappel sur le kilométrage à la date d\'évaluation apparaît',
+      doc.getElementById('vvAnneeRappel').hidden === false);
+    selAnnee.value = String(CYnow);
+    selAnnee.dispatchEvent(new win.Event('change', { bubbles: true }));
+    check('retour à l\'année courante : l\'en-tête redevient neutre',
+      !doc.querySelector('#vvSect .vv-annee').classList.contains('passe') &&
+      doc.getElementById('vvAnneeRappel').hidden === true);
 
     doc.getElementById('mecClr').click();
     check('effacement de la MEC : retour à l\'invitation, sans erreur', !!doc.getElementById('vvAskMec'));

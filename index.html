@@ -270,10 +270,10 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
   /* Global search results */
   .gs-results{top:0;position:fixed;left:0;right:0;max-height:60dvh;z-index:400}
 
-  /* Module valeur vénale : 3 champs côte à côte sont illisibles sur 375px.
-     Le kilométrage prend toute la largeur, état et usage se partagent la ligne suivante. */
-  .vv-fields{grid-template-columns:1fr 1fr}
-  .vv-input{padding:9px 10px;font-size:13px} /* >=16px évite le zoom auto iOS ; 13px reste confortable ici */
+  /* La grille du module est déjà sur deux colonnes ; on élargit seulement les cibles
+     tactiles et on réduit un peu le montant pour qu'il tienne sur 375px. */
+  .vv-input{padding:9px 10px;font-size:13px}
+  .vv-prix-val{font-size:25px}
 }
 
 /* ══════════════════════════════════════
@@ -401,43 +401,36 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 .spec-change{background:#FFF8E1;border:1px solid #FFE082;border-radius:7px;padding:8px 10px;font-size:10px;color:#E65100;line-height:1.6;margin-top:6px}
 .spec-change b{font-weight:700}
 /* ── Module Valeur vénale ── */
-.vv-fields{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:2px}
+/* En-tête : titre à gauche, année d'évaluation à droite */
+.vv-head{align-items:center;gap:8px;flex-wrap:wrap}
+.vv-annee{display:inline-flex;align-items:center;gap:5px;background:var(--sf);border:1px solid var(--bd2);
+  border-radius:7px;padding:2px 4px 2px 8px;cursor:pointer;flex-shrink:0}
+.vv-annee:hover{border-color:var(--pr3)}
+.vv-annee-ico{font-size:11px;line-height:1}
+.vv-annee select{border:none;background:none;outline:none;font-family:'Inter',sans-serif;font-size:12px;
+  font-weight:700;color:var(--t1);cursor:pointer;padding:3px 2px}
+/* Une évaluation à une date passée est une décision d'expertise : elle doit se voir. */
+.vv-annee.passe{background:var(--aml);border-color:var(--am)}
+.vv-annee.passe select{color:var(--am)}
+.vv-annee-rappel{font-size:10px;color:var(--am);background:var(--aml);border:1px solid #F0D6B0;
+  border-radius:6px;padding:5px 8px;margin-bottom:9px;line-height:1.5}
+
+/* Trois saisies sur deux rangées : le kilométrage prend la largeur (six chiffres à lire),
+   état et usage se partagent la suivante. Quatre colonnes tronquaient tout. */
+.vv-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px 7px;margin-bottom:2px}
+.vv-fields .vv-f-km{grid-column:1/-1}
 .vv-fields label{display:block;margin-bottom:3px}
-.vv-input{width:100%;padding:7px 9px;border:1px solid var(--bd2);border-radius:7px;font-size:12px;font-family:'Inter',sans-serif;background:var(--sf);color:var(--t1)}
+.vv-input{width:100%;padding:7px 9px;border:1px solid var(--bd2);border-radius:7px;font-size:12.5px;
+  font-family:'Inter',sans-serif;background:var(--sf);color:var(--t1)}
 .vv-input:focus{outline:2px solid var(--pr3);outline-offset:1px;border-color:var(--pr3)}
-.vv-cta{width:100%;padding:9px 12px;border:1px solid var(--pr3);background:var(--prl);color:var(--pr);border-radius:8px;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer}
+.vv-cta{width:100%;padding:9px 12px;border:1px solid var(--pr3);background:var(--prl);color:var(--pr);
+  border-radius:8px;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer}
 .vv-cta:hover{background:var(--pr3);color:#fff}
 .vv-details{margin-top:2px}
-.vv-details summary{font-size:10px;color:var(--pr);cursor:pointer;padding:3px 0;user-select:none;font-weight:600}
+.vv-details summary{font-size:10.5px;color:var(--pr);cursor:pointer;padding:3px 0;user-select:none;font-weight:600}
 .vv-details summary:hover{text-decoration:underline}
 .vv-details-body{font-size:10px;color:var(--t2);line-height:1.85;padding:5px 0 2px;display:flex;flex-direction:column;gap:1px}
 .vv-details-body b{color:var(--t1)}
-
-/* ── Retour à la sélection (tablette : le résultat s'affiche sous les colonnes) ── */
-.back-to-sel{display:none;width:100%;padding:9px 12px;margin-bottom:10px;border:1px solid var(--bd2);background:var(--sf);color:var(--pr);border-radius:8px;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer}
-.back-to-sel:hover{background:var(--prl);border-color:var(--pr3)}
-@media (min-width:769px) and (max-width:1100px){ .back-to-sel{display:block} }
-
-/* ── Accessibilité clavier ── */
-.item:focus-visible,.vi:focus-visible,.or:focus-visible,.drawer-item:focus-visible,.gs-result-item:focus-visible{outline:2px solid var(--pr3);outline-offset:-2px}
-button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--pr3);outline-offset:1px}
-@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important;scroll-behavior:auto !important}}
-
-
-/* ══════════════════════════════════════
-   MODULE VALEUR VÉNALE — pièce maîtresse
-══════════════════════════════════════ */
-#vvSect{
-  background:linear-gradient(180deg,#FFFFFF 0%,var(--prl) 140%);
-  border:1px solid var(--pr3);
-  border-left:3px solid var(--pr);
-  box-shadow:var(--sh);
-  padding:14px 15px 12px;
-}
-#vvSect .sect-title{color:var(--pr);letter-spacing:.7px}
-.vv-prix{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:9px 0 10px;padding-top:10px;border-top:1px dashed var(--bd2)}
-.vv-prix-val{font-family:'Syne',sans-serif;font-size:27px;font-weight:800;color:var(--pr);letter-spacing:-.6px;line-height:1}
-.vv-prix-note{font-size:9.5px;color:var(--t3)}
 
 /* ── Curseur de cotation ── */
 .cote{margin:2px 0 4px}
@@ -460,8 +453,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .cote-range:focus-visible::-webkit-slider-thumb{outline:2px solid var(--pr3);outline-offset:2px}
 .cote-range:focus-visible::-moz-range-thumb{outline:2px solid var(--pr3);outline-offset:2px}
 .cote-scale{display:flex;justify-content:space-between;font-size:8.5px;color:var(--t3);margin-top:3px}
-.cote-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;
-  font-size:9.5px;color:var(--t3);line-height:1.6;margin-top:6px}
+.cote-foot{display:flex;justify-content:space-between;align-items:flex-start;gap:6px 10px;flex-wrap:wrap;
+  font-size:10px;color:var(--t3);line-height:1.65;margin-top:7px}
+.cote-foot>span{flex:1;min-width:150px}
 .cote-foot b{color:var(--t1)}
 .cote-reset{background:var(--sf);border:1px solid var(--bd2);color:var(--pr);border-radius:6px;
   padding:3px 9px;font-size:10px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;white-space:nowrap}
@@ -760,7 +754,7 @@ const VVPARAMS = {
   // des acheteurs). Valeurs de départ, non calibrées sur des transactions réelles.
   usages: {
     particulier: {label:'Particulier',                 coef:1.00},
-    pro:         {label:'Société / auto-école',        coef:0.95},
+    pro:         {label:'Société / école',             coef:0.95},
     location:    {label:'Location',                    coef:0.92},
     taxi:        {label:'Taxi / VTC',                  coef:0.85},
   },
@@ -941,21 +935,53 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval){
 let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null, anneeEval:null};
 
 // Bloc HTML du module (inséré dans la fiche résultat, sous le prix neuf).
+//
+// Mise en page : l'année d'évaluation est un CONTEXTE pour tout le bloc, pas une saisie au
+// même rang que le kilométrage — elle est donc dans l'en-tête, à droite du titre, et change
+// d'aspect dès qu'elle s'écarte de l'année courante. Les trois saisies restantes tiennent sur
+// deux rangées : le panneau résultat fait 420 px, quatre colonnes n'y laissaient que ~104 px
+// par champ, ce qui tronquait les libellés et enroulait les intitulés sur deux lignes.
+function rappelAnneeTexte(annee){
+  return 'Évaluation au <b>'+annee+'</b> — pensez à saisir le kilométrage <b>à cette date</b>, et non celui d\'aujourd\'hui.';
+}
+// Met à jour l'en-tête quand l'année change, sans reconstruire le bloc (ce qui ferait perdre
+// le focus du menu et refermerait le détail du calcul).
+function majEtatAnnee(){
+  const ae = vvInputs.anneeEval || CY;
+  const passe = ae < CY;
+  const chip = document.querySelector('#vvSect .vv-annee');
+  if(chip) chip.classList.toggle('passe', passe);
+  const rap = document.getElementById('vvAnneeRappel');
+  if(rap){ rap.innerHTML = rappelAnneeTexte(ae); rap.hidden = !passe; }
+}
+
 function renderVVBlock(v){
-  let html='<div class="sect" id="vvSect"><div class="sect-hd"><span class="sect-title">💰 Valeur vénale (estimation)</span></div>';
+  let html='<div class="sect" id="vvSect">';
   if(!FY){
+    html+='<div class="sect-hd"><span class="sect-title">💰 Valeur vénale (estimation)</span></div>';
     html+='<div style="font-size:11px;color:var(--t2);padding:2px 0 8px;line-height:1.6">Indiquez l\'année de <b>1ère mise en circulation</b> pour estimer la valeur vénale de ce véhicule.</div>'+
       '<button type="button" class="vv-cta" id="vvAskMec">📅 Saisir l\'année de 1ère MEC</button></div>';
     return html;
   }
-  // Année d'évaluation : bornée entre la mise en circulation et l'année courante — on ne peut
-  // évaluer un véhicule ni avant qu'il existe, ni au-delà des données disponibles.
+
   const aeCourante = vvInputs.anneeEval || CY;
+  const passe = aeCourante < CY;
   let optsAE='';
-  for(let y=CY; y>=FY; y--) optsAE+='<option value="'+y+'"'+(aeCourante===y?' selected':'')+'>'+y+(y===CY?' (courante)':'')+'</option>';
+  for(let y=CY; y>=FY; y--) optsAE+='<option value="'+y+'"'+(aeCourante===y?' selected':'')+'>'+y+'</option>';
+
+  html+='<div class="sect-hd vv-head">'+
+    '<span class="sect-title">💰 Valeur vénale (estimation)</span>'+
+    '<label class="vv-annee'+(passe?' passe':'')+'" title="Année à laquelle le véhicule est évalué">'+
+      '<span class="vv-annee-ico">📅</span>'+
+      '<select id="vvAnnee" aria-label="Année d\'évaluation">'+optsAE+'</select>'+
+    '</label></div>';
+  // Conteneur permanent : le changement d'année ne reconstruit que la zone de résultat,
+  // il faut donc pouvoir mettre à jour ce rappel sans régénérer l'en-tête.
+  html+='<div class="vv-annee-rappel" id="vvAnneeRappel"'+(passe?'':' hidden')+'>'+rappelAnneeTexte(aeCourante)+'</div>';
+
   html+='<div class="vv-fields">';
-  html+='<div><label class="spec-label" for="vvAnnee">Année d\'évaluation</label><select id="vvAnnee" class="vv-input">'+optsAE+'</select></div>';
-  html+='<div><label class="spec-label" for="vvKm">Kilométrage réel</label><input type="number" id="vvKm" min="0" step="1000" inputmode="numeric" placeholder="ex. 85000" value="'+(vvInputs.km||'')+'" class="vv-input"></div>';
+  html+='<div class="vv-f-km"><label class="spec-label" for="vvKm">Kilométrage réel</label>'+
+    '<input type="number" id="vvKm" min="0" step="1000" inputmode="numeric" placeholder="ex. 85 000" value="'+(vvInputs.km||'')+'" class="vv-input"></div>';
   html+='<div><label class="spec-label" for="vvEtat">État</label><select id="vvEtat" class="vv-input">'+
     Object.keys(VVPARAMS.etats).map(k=>'<option value="'+k+'"'+(vvInputs.etat===k?' selected':'')+'>'+VVPARAMS.etats[k].label+'</option>').join('')+
     '</select></div>';
@@ -1067,7 +1093,8 @@ function refreshVVValues(v){
     const conseille=fmt(Math.round(base.ven.VEN*base.fAge*base.relatif/100)*100);
     note.innerHTML = r.ajuste
       ? '<b style="color:var(--warn)">Cotation ajustée</b> — le calcul proposait '+conseille
-      : 'Conserve <b>'+(r.ratio*100).toFixed(0)+' %</b> de sa valeur à neuf · gamme <b>'+r.gamme.nom+'</b> ('+(r.gamme.tauxDeprAn*100).toFixed(1)+' %/an)';
+      : 'Conserve <b>'+(r.ratio*100).toFixed(0)+' %</b> de sa valeur à neuf<br>'+
+        'Gamme <b>'+r.gamme.nom.toLowerCase()+'</b> · '+(r.gamme.tauxDeprAn*100).toFixed(2).replace('.',',')+' %/an';
   }
   const reset=document.getElementById('vvCoteReset');
   if(reset) reset.hidden=!r.ajuste;
@@ -1132,7 +1159,7 @@ function wireVVInputs(v){
   // manuel antérieur deviendrait trompeur, on le remet donc sur le nouveau conseil.
   const relance=()=>{ vvInputs.cote=null; renderVVOutput(v); };
   const anneeField=document.getElementById('vvAnnee');
-  if(anneeField) anneeField.addEventListener('change',()=>{ vvInputs.anneeEval=parseInt(anneeField.value); relance(); });
+  if(anneeField) anneeField.addEventListener('change',()=>{ vvInputs.anneeEval=parseInt(anneeField.value); majEtatAnnee(); relance(); });
   const kmField=document.getElementById('vvKm');
   if(kmField) kmField.addEventListener('input',()=>{ vvInputs.km=kmField.value; relance(); });
   const etatField=document.getElementById('vvEtat');
