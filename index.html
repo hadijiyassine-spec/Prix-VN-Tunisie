@@ -649,7 +649,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   <div class="logo">
     <div class="logo-ico">🚗</div>
     <div>
-      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v26</span></div>
+      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v27</span></div>
       <div class="logo-sub" id="dbStats">Chargement…</div>
     </div>
   </div>
@@ -776,9 +776,9 @@ let sel = {b:null, m:null, v:null};
 let FY  = null;
 // ── Version de l'application ──
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
-const VERSION = 'v26';
+const VERSION = 'v27';
 const VERSION_DATE = '29/08/2026';
-const VERSION_NOTES = 'ligne de dévalorisation chiffrée · batterie de traction · plafond prix neuf du jour · cohérence des millésimes · parcours téléphone · thème sombre';
+const VERSION_NOTES = 'batterie des hybrides simples · ligne de dévalorisation chiffrée · batterie de traction · plafond prix neuf du jour · cohérence des millésimes · parcours téléphone · thème sombre';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -1289,11 +1289,17 @@ function kwhDe(v){
   return (isFinite(k)&&k>0&&k<300)?k:null;
 }
 
+// Une SEULE définition de « véhicule à batterie », partagée par le formulaire et le calcul.
+// Deux listes séparées avaient déjà divergé : l'hybride simple obtenait un panneau batterie
+// (le calcul le reconnaissait) mais aucun champ pour saisir l'état de santé (le formulaire ne
+// le reconnaissait pas) — une jauge qu'il était impossible de renseigner.
+function aBatterie(fc){ return fc==='elec' || fc==='phev' || fc==='hev'; }
+
 // Part de la batterie dans la valeur à neuf. Mesurée quand la capacité est connue
 // (capacité × coût de remplacement / valeur à neuf), forfaitaire sinon.
 function partBatterie(v, fc, VEN){
   const B=VVPARAMS.batterie;
-  if(!(fc==='elec'||fc==='phev'||fc==='hev')) return null;
+  if(!aBatterie(fc)) return null;
   const kwh=kwhDe(v);
   let part = (kwh && VEN>0) ? (kwh*B.coutPackDTparKwh)/VEN : B.partDefaut[fc];
   if(!isFinite(part)) part=B.partDefaut[fc];
@@ -1450,7 +1456,7 @@ function renderVVBlock(v){
   // État de santé de la batterie : proposé uniquement là où il a un sens. Sur un véhicule à
   // batterie c'est la mesure la plus discriminante entre deux exemplaires de même âge.
   const fcV=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
-  if(fcV==='elec'||fcV==='phev'){
+  if(aBatterie(fcV)){
     const kwh=kwhDe(v);
     const attendu=Math.round(sohAttendu(Math.max(0,(vvInputs.anneeEval||CY)-FY))*100);
     html+='<div class="vv-f-soh"><label class="spec-label" for="vvSoh">'+
