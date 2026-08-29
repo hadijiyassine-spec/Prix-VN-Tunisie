@@ -102,12 +102,14 @@ setTimeout(() => {
       const ven = win.computeVEN(phevOld.f);
       console.log('   prix 2023 : ' + phevOld.b + ' ' + phevOld.f.v + '  ' + phevOld.f.p + ' -> VEN ' + Math.round(ven.VEN) + ' (×' + ven.idx.toFixed(3) + ')');
       check('baisse 2026 appliquée à un PHEV encore tarifé avant la réforme', ven.idx < 0.85, 'idx=' + ven.idx.toFixed(3));
-      check('notice de réforme affichée', ven.reforme2026 === 'phev');
+      check('réforme détectée automatiquement, par divergence au marché',
+        !!ven.reforme && ven.reforme.fc === 'phev' && Math.abs(ven.reforme.divergence) >= 0.05,
+        ven.reforme && (ven.reforme.divergence * 100).toFixed(1) + ' pts en ' + ven.reforme.annee);
     }
     if (phev2026) {
       const ven = win.computeVEN(phev2026.f);
       console.log('   prix 2026 : ' + phev2026.b + ' ' + phev2026.f.v + '  ' + phev2026.f.p + ' -> VEN ' + Math.round(ven.VEN));
-      check('PHEV déjà tarifé 2026 : aucune baisse ré-appliquée', Math.abs(ven.idx - 1) < 1e-9 && ven.reforme2026 === null);
+      check('PHEV déjà tarifé 2026 : aucune baisse ré-appliquée', Math.abs(ven.idx - 1) < 1e-9 && ven.reforme === null);
     }
 
     // ── 7. Cohérence indicateur de cotation ──
@@ -222,6 +224,64 @@ setTimeout(() => {
     check('modifier l\'état remet le curseur sur le nouveau conseil',
       Math.abs(parseFloat(s3.value) - win.computeVV(v, 90000, 'bon', 'particulier').relatif) < 0.001 &&
       doc.getElementById('vvCoteReset').hidden === true);
+
+    // ── 11. Évaluation à une année antérieure ──
+    console.log('\n11. Évaluation à une année antérieure :');
+    const CYnow = win.eval('CY');
+    setFY(2016);
+    const rAuj = win.computeVV(v, 120000, 'normal', 'particulier', null, null);
+    const rPasse = win.computeVV(v, 120000, 'normal', 'particulier', null, CYnow - 4);
+    console.log('   évaluation ' + CYnow + ' : ' + rAuj.age + ' ans, ' + rAuj.vv.toLocaleString('fr-FR') + ' DT');
+    console.log('   évaluation ' + (CYnow - 4) + ' : ' + rPasse.age + ' ans, ' + rPasse.vv.toLocaleString('fr-FR') + ' DT');
+    check('par défaut, le calcul se fait à l\'année courante', rAuj.anneeEval === CYnow);
+    check('l\'âge se compte à la date d\'évaluation', rPasse.age === rAuj.age - 4);
+    check('un véhicule valait plus cher 4 ans plus tôt', rPasse.vv > rAuj.vv);
+
+    // Point critique : une réforme fiscale postérieure ne doit PAS s'appliquer
+    let phevAncien = null;
+    for (const b of Object.keys(win.DB)) for (const m of Object.keys(win.DB[b])) for (const f of win.DB[b][m]) {
+      const fc = win.fuelClass((f.eg && f.eg.fuel) || (f.sp && f.sp.carburant));
+      if (fc === 'phev' && win.yOf(f.d) < 2026 && !phevAncien) phevAncien = f;
+    }
+    if (phevAncien) {
+      const venApres = win.computeVEN(phevAncien, 2022, 2026);
+      const venAvant = win.computeVEN(phevAncien, 2022, 2024);
+      console.log('   PHEV évalué en 2026 : VEN ' + Math.round(venApres.VEN).toLocaleString('fr-FR') +
+        ' | évalué en 2024 : ' + Math.round(venAvant.VEN).toLocaleString('fr-FR'));
+      check('la réforme fiscale 2026 s\'applique à une évaluation 2026', !!venApres.reforme);
+      check('elle ne s\'applique PAS à une évaluation 2024', venAvant.reforme === null);
+      check('la valeur à neuf 2024 est donc supérieure à celle de 2026', venAvant.VEN > venApres.VEN);
+    }
+
+    // Évaluation antérieure au prix catalogue retenu : on déflate au lieu d'actualiser
+    let recent = null;
+    for (const b of Object.keys(win.DB)) for (const m of Object.keys(win.DB[b])) for (const f of win.DB[b][m]) {
+      if (!recent && win.yOf(f.d0) >= 2023) recent = f;
+    }
+    if (recent) {
+      const M = win.yOf(recent.d);
+      const vRetro = win.computeVEN(recent, M, M - 2);
+      check('évaluation antérieure au prix catalogue : déflation, pas actualisation',
+        isFinite(vRetro.VEN) && vRetro.VEN > 0 && vRetro.idx !== 1,
+        'multiplicateur ×' + vRetro.idx.toFixed(3));
+    }
+
+    // Interface : le champ existe, il est borné, et il modifie le résultat
+    setFY(2016);
+    const km11 = doc.getElementById('vvKm'); km11.value = '120000';
+    km11.dispatchEvent(new win.Event('input', { bubbles: true }));
+    const selAnnee = doc.getElementById('vvAnnee');
+    check('le champ année d\'évaluation est présent', !!selAnnee);
+    check('il est sur l\'année courante par défaut', parseInt(selAnnee.value) === CYnow);
+    check('il ne propose pas d\'année antérieure à la mise en circulation',
+      Math.min(...[...selAnnee.options].map(o => parseInt(o.value))) === 2016);
+    const prixAvant = doc.getElementById('vvPrix').textContent;
+    selAnnee.value = String(CYnow - 4);
+    selAnnee.dispatchEvent(new win.Event('change', { bubbles: true }));
+    check('changer l\'année recalcule la valeur', doc.getElementById('vvPrix').textContent !== prixAvant,
+      prixAvant + ' -> ' + doc.getElementById('vvPrix').textContent);
+    check('l\'évaluation à une date passée est signalée',
+      /Évaluation au/.test(doc.getElementById('vvNotices').textContent));
 
     doc.getElementById('mecClr').click();
     check('effacement de la MEC : retour à l\'invitation, sans erreur', !!doc.getElementById('vvAskMec'));

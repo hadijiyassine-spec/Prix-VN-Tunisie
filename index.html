@@ -273,7 +273,6 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
   /* Module valeur vénale : 3 champs côte à côte sont illisibles sur 375px.
      Le kilométrage prend toute la largeur, état et usage se partagent la ligne suivante. */
   .vv-fields{grid-template-columns:1fr 1fr}
-  .vv-fields>div:first-child{grid-column:1/-1}
   .vv-input{padding:9px 10px;font-size:13px} /* >=16px évite le zoom auto iOS ; 13px reste confortable ici */
 }
 
@@ -402,7 +401,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 .spec-change{background:#FFF8E1;border:1px solid #FFE082;border-radius:7px;padding:8px 10px;font-size:10px;color:#E65100;line-height:1.6;margin-top:6px}
 .spec-change b{font-weight:700}
 /* ── Module Valeur vénale ── */
-.vv-fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:2px}
+.vv-fields{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:2px}
 .vv-fields label{display:block;margin-bottom:3px}
 .vv-input{width:100%;padding:7px 9px;border:1px solid var(--bd2);border-radius:7px;font-size:12px;font-family:'Inter',sans-serif;background:var(--sf);color:var(--t1)}
 .vv-input:focus{outline:2px solid var(--pr3);outline-offset:1px;border-color:var(--pr3)}
@@ -627,7 +626,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 let sel = {b:null, m:null, v:null};
 let FY  = null;
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
-const CY  = 2026;
+// Année de calcul. Déterminée au démarrage : max(année système, dernière année de la base).
+// Elle n'est plus figée — un rapport établi plus tard vieillira correctement les véhicules.
+let CY = 2026;
+// Dernière année réellement mesurée dans la base (renseignée au démarrage).
+let ANNEE_DONNEES = 2026;
 // Année de 1ère MEC la plus ancienne acceptée. La base de prix commence en 2011, mais
 // l'évaluation d'une valeur vénale, elle, doit rester possible sur des véhicules plus
 // anciens : le marché de l'occasion et les dossiers d'expertise en comportent beaucoup.
@@ -645,31 +648,35 @@ const MIN_MEC = 1990;
 // ══════════════════════════════════════════════════════════════════
 const VVPARAMS = {
   // ── Indice de prix automobile Tunisie ──
-  // Le skill signale que l'INS ne publie pas d'indice dédié au secteur automobile et
-  // suggère l'inflation générale comme proxy. Mais cette base CONTIENT 10 474 prix
-  // catalogue observés entre 2011 et 2026 : on peut donc mesurer directement l'inflation
-  // du secteur au lieu de l'approximer. Méthode des modèles appariés (celle des indices
-  // de prix officiels) : pour chaque finition présente en année Y et Y+1, on prend le
-  // ratio de ses prix ; la médiane de ces ratios donne l'évolution "à modèle constant".
-  // Chaque taux ci-dessous repose sur 115 à 320 paires de prix réels (script index_auto.js).
-  // Écart avec l'IPC général : l'IPC surestime nettement le secteur auto sur la période
-  // récente (2023-2025 : +9,3/+7,0/+5,3 % IPC contre +1,9/+1,5/0,0 % mesuré), et le
-  // sous-estime en 2018 (+7,3 % IPC contre +19,0 % mesuré, année de dévaluation du dinar).
-  // Cumul 2012 -> 2026 : ×1,81 mesuré contre ×2,14 avec l'IPC, soit 18 % d'écart.
-  indexAuto: {2012:.0335,2013:.0726,2014:.0370,2015:.0313,2016:.0538,2017:.0965,2018:.1903,2019:.0538,2020:-.0137,2021:.0362,2022:.0767,2023:.0188,2024:.0146,2025:.0000},
+  // Il n'est PLUS écrit en dur : il est recalculé automatiquement au démarrage à partir de
+  // `data.js` (voir calculerIndice), par la méthode des modèles appariés. Toute mise à jour
+  // de la base met donc l'indice à jour du même coup, sans intervention.
+  //
+  // Les valeurs ci-dessous ne servent que de filet de sécurité, si la base est absente ou
+  // trop pauvre pour que le calcul aboutisse. Elles proviennent du dernier calcul validé
+  // (10 474 prix, 2011-2026). Rappel : l'IPC général surestimait nettement le secteur auto
+  // sur la période récente (cumul 2012→2026 : ×1,81 mesuré contre ×2,14 avec l'IPC).
+  indiceSecours: {2012:.0335,2013:.0726,2014:.0370,2015:.0313,2016:.0538,2017:.0965,2018:.1903,2019:.0538,2020:-.0137,2021:.0362,2022:.0767,2023:.0188,2024:.0146,2025:.0000,2026:-.0431},
+  energieSecours: {2026:{essence:-.0333, diesel:-.0080, hev:-.0445, phev:-.2475, elec:-.0831}},
+  anneeSecours: 2026,
 
-  // 2026 : la loi de finances 2026 a produit des mouvements TRÈS différents selon
-  // l'énergie — les mesurer séparément évite à la fois d'inventer un coefficient
-  // législatif et de le compter deux fois avec l'indice général.
-  // Mesuré 2025 -> 2026 dans la base :
-  //   PHEV    -24,75 % (n=29, 29/29 en baisse, 5 marques : BMW -27,6 · Land Rover -34,2
-  //           · Mercedes -23,7 · Omoda -18,6 · Volvo -3,8 ; médiane des médianes -23,65 %)
-  //           => confirme et chiffre la projection "jusqu'à 30 %" du DG d'Ennakl
-  //           (automobile.tn, 26/10/2025) suite à l'exonération DD + taxe de consommation
-  //           et au passage de la TVA de 19 % à 7 %.
-  //   BEV      -8,31 % (n=22) · HEV -4,45 % (n=17) · Essence -3,33 % (n=137) · Diesel -0,80 % (n=26)
-  index2026: {essence:-.0333, diesel:-.0080, hev:-.0445, phev:-.2475, elec:-.0831, gpl:-.0333},
-  indexLastYear: 2026,
+  // Écart minimal, en points, entre le taux d'une énergie et le taux général pour qu'on y
+  // voie une réforme fiscale ciblée plutôt que de l'inflation ordinaire. À 5 points, seule
+  // la mesure de 2026 sur les hybrides rechargeables (-20,4 pts d'écart au marché) est
+  // retenue sur toute la période 2012-2026 : aucun faux positif.
+  seuilReforme: 0.05,
+
+  // Nombre minimal de finitions comparables (présentes deux années de suite) pour qu'un taux
+  // annuel soit retenu. En dessous, l'année est traitée comme non mesurée.
+  minPaires: 15,
+
+  // ── Taux prédit, pour les années pas encore couvertes par la base ──
+  // Quand l'année de calcul dépasse la dernière année de la base (typiquement en janvier,
+  // avant la mise à jour des tarifs), il faut bien projeter quelque chose. On prend la
+  // MÉDIANE des dernières années mesurées : robuste aux à-coups isolés — la flambée de 2018
+  // (+19 %, dévaluation du dinar) comme la chute de 2026 (réforme fiscale) ne l'emportent pas.
+  // Ce taux est signalé comme prédit dans la fiche, pour qu'il ne passe jamais pour une mesure.
+  prediction: { nbAnnees: 5 },
 
   // ── F_âge : dépréciation liée à l'âge ──
   // Décroissance GÉOMÉTRIQUE et non linéaire : un véhicule perd un pourcentage de sa
@@ -773,21 +780,68 @@ const VVPARAMS = {
   carburant: {essence:1.00, diesel:0.98, hev:1.00, phev:0.97, elec:0.95, gpl:0.98},
 };
 
-// Multiplicateur de prix entre l'année du prix catalogue et aujourd'hui, pour une énergie
-// donnée. Les années jusqu'à 2025 utilisent l'indice général ; 2026 utilise l'indice propre
-// à l'énergie (effet très différencié de la loi de finances 2026).
-function indexMultiplier(fromYear, fuelClassKey){
-  let m=1;
-  for(let y=fromYear; y<=VVPARAMS.indexLastYear; y++){
-    if(y===2026){
-      const r=VVPARAMS.index2026[fuelClassKey];
-      m*=(1+(r!==undefined?r:VVPARAMS.index2026.essence));
-    } else {
-      const r=VVPARAMS.indexAuto[y];
-      if(r!==undefined) m*=(1+r);
-    }
+// ── Calcul automatique de l'indice depuis la base ──
+// Méthode des modèles appariés, celle des indices de prix officiels : pour chaque finition
+// présente en année Y et Y+1, on prend le ratio de ses prix ; la médiane donne l'évolution
+// « à modèle constant ». Le taux est aussi calculé PAR ÉNERGIE quand l'échantillon le permet,
+// ce qui capte automatiquement les réformes fiscales ciblées (celle de 2026 sur les hybrides
+// rechargeables a été détectée ainsi) sans qu'on ait à les coder.
+let INDEX = null;
+
+function calculerIndice(){
+  if(typeof window.DB === 'undefined') return null;
+  const med=a=>{const t=a.slice().sort((x,y)=>x-y),n=t.length;return n%2?t[(n-1)/2]:(t[n/2-1]+t[n/2])/2;};
+  const series=[]; let derniere=0, premiere=9999;
+  for(const b of Object.keys(DB)) for(const m of Object.keys(DB[b])) for(const f of DB[b][m]){
+    const parAn={};
+    for(const h of f.hist){ const y=yOf(h.d); parAn[y]=h.p; if(y>derniere)derniere=y; if(y<premiere)premiere=y; }
+    series.push({parAn, fc:fuelClass((f.eg&&f.eg.fuel)||(f.sp&&f.sp.carburant))});
   }
-  return m;
+  if(!derniere || derniere<=premiere) return null;
+  const annees={}, parEnergie={};
+  for(let Y=premiere; Y<derniere; Y++){
+    const tous=[], parFc={};
+    for(const s of series){
+      const a=s.parAn[Y], b=s.parAn[Y+1];
+      if(a!==undefined && b!==undefined && a>0){ const r=b/a; tous.push(r); (parFc[s.fc]=parFc[s.fc]||[]).push(r); }
+    }
+    if(tous.length>=VVPARAMS.minPaires) annees[Y+1]=med(tous)-1;
+    const pe={};
+    for(const fc of Object.keys(parFc)) if(parFc[fc].length>=VVPARAMS.minPaires) pe[fc]=med(parFc[fc])-1;
+    if(Object.keys(pe).length) parEnergie[Y+1]=pe;
+  }
+  const mesurees=Object.keys(annees).map(Number).sort((a,b)=>a-b);
+  if(mesurees.length<3) return null;
+  const dernieres=mesurees.slice(-VVPARAMS.prediction.nbAnnees).map(y=>annees[y]);
+  return {annees, parEnergie, derniere, tauxPredit:med(dernieres), nbAnnees:mesurees.length, auto:true};
+}
+
+// Indice effectivement utilisé : celui calculé, ou le filet de sécurité.
+function indice(){
+  return INDEX || {annees:VVPARAMS.indiceSecours, parEnergie:VVPARAMS.energieSecours,
+                   derniere:VVPARAMS.anneeSecours, tauxPredit:0.0146, auto:false};
+}
+
+// Multiplicateur de prix entre l'année du prix catalogue et l'année d'ÉVALUATION, pour une
+// énergie donnée. Fonctionne dans les deux sens : si l'évaluation est antérieure au prix
+// catalogue retenu, on déflate au lieu d'actualiser. Les années postérieures à la base
+// utilisent le taux PRÉDIT.
+function indexMultiplier(anneePrix, anneeEval, fuelClassKey){
+  const IX=indice();
+  const tauxDe = y => {
+    const pe=IX.parEnergie[y];
+    if(pe && pe[fuelClassKey]!==undefined) return {r:pe[fuelClassKey], predit:false};
+    if(IX.annees[y]!==undefined) return {r:IX.annees[y], predit:false};
+    return {r:IX.tauxPredit, predit:true};
+  };
+  let m=1, predites=0;
+  if(anneeEval>=anneePrix){
+    for(let y=anneePrix+1; y<=anneeEval; y++){ const t=tauxDe(y); m*=(1+t.r); if(t.predit)predites++; }
+  } else {
+    // Évaluation antérieure au prix catalogue : on retire l'évolution survenue depuis.
+    for(let y=anneeEval+1; y<=anneePrix; y++){ const t=tauxDe(y); m/=(1+t.r); if(t.predit)predites++; }
+  }
+  return {m, predites};
 }
 
 // VEN = prix neuf actualisé (Valeur Équivalente à Neuf) pour une finition donnée.
@@ -800,7 +854,10 @@ function indexMultiplier(fromYear, fuelClassKey){
 // symétrique sur les modèles dont le tarif catalogue est resté figé à une année ancienne.
 // C'est aussi la définition du skill : L est le prix neuf daté d'une année de référence M,
 // que l'on actualise ensuite jusqu'à aujourd'hui.
-function computeVEN(v, anneeRef){
+// `anneeEval` : année à laquelle on se place pour évaluer (par défaut l'année courante).
+// En expertise, un sinistre doit être évalué à SA date — et une réforme fiscale postérieure
+// ne doit donc pas s'appliquer, ce que la borne de l'indice garantit.
+function computeVEN(v, anneeRef, anneeEval){
   const fc=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
   let L=v.p, M=yOf(v.d), ancre='dernier';
   if(anneeRef && v.hist && v.hist.length){
@@ -811,20 +868,39 @@ function computeVEN(v, anneeRef){
     }
     if(best){ L=best.p; M=yOf(best.d); ancre=(bestGap===0?'exact':'proche'); }
   }
-  const idx=indexMultiplier(M+1, fc);
-  // Le mouvement 2026 est-il déjà inclus dans le prix retenu, ou vient-il d'être appliqué ?
-  const reforme2026 = (M<2026 && Math.abs(VVPARAMS.index2026[fc]||0)>=0.05) ? fc : null;
-  return {VEN:L*idx, idx, L, M, fc, reforme2026, ancre};
+  const AE = (anneeEval!=null && isFinite(anneeEval)) ? anneeEval : CY;
+  const {m:idx, predites}=indexMultiplier(M, AE, fc);
+  // Détection AUTOMATIQUE d'une réforme fiscale ciblée : une année où le prix de cette
+  // énergie a bougé d'au moins 5 % alors que le prix retenu lui est antérieur. Plus besoin de
+  // coder une réforme au cas par cas — celle de 2026 sur les hybrides rechargeables est
+  // retrouvée par ce seul critère, et une prochaine le sera aussi.
+  // Le critère est la DIVERGENCE par rapport au marché, pas le mouvement absolu : en 2018
+  // l'essence a bougé de +19,9 %, mais tout le marché aussi (+19,0 %) — c'est de l'inflation,
+  // pas une réforme. Seul un écart marqué à l'ensemble signale une mesure fiscale ciblée.
+  const IX=indice();
+  let reforme=null;
+  for(let y=M+1; y<=AE; y++){
+    const pe=IX.parEnergie[y], gen=IX.annees[y];
+    if(pe && pe[fc]!==undefined && gen!==undefined){
+      const divergence=pe[fc]-gen;
+      if(Math.abs(divergence)>=VVPARAMS.seuilReforme &&
+         (!reforme || Math.abs(divergence)>Math.abs(reforme.divergence)))
+        reforme={annee:y, taux:pe[fc], divergence, fc};
+    }
+  }
+  return {VEN:L*idx, idx, L, M, fc, reforme, predites, ancre, anneeEval:AE};
 }
 
 // VV = valeur vénale estimée. Nécessite FY (année de 1ère MEC, barre du haut).
 // `coteAjustee` (facultatif) : position de cotation forcée par l'expert via le curseur.
 // Elle remplace le `relatif` calculé, sans effacer ce dernier — la fiche affiche les deux
 // pour que l'écart entre la recommandation et le jugement de l'expert reste visible.
-function computeVV(v, km, etatKey, usageKey, coteAjustee){
+function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval){
   if(!FY) return null;
-  const age=Math.max(0, CY-FY);
-  const ven=computeVEN(v, FY); // ancré sur l'année de mise en circulation
+  const AE = (anneeEval!=null && isFinite(anneeEval)) ? anneeEval : CY;
+  // L'âge se compte à la date d'évaluation, pas à aujourd'hui.
+  const age=Math.max(0, AE-FY);
+  const ven=computeVEN(v, FY, AE); // prix ancré sur la MEC, actualisé à la date d'évaluation
 
   // F_âge : géométrique, au rythme propre à la gamme du véhicule (déterminée par sa valeur
   // à neuf), avec valeur résiduelle plancher.
@@ -857,12 +933,12 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee){
   // `relatif` isole ce qui est propre À CE véhicule : état, kilométrage, usage, énergie —
   // hors âge et hors gamme, qui sont des caractéristiques subies. C'est cette part qui dit
   // si le véhicule est bien ou mal coté POUR SON ÂGE.
-  return {vv, ven, fAge, fEtat, fKm, fCarb, fUsage, ratio, relatif, relatifEff, ajuste, gamme, age, ecartKm, kmRef, etat, usage, km};
+  return {vv, ven, fAge, fEtat, fKm, fCarb, fUsage, ratio, relatif, relatifEff, ajuste, gamme, age, ecartKm, kmRef, etat, usage, km, anneeEval:AE};
 }
 
 // État des champs du module Valeur vénale — conservé au niveau module pour survivre
 // à un changement de finition/modèle (l'expert n'a pas à ressaisir km/état/usage à chaque clic).
-let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null};
+let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null, anneeEval:null};
 
 // Bloc HTML du module (inséré dans la fiche résultat, sous le prix neuf).
 function renderVVBlock(v){
@@ -872,7 +948,13 @@ function renderVVBlock(v){
       '<button type="button" class="vv-cta" id="vvAskMec">📅 Saisir l\'année de 1ère MEC</button></div>';
     return html;
   }
+  // Année d'évaluation : bornée entre la mise en circulation et l'année courante — on ne peut
+  // évaluer un véhicule ni avant qu'il existe, ni au-delà des données disponibles.
+  const aeCourante = vvInputs.anneeEval || CY;
+  let optsAE='';
+  for(let y=CY; y>=FY; y--) optsAE+='<option value="'+y+'"'+(aeCourante===y?' selected':'')+'>'+y+(y===CY?' (courante)':'')+'</option>';
   html+='<div class="vv-fields">';
+  html+='<div><label class="spec-label" for="vvAnnee">Année d\'évaluation</label><select id="vvAnnee" class="vv-input">'+optsAE+'</select></div>';
   html+='<div><label class="spec-label" for="vvKm">Kilométrage réel</label><input type="number" id="vvKm" min="0" step="1000" inputmode="numeric" placeholder="ex. 85000" value="'+(vvInputs.km||'')+'" class="vv-input"></div>';
   html+='<div><label class="spec-label" for="vvEtat">État</label><select id="vvEtat" class="vv-input">'+
     Object.keys(VVPARAMS.etats).map(k=>'<option value="'+k+'"'+(vvInputs.etat===k?' selected':'')+'>'+VVPARAMS.etats[k].label+'</option>').join('')+
@@ -934,7 +1016,7 @@ function renderVVOutput(v){
   if(!el||!FY) return;
   const kmField=document.getElementById('vvKm');
   const km=kmField&&kmField.value!==''?parseFloat(kmField.value):null;
-  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage);
+  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage, null, vvInputs.anneeEval);
   if(!base){ el.innerHTML=''; return; }
   const courant = vvInputs.cote!=null ? vvInputs.cote : base.relatif;
 
@@ -966,9 +1048,9 @@ function refreshVVValues(v){
   if(!FY) return;
   const kmField=document.getElementById('vvKm');
   const km=kmField&&kmField.value!==''?parseFloat(kmField.value):null;
-  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage);
+  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage, null, vvInputs.anneeEval);
   if(!base) return;
-  const r=computeVV(v, km, vvInputs.etat, vvInputs.usage, vvInputs.cote);
+  const r=computeVV(v, km, vvInputs.etat, vvInputs.usage, vvInputs.cote, vvInputs.anneeEval);
   const info=coteInfo(r.relatifEff);
   const ecart=(r.relatifEff-1)*100;
 
@@ -1006,9 +1088,33 @@ function refreshVVValues(v){
   const nz=document.getElementById('vvNotices');
   if(nz){
     let h='';
-    if(r.ven.reforme2026==='phev') h='<div class="notice ok" style="margin-top:8px">ℹ️ Le prix connu date de '+r.ven.M+'. La baisse des hybrides rechargeables de la loi de finances 2026 est intégrée : <b>-24,75 %</b> mesurés dans la base sur 29 finitions comparables (toutes en baisse).</div>';
-    else if(r.ven.reforme2026==='elec') h='<div class="notice ok" style="margin-top:8px">ℹ️ Le prix connu date de '+r.ven.M+'. La baisse 2026 des véhicules électriques est intégrée : <b>-8,3 %</b> mesurés sur 22 finitions comparables.</div>';
-    else if(r.ven.fc==='hev' && r.ven.M<2026) h='<div class="notice warn" style="margin-top:8px">⚠️ Hybride non rechargeable : en 2026 les prix ont bougé de façon très inégale selon le modèle (de -12 % à +21 % dans la base). L\'abattement de taxe de consommation est désormais réservé aux moteurs ≤1700cc essence / ≤2100cc diesel. Vérifiez le prix catalogue actuel de ce modèle.</div>';
+    const LIB={phev:'hybrides rechargeables', elec:'véhicules électriques', hev:'hybrides non rechargeables',
+               diesel:'véhicules diesel', essence:'véhicules essence', gpl:'véhicules GPL'};
+    const rf=r.ven.reforme;
+    if(rf){
+      const sens=rf.taux<0?'baisse':'hausse';
+      h+='<div class="notice '+(rf.taux<0?'ok':'warn')+'" style="margin-top:8px">ℹ️ Le prix catalogue retenu date de '+r.ven.M+
+        '. En '+rf.annee+', les '+(LIB[rf.fc]||rf.fc)+' ont connu une '+sens+' de <b>'+
+        Math.abs(rf.taux*100).toFixed(1).replace('.',',')+' %</b>, soit <b>'+
+        Math.abs(rf.divergence*100).toFixed(1).replace('.',',')+' points</b> d\'écart avec le reste du marché — signature d\'une mesure fiscale ciblée. Elle est intégrée au calcul.</div>';
+    }
+    if(r.ven.fc==='hev' && r.ven.M<ANNEE_DONNEES){
+      h+='<div class="notice warn" style="margin-top:8px">⚠️ Hybride non rechargeable : les prix ont bougé de façon très inégale selon le modèle lors de la réforme 2026 (de -12 % à +21 % dans la base). L\'abattement de taxe de consommation est réservé aux moteurs ≤1700cc essence / ≤2100cc diesel. Vérifiez le prix catalogue actuel de ce modèle.</div>';
+    }
+    // Évaluation à une date passée : le dire clairement, c'est une décision d'expertise.
+    if(r.anneeEval<CY){
+      h='<div class="notice ok" style="margin-top:8px">📆 Évaluation au <b>'+r.anneeEval+'</b> et non à l\'année courante ('+CY+
+        '). L\'âge retenu est de '+r.age+' an'+(r.age>1?'s':'')+', et l\'évolution des prix postérieure à '+r.anneeEval+
+        ' — réformes fiscales comprises — n\'est pas appliquée.</div>'+h;
+    }
+    // Péremption : l'évaluation dépasse la base, une partie de l'actualisation est prédite.
+    if(r.anneeEval>ANNEE_DONNEES){
+      const IX=indice();
+      h+='<div class="notice warn" style="margin-top:8px">📅 Base tarifaire arrêtée à <b>'+ANNEE_DONNEES+
+        '</b>, évaluation au <b>'+r.anneeEval+'</b>. L\'actualisation des '+(r.anneeEval-ANNEE_DONNEES)+' année'+((r.anneeEval-ANNEE_DONNEES)>1?'s':'')+
+        ' manquante'+((r.anneeEval-ANNEE_DONNEES)>1?'s':'')+' utilise un <b>taux prédit de '+(IX.tauxPredit*100).toFixed(2).replace('.',',')+
+        ' %/an</b> (médiane des '+VVPARAMS.prediction.nbAnnees+' dernières années mesurées), en attendant la mise à jour des tarifs officiels.</div>';
+    }
     nz.innerHTML=h;
   }
 }
@@ -1025,6 +1131,8 @@ function wireVVInputs(v){
   // Modifier l'état, le kilométrage ou l'usage change la valeur CONSEILLÉE : un ajustement
   // manuel antérieur deviendrait trompeur, on le remet donc sur le nouveau conseil.
   const relance=()=>{ vvInputs.cote=null; renderVVOutput(v); };
+  const anneeField=document.getElementById('vvAnnee');
+  if(anneeField) anneeField.addEventListener('change',()=>{ vvInputs.anneeEval=parseInt(anneeField.value); relance(); });
   const kmField=document.getElementById('vvKm');
   if(kmField) kmField.addEventListener('input',()=>{ vvInputs.km=kmField.value; relance(); });
   const etatField=document.getElementById('vvEtat');
@@ -1046,6 +1154,17 @@ function init(){
   document.getElementById('pill2').textContent = nm+' modèles';
   document.getElementById('pill3').textContent = nv+' finitions';
   document.getElementById('bCnt').textContent = nb;
+
+  // Indice de prix recalculé depuis la base à chaque démarrage : mettre à jour data.js met
+  // l'indice à jour du même coup, sans intervention.
+  INDEX = calculerIndice();
+  const IX = indice();
+  ANNEE_DONNEES = IX.derniere;
+  // L'année de calcul suit le temps réel, sans jamais reculer sous l'année des données.
+  CY = Math.max(new Date().getFullYear(), ANNEE_DONNEES);
+  const mecEl=document.getElementById('mecIn');
+  if(mecEl) mecEl.max=String(CY);
+
   rBrands('');
 }
 window.addEventListener('load', init);
@@ -1090,7 +1209,7 @@ function genBadge(g){ return g?'<span class="gen-badge">'+g.gen+'</span>':''; }
 function genTimeline(modelName, hist, FY){
   const gens=(window.GENS||{})[modelName];
   if(!gens||gens.length<1) return '';
-  const CY2=2026;
+  const CY2=CY;
   const minY=Math.min(...gens.map(g=>g.y0));
   const maxY=Math.max(...gens.map(g=>g.y1||CY2));
   const span=maxY-minY||1;
@@ -1660,7 +1779,7 @@ function buildSpecsBlock(v, modelName, FY){
     html += '</div>';
   } else if(gens && gens.length>=2 && !FY){
     // Show all generations note
-    const yspan = (gens[gens.length-1].y1||2026)-gens[0].y0;
+    const yspan = (gens[gens.length-1].y1||CY)-gens[0].y0;
     html += '<div class="spec-change"><b>'+gens.length+' générations</b> sur '+yspan+' ans ·';
     html += ' '+gens.map(g=>g.gen+' ('+g.y0+'–'+(g.y1||'présent')+')').join(' → ')+'</div>';
   }
