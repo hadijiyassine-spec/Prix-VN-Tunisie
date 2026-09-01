@@ -30,6 +30,20 @@
   /* Accent propre aux véhicules à batterie : un cyan profond, distinct du bleu de marque
      comme des couleurs sémantiques, pour que « électrique » se lise sans ambiguïté. */
   --el:#0E7490;--ell:#E0F5F9;--elb:#A9DDE8;
+  /* Surfaces porteuses de texte BLANC. Elles restent sombres dans les deux thèmes : un
+     jeton qui sert de fond sous du blanc ne peut pas s'éclaircir en thème sombre, sinon le
+     texte disparaît. C'est ce qui rendait l'en-tête de la fiche résultat illisible — blanc
+     sur vert clair, 1,70:1. */
+  --sur-vert:#14532D;--sur-vert2:#1B6B39;
+  --sur-bleu:#072F52;--sur-bleu2:#0B5FA5;
+  --sur-orange:#B44100;
+  /* Accent LISIBLE SUR BLANC : dans le thème sombre, --pr est éclairci pour se lire sur
+     fond foncé et ne convient plus à un fond blanc. */
+  --pr-sur-blanc:#0B5FA5;
+  /* Orange lisible sur les pastilles crème (les anciens #E65100 tombaient à 3,5:1). */
+  --txt-orange:#8A3200;
+  /* Vert lisible sur --gnl, dans les deux thèmes. */
+  --txt-vert:#14532D;
   --chip-info-bd:#BCD9F0;--chip-warn-bd:#F0D6B0;
   --r:14px;--rs:9px;
   --hdr:56px;
@@ -52,6 +66,11 @@
     --shd:0 2px 6px rgba(0,0,0,.55),0 12px 28px rgba(0,0,0,.45);
     --el:#3FC4DC;--ell:#0E2A31;--elb:#1D5766;
     --chip-info-bd:#27486B;--chip-warn-bd:#5A431C;
+    --sur-vert:#0E3D21;--sur-vert2:#14532D;
+    --sur-bleu:#04182B;--sur-bleu2:#0A3F6E;
+    --sur-orange:#8A3200;
+    --pr-sur-blanc:#0B5FA5;
+    --txt-vert:#6FE0A0;
   }
 }
 :root[data-theme="dark"]{
@@ -66,6 +85,11 @@
   --shd:0 2px 6px rgba(0,0,0,.55),0 12px 28px rgba(0,0,0,.45);
   --el:#3FC4DC;--ell:#0E2A31;--elb:#1D5766;
   --chip-info-bd:#27486B;--chip-warn-bd:#5A431C;
+    --sur-vert:#0E3D21;--sur-vert2:#14532D;
+    --sur-bleu:#04182B;--sur-bleu2:#0A3F6E;
+    --sur-orange:#8A3200;
+    --pr-sur-blanc:#0B5FA5;
+    --txt-vert:#6FE0A0;
 }
 /* Les chiffres alignés en colonnes doivent l'être vraiment. */
 .price-val,.vi-price,.or-price,.vv-prix-val,.mc-v,.cote-ecart{font-variant-numeric:tabular-nums}
@@ -77,7 +101,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .app{display:grid;grid-template-rows:var(--hdr) 1fr;height:100vh;overflow:hidden}
 
 /* Top bar */
-.topbar{background:linear-gradient(105deg,var(--prd) 0%,#0A4A85 55%,var(--pr) 100%);color:#fff;display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 10px rgba(7,47,82,.28);z-index:50;position:relative}
+.topbar{background:linear-gradient(105deg,var(--sur-bleu) 0%,var(--sur-bleu2) 55%,var(--sur-bleu2) 100%);color:#fff;display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 10px rgba(7,47,82,.28);z-index:50;position:relative}
 .logo{display:flex;align-items:center;gap:9px;flex-shrink:0}
 .logo-ico{width:30px;height:30px;background:rgba(255,255,255,.18);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px}
 .logo-txt{font-family:'Syne','Inter','Segoe UI',system-ui,sans-serif;font-size:15px;font-weight:800;white-space:nowrap}
@@ -101,7 +125,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .mec-filter input{background:none;border:none;outline:none;color:#fff;font-size:12.5px;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;width:52px}
 .mec-filter input::placeholder{color:rgba(255,255,255,.4)}
 .mec-clr{background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:13px;display:none}
-.mec-badge{background:#FF6F00;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:7px;white-space:nowrap}
+.mec-badge{background:var(--sur-orange);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:7px;white-space:nowrap}
 .top-pills{display:flex;gap:8px;flex-shrink:0}
 .pill{background:rgba(255,255,255,.1);border-radius:14px;padding:3px 9px;font-size:10.5px;font-weight:500;white-space:nowrap}
 
@@ -133,7 +157,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .item-arr{font-size:13px;color:var(--bd2);flex-shrink:0;margin-left:4px;margin-top:2px}
 .item.sel .item-arr{color:var(--pr)}
 .itag{display:inline-flex;font-size:9.5px;font-weight:600;padding:1px 5px;border-radius:4px;margin-top:2px}
-.itag.ok{background:var(--gnl);color:var(--gn2)}
+.itag.ok{background:var(--gnl);color:var(--txt-vert)}
 .itag.apres{background:#FFEBEE;color:#C62828}
 .itag.avant{background:var(--aml);color:var(--am)}
 
@@ -168,7 +192,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 
 /* Result card */
 .rcard{background:var(--sf);border-radius:var(--r);border:2px solid var(--gn2);overflow:hidden;box-shadow:var(--shd);margin-bottom:16px}
-.rcard-head{background:linear-gradient(135deg,var(--gn) 0%,var(--gn2) 100%);padding:14px 16px;color:#fff}
+.rcard-head{background:linear-gradient(135deg,var(--sur-vert) 0%,var(--sur-vert2) 100%);padding:14px 16px;color:#fff}
 .rcard-badge{display:inline-flex;background:rgba(255,255,255,.2);border-radius:8px;padding:2px 8px;font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px}
 .rcard-brand{font-size:10.5px;opacity:.85;font-weight:500;margin-bottom:1px}
 .rcard-model{font-family:'Syne','Inter','Segoe UI',system-ui,sans-serif;font-size:17px;font-weight:800;line-height:1.2;margin-bottom:1px}
@@ -181,15 +205,15 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .compat-banner{border-radius:var(--rs);padding:8px 11px;font-size:11px;font-weight:600;margin-bottom:11px;border:1.5px solid;line-height:1.5}
 .compat-banner.match{background:#E8F5E9;color:#1B5E20;border-color:#A5D6A7}
 .compat-banner.apres{background:#FFEBEE;color:#B71C1C;border-color:#EF9A9A}
-.compat-banner.avant{background:var(--aml);color:#BF360C;border-color:#FFCC80}
+.compat-banner.avant{background:var(--aml);color:var(--am);border-color:var(--am)}
 .sect{background:var(--sf3);border-radius:var(--rs);padding:12px 13px 10px;margin-bottom:11px;border:1px solid var(--bd)}
 .sect-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
 .sect-title{font-size:9.5px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.6px}
 .chart-wrap{position:relative;height:170px}
 .cdelta{font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px}
 .cdelta.up{background:#FFEBEE;color:#C62828}
-.cdelta.dn{background:var(--gnl);color:var(--gn2)}
-.cdelta.flat{background:var(--sf2);color:var(--t3);border:1px solid var(--bd)}
+.cdelta.dn{background:var(--gnl);color:var(--txt-vert)}
+.cdelta.flat{background:var(--sf2);color:var(--t2);border:1px solid var(--bd)}
 .pbar{height:5px;background:var(--bd);border-radius:3px;position:relative;overflow:visible;margin:5px 0 3px}
 .pbar-fill{position:absolute;top:0;bottom:0;border-radius:3px}
 .pbar-fill.ok{background:linear-gradient(90deg,var(--pr),var(--gn2))}
@@ -201,7 +225,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .mc-l{font-size:9.5px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
 .mc-v{font-size:11px;font-weight:600;color:var(--t1)}
 .notice{border-radius:var(--rs);padding:8px 11px;font-size:11px;font-weight:500;border:1px solid}
-.notice.ok{background:var(--gnl);color:var(--gn2);border-color:#A5D6A7}
+.notice.ok{background:var(--gnl);color:var(--txt-vert);border-color:var(--gn2)}
 .notice.warn{background:var(--aml);color:var(--am);border-color:#FFCC80}
 .oh{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;margin:4px 0 7px}
 .or{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:var(--rs);border:1px solid var(--bd);background:var(--sf);margin-bottom:3px;cursor:pointer;transition:all .1s}
@@ -383,16 +407,21 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 /* État « aucune marque choisie » : c'est une invitation, pas un état sélectionné. */
 .mob-brand-chip.vide{background:var(--pr);border-bottom-color:var(--pr3)}
 .mob-brand-chip.vide .chip-name{font-weight:700}
-.mob-brand-chip.vide .chip-change{background:#fff;color:var(--pr);border-color:#fff;font-weight:700;opacity:1}
+.mob-brand-chip.vide .chip-change{background:#fff;color:var(--pr-sur-blanc);border-color:#fff;font-weight:700;opacity:1}
 .mob-brand-chip:focus-visible{outline:2px solid var(--pr3);outline-offset:-3px}
 
 /* Numérotation des étapes : ici l'ordre porte une information réelle — on ne peut pas
    choisir un modèle avant une marque, ni une finition avant un modèle. */
 .step{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;
-  border-radius:50%;background:var(--pr);color:#fff;font-size:9px;font-weight:800;
+  border-radius:50%;background:var(--sur-bleu2);color:#fff;font-size:9px;font-weight:800;
   margin-right:5px;flex-shrink:0;letter-spacing:0}
-.col-label.fait .step{background:var(--ok)}
+.col-label.fait .step{background:var(--sur-vert2)}
 .col-label.attente .step{background:var(--t3)}
+
+/* Le chip « Modèle » n'a de sens que sur téléphone, où la colonne des modèles se replie.
+   Sa règle de masquage doit vivre HORS du média : sans cela, aucune règle d'affichage ne
+   s'applique sur grand écran et le bloc apparaît en plein milieu du desktop. */
+.mob-model-chip{display:none}
 
 @media (max-width:768px){
   /* Model column collapse after model selection */
@@ -433,7 +462,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
   .mob-model-chip .mchip-change{
-    font-size:10px;color:var(--t3);
+    font-size:10px;color:var(--t2);
     background:var(--sf3);border:1px solid var(--bd);
     border-radius:5px;padding:2px 7px;white-space:nowrap;flex-shrink:0;
   }
@@ -452,7 +481,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .spec-fuel.elec{background:#E3F2FD;color:#0D47A1}
 .spec-fuel.phev{background:#E8F5E9;color:#1B5E20}
 .spec-fuel.hev{background:#F1F8E9;color:#33691E}
-.spec-fuel.diesel{background:#FFF8E1;color:#E65100}
+.spec-fuel.diesel{background:#FFF8E1;color:var(--txt-orange)}
 .spec-fuel.essence{background:#FCE4EC;color:#880E4F}
 .spec-fuel.gpl{background:#F3E5F5;color:#4A148C}
 .spec-engines{font-size:10.5px;color:var(--t2);line-height:1.6;padding:7px 9px;background:var(--sf);border-radius:6px;border:1px solid var(--bd);margin-bottom:6px}
@@ -461,8 +490,8 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .spec-ver-pills{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
 .spec-pill{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:var(--prl);color:var(--pr)}
 .spec-pill.tx{background:#E8F5E9;color:#1B5E20}
-.spec-pill.pw{background:#FFF3E0;color:#E65100}
-.spec-change{background:#FFF8E1;border:1px solid #FFE082;border-radius:7px;padding:8px 10px;font-size:10px;color:#E65100;line-height:1.6;margin-top:6px}
+.spec-pill.pw{background:#FFF3E0;color:var(--txt-orange)}
+.spec-change{background:#FFF8E1;border:1px solid #E8B84B;border-radius:7px;padding:8px 10px;font-size:10px;color:var(--txt-orange);line-height:1.6;margin-top:6px}
 .spec-change b{font-weight:700}
 /* ── Module Valeur vénale ── */
 /* En-tête : titre à gauche, année d'évaluation à droite */
@@ -489,7 +518,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .vv-input:focus{outline:2px solid var(--pr3);outline-offset:1px;border-color:var(--pr3)}
 .vv-cta{width:100%;padding:9px 12px;border:1px solid var(--pr3);background:var(--prl);color:var(--pr);
   border-radius:8px;font-size:12px;font-weight:600;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;cursor:pointer}
-.vv-cta:hover{background:var(--pr3);color:#fff}
+.vv-cta:hover{background:var(--sur-bleu2);color:#fff}
 .vv-details{margin-top:2px}
 .vv-details summary{font-size:10.5px;color:var(--pr);cursor:pointer;padding:3px 0;user-select:none;font-weight:600}
 .vv-details summary:hover{text-decoration:underline}
@@ -524,7 +553,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 /* Pastilles : ce qui a pesé sur le calcul, en un coup d'œil. Les règles elles-mêmes
    sont repliées dans « Détail du calcul » — une fiche doit livrer un résultat,
    pas un exposé de méthode. */
-.vv-chips{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0 2px}
+.vv-chips{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 4px}
 .vv-chip{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:600;
   padding:3px 9px;border-radius:20px;background:var(--sf3);color:var(--t2);border:1px solid var(--bd);white-space:nowrap}
 .vv-chip.info{background:var(--prl);color:var(--pr);border-color:var(--chip-info-bd)}
@@ -574,7 +603,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .vi-badges{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px}
 .vi-badge{font-size:9.5px;font-weight:600;padding:1px 5px;border-radius:4px}
 .vi-badge.fuel-elec{background:#E3F2FD;color:#0D47A1}
-.vi-badge.fuel-diesel{background:#FFF8E1;color:#E65100}
+.vi-badge.fuel-diesel{background:#FFF8E1;color:var(--txt-orange)}
 .vi-badge.fuel-phev{background:#E8F5E9;color:#1B5E20}
 .vi-badge.fuel-hev{background:#F1F8E9;color:#33691E}
 .vi-badge.fuel-gpl{background:#F3E5F5;color:#4A148C}
@@ -637,15 +666,14 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 /* ── Confiance de l'estimation ──
    Un état se lit à la forme autant qu'à la couleur : la pastille change de teinte, mais le
    libellé dit la même chose en toutes lettres, et les réserves sont nommées une par une. */
-.conf{margin-top:9px;border:1px solid var(--bd);border-radius:var(--rs);background:var(--sf2);
-  font-size:10px;overflow:hidden}
-.conf summary{display:flex;align-items:center;gap:6px;padding:7px 10px;cursor:pointer;
-  user-select:none;color:var(--t2)}
-.conf summary::-webkit-details-marker{display:none}
+.conf{display:flex;align-items:center;gap:6px;margin-top:9px;padding:6px 10px;
+  border:1px solid var(--bd);border-radius:var(--rs);background:var(--sf2);
+  font-size:10px;color:var(--t2)}
 .conf b{color:var(--t1);font-weight:700}
 .conf-pip{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .conf-n{margin-left:auto;font-size:9px;opacity:.8}
-.conf-l{margin:0;padding:0 10px 8px 26px;color:var(--t2);line-height:1.7}
+.conf-t{font-size:10px;font-weight:700;color:var(--t1);margin:6px 0 2px}
+.conf-l{margin:0;padding:0 0 4px 16px;color:var(--t2);line-height:1.7;font-size:10px}
 .conf-l li{margin:0}
 .conf-bonne{border-color:var(--ok)}
 .conf-bonne .conf-pip{background:var(--ok)}
@@ -688,7 +716,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   <div class="logo">
     <div class="logo-ico">🚗</div>
     <div>
-      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v35</span></div>
+      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v36</span></div>
       <div class="logo-sub" id="dbStats">Chargement…</div>
     </div>
   </div>
@@ -815,9 +843,9 @@ let sel = {b:null, m:null, v:null};
 let FY  = null;
 // ── Version de l'application ──
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
-const VERSION = 'v35';
+const VERSION = 'v36';
 const VERSION_DATE = '29/08/2026';
-const VERSION_NOTES = 'décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · assiettes de taxe par régime · TVA 7 % pour les rechargeables · régimes douaniers confirmés · taxe d\'épave étayée sur un cas réel · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · taxe au poids des populaires détruites · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
+const VERSION_NOTES = 'base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · assiettes de taxe par régime · TVA 7 % pour les rechargeables · régimes douaniers confirmés · taxe d\'épave étayée sur un cas réel · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · taxe au poids des populaires détruites · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -949,31 +977,27 @@ const VVPARAMS = {
     //   3. C'ÉTAIT UNE MESURE TRANSITOIRE, ouverte jusqu'au 31 DÉCEMBRE 2025. Passée cette
     //      date, la fiche AVERTIT plutôt que d'appliquer un taux qui n'a peut-être plus cours.
     //
+    // IL N'EXISTE QU'UNE SEULE IMMATRICULATION FCR : RS (Yassine Hadiji). Le guide décrit
+    // aussi une « franchise partielle en série Tunisie » — mais un véhicule passé en série TU
+    // a acquitté ses droits et n'est plus sous FCR : c'est un véhicule de droit commun. Le
+    // proposer comme un régime distinct laissait croire à un statut particulier qui n'existe
+    // pas ; il a donc été retiré de la liste.
+    //
     // Les droits et taxes dus ne se déduisent pas d'un prix catalogue : ils dépendent de la
     // valeur en douane, de la cylindrée et du barème du droit de consommation. Aucune
     // estimation n'est donc produite — le décompte de la recette des douanes est requis.
     fcr_rs: { label:'FCR — franchise totale (série RS)', court:'FCR RS', subventionne:false,
       incessibilite:Infinity, majorationDouane:0, taxeEpave:true, sur:true,
-      assiette:'droitsEtTaxes', tauxAssiette:0.30, finMesureTransitoire:2025,
+      assiette:'droitsEtTaxes', tauxAssiette:0.30, finMesureTransitoire:2025, baseHorsDouane:true,
       source:'publie',
       note:'Exonération totale des droits et taxes, avec interdiction de cession pour une durée ILLIMITÉE : le véhicule demeure en série RS. La régularisation, seule voie pour vendre, coûtait 30 % des droits et taxes dus — mesure transitoire ouverte jusqu\'au 31 décembre 2025.' },
-    // Franchise PARTIELLE, série Tunisie : le véhicule est cessible après paiement de 25 %
-    // des droits normaux (essence et hybride ≤ 2000 cm³, diesel et hybride ≤ 2500 cm³,
-    // professionnels, électriques) ou 30 % au-delà. Les droits étant acquittés, il n'y a plus
-    // d'avantage en cours : il se traite exactement comme un véhicule TU ordinaire, sans
-    // délai et sans taxe d'épave. Le régime reste proposé dans la liste pour que l'expert
-    // puisse le consigner et voir écrit qu'il n'emporte aucune conséquence.
-    fcr_partiel: { label:'FCR — franchise partielle (série TU)', court:'FCR TU',
-      subventionne:false, incessibilite:0, majorationDouane:0, taxeEpave:false, sur:true,
-      source:'publie',
-      note:'Franchise partielle : le véhicule est cessible après paiement de 25 % des droits normaux (essence et hybride ≤ 2000 cm³, diesel et hybride ≤ 2500 cm³, professionnels, électriques) ou 30 % au-delà. Les droits ayant été acquittés, il n\'y a plus d\'avantage en cours : il se traite comme tout véhicule immatriculé en TU.' },
     // Corps diplomatique : AUCUN DÉLAI. Le véhicule est assimilé à un véhicule ÉTRANGER
     // disposant d'une autorisation permanente de circulation sur le territoire tunisien
     // (confirmé par Yassine Hadiji). Il n'y a donc pas de délai à laisser courir : les droits
     // deviennent exigibles dès qu'il quitte le régime, mise à l'épave comprise.
     diplomatique: { label:'Corps diplomatique / consulaire', court:'Diplomatique',
       subventionne:false, incessibilite:0, majorationDouane:0, taxeEpave:true, sur:true,
-      assiette:'poids', source:'pratique',
+      assiette:'poids', source:'pratique', avantagePermanent:true, baseHorsDouane:true,
       note:'Véhicule assimilé à un véhicule étranger, avec autorisation permanente de circulation en Tunisie. Aucun délai d\'incessibilité : les droits deviennent exigibles dès la sortie du régime.' },
     // Taxi, louage et transport rural — le seul régime dont les textes ont pu être lus.
     // Loi n° 2011-7 du 31/12/2011 (LF 2012, art. 19 à 23) et décret n° 2012-5 du 04/01/2012 :
@@ -987,14 +1011,16 @@ const VVPARAMS = {
     taxi_louage: { label:'Taxi / louage / transport rural', court:'Taxi-louage',
       subventionne:false, incessibilite:5, majorationDouane:0, taxeEpave:true, sur:true,
       assiette:'poids', source:'publie', renouvellementSinistre:true,
-      note:'Exonération du droit de consommation et TVA réduite à 7 %, une fois tous les cinq ans (LF 2012 art. 19-23, décret 2012-5). Le renouvellement du bénéfice est possible AVANT le terme en cas d\'endommagement, de vol ou de changement de catégorie du permis : l\'exploitant n\'est pas bloqué.' },
+      usageIntensif:true, baseTvaReduite:true,
+      note:'Exonération du droit de consommation et TVA réduite à 7 %, pendant CINQ ANS (LF 2012 art. 19-23, décret 2012-5). Passé ce terme l\'avantage est définitivement acquis : le véhicule redevient de droit commun, plus aucune taxe n\'est due — mais il a subi une utilisation intensive, que le facteur d\'usage doit traduire. Le renouvellement du bénéfice est possible AVANT le terme en cas d\'endommagement, de vol ou de changement de catégorie du permis : l\'exploitant n\'est pas bloqué.' },
     agence: { label:'Agence de voyages', court:'Agence de voyages',
       subventionne:false, incessibilite:5, majorationDouane:0, taxeEpave:true, sur:true,
       assiette:'poids', source:'pratique',
-      note:'Exonération liée à l\'activité de l\'agence. Ce régime n\'est pas couvert par les textes relatifs aux taxis et louages (LF 2012) : durée et barème reposent sur la pratique.' },
+      usageIntensif:true, baseTvaReduite:true,
+      note:'Exonération liée à l\'activité, pendant cinq ans. Passé ce terme l\'avantage est acquis : le véhicule redevient de droit commun, plus aucune taxe n\'est due — mais il a subi une utilisation intensive, que le facteur d\'usage doit traduire. Ce régime n\'est pas couvert par les textes relatifs aux taxis et louages : durée et barème reposent sur la pratique.' },
     autre: { label:'Autre régime de faveur', court:'Régime de faveur',
       subventionne:false, incessibilite:0, majorationDouane:0, taxeEpave:true, sur:false,
-      assiette:'poids', source:'pratique',
+      assiette:'poids', source:'pratique', avantagePermanent:true, baseHorsDouane:true,
       note:'Régime privilégié non listé. La taxe due se saisit d\'après le décompte de la recette des douanes.' },
   },
 
@@ -1022,6 +1048,49 @@ const VVPARAMS = {
   // La négliger reviendrait à réclamer à un assuré roulant en électrique une taxe calculée
   // sur un barème thermique qui ne le concerne plus.
   tvaElectrique: { taux: 0.07, energies: ['elec', 'phev'] },
+
+  // ══ Base de calcul : le prix catalogue n'est pas la valeur à neuf de TOUS les véhicules ══
+  //
+  // Correction apportée par Yassine Hadiji : « la valeur vénale d'un véhicule en droit commun
+  // ne peut pas être égale à celle en corps diplomatique, car la base de calcul n'est pas la
+  // même ». C'est exact, et je l'avais manqué.
+  //
+  // Le prix catalogue de la base est un prix TUNISIEN TAXÉ, droits de douane et TVA compris.
+  // Or certains véhicules ne l'ont jamais acquitté :
+  //   · corps diplomatique et FCR en série RS — entrés en franchise TOTALE : leur valeur à
+  //     neuf est le prix HORS DROITS, soit le catalogue divisé par (1 + taux douanier) ;
+  //   · taxi, louage et agence, tant que l'affectation court — exonérés du droit de
+  //     consommation et taxés à 7 % de TVA au lieu de 19 % : au moins l'écart de TVA doit
+  //     être retiré. Le droit de consommation s'y ajoute, mais son barème dépend de la
+  //     cylindrée et n'est pas publié : l'abattement retenu est donc un MINORANT, et la
+  //     fiche le dit.
+  //
+  // Le sens est l'inverse exact de celui de la voiture populaire : là on RÉINTÈGRE une taxe
+  // absente du catalogue, ici on RETIRE une taxe que le catalogue contient et que ce
+  // véhicule-là n'a pas payée.
+  //
+  // COMBIEN RETIRER ? PAS LE TAUX DOUANIER. C'est l'erreur que la comparaison européenne a
+  // révélée : les droits de douane frappent la VALEUR EN DOUANE (CIF), pas le prix de détail.
+  // Diviser un prix catalogue TTC par 1,30 retire donc beaucoup trop.
+  //
+  // Mesure faite sur les modèles présents des deux côtés, tarif tunisien COURANT contre prix
+  // français neuf converti au cours BCT du 19/08/2026 (1 € = 3,3809 TND) :
+  //     Dacia Sandero  58 450 DT contre 44 932  → +30 %
+  //     Renault Clio   66 950 DT contre 67 280  →   0 %
+  //     Peugeot 208    64 900 DT contre 70 154  →  −7 %
+  //     Dacia Duster  106 950 DT contre 67 584  → +58 %
+  //     médiane : +15 %
+  // Un véhicule entré sans droits devrait valoir à peu près le prix européen : l'abattement
+  // qui l'y ramène est donc d'environ 13 %, non de 23 %.
+  //
+  // FAIBLESSE À CONNAÎTRE : quatre modèles seulement, et une dispersion large (−7 % à +58 %)
+  // parce que les finitions d'entrée ne se correspondent pas d'un marché à l'autre. C'est un
+  // ordre de grandeur, pas une calibration. À reprendre sur des finitions appariées.
+  //
+  // La majoration des voitures populaires, elle, n'est PAS concernée : elle est étayée par
+  // deux mesures indépendantes — le cas Kwid (8 000 DT de taxe, soit 29 % de la valeur) et
+  // l'écart aux jumelles normales dans la base.
+  baseRegime: { tvaNormale: 0.19, tvaReduite: 0.07, abattementFranchise: 0.13 },
 
   populaire: {
     plafondJumelle: true,      // une populaire ne dépasse jamais sa version normale
@@ -1484,19 +1553,58 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey){
   // Régime douanier : saisi par l'expert (il figure sur la carte grise, pas au catalogue).
   // À défaut, le repérage par le nom du modèle propose « populaire ».
   const RG = VVPARAMS.regimes[regimeKey] || VVPARAMS.regimes[v.pop?'populaire':'aucun'];
+  const ageEval = (anneeRef!=null && isFinite(anneeRef)) ? (AE-anneeRef) : null;
+
+  // ── DEUX CHOSES DISTINCTES, QUE J'AVAIS CONFONDUES ──
+  //
+  // 1. LE CATALOGUE EST-IL SUBVENTIONNÉ ? C'est une propriété de la FINITION, inscrite dans
+  //    la base : le tarif d'une « Citroën C3 Populaire » est un prix exonéré de taxe
+  //    douanière. Pour représenter une valeur de MARCHÉ, il faut y réintégrer la taxe —
+  //    et cela reste vrai quel que soit le régime déclaré du véhicule.
+  //
+  // 2. LE VÉHICULE EST-IL SOUS DÉLAI D'INCESSIBILITÉ ? C'est une propriété du RÉGIME, qui
+  //    figure sur la carte grise. Pendant ce délai le véhicule est hors marché et suit le
+  //    prix subventionné.
+  //
+  // Je liais la réintégration au régime : choisir « droit commun » sur une populaire faisait
+  // donc traiter le prix SUBVENTIONNÉ comme un prix de marché. Sur une Citroën C3 Populaire
+  // de 2016, cela donnait 21 000 DT au lieu de 27 300 — un quart de trop bas, sur un chiffre
+  // qui sert à indemniser.
+  const catalogueSubventionne = !!v.pop;
+  const sousDelai = RG.incessibilite>0 && ageEval!=null && ageEval<RG.incessibilite;
+  // Seule l'incessibilité du régime POPULAIRE gèle le prix subventionné : c'est elle qui
+  // met ce véhicule-là hors marché. Le délai d'un autre régime — FCR, taxi, agence — porte
+  // sur d'autres droits et ne rend pas le tarif catalogue moins subventionné pour autant.
+  const geleAuPrixSubventionne = sousDelai && RG===VVPARAMS.regimes.populaire;
+
   let majPop=1, popStatut=null, venJum=null, plafonne=false, tvaSeule=false;
-  if(RG && RG!==VVPARAMS.regimes.aucun){
-    const ageEval = (anneeRef!=null && isFinite(anneeRef)) ? (AE-anneeRef) : null;
-    const sousDelai = RG.incessibilite>0 && ageEval!=null && ageEval<RG.incessibilite;
-    popStatut = sousDelai ? 'incessible' : 'majore';
-    // La majoration ne vaut QUE pour un catalogue subventionné (la populaire). Ailleurs le
-    // tarif inclut déjà la taxe : l'appliquer la compterait deux fois.
-    if(!sousDelai && RG.subventionne){
-      const cd=chargeDouaniere(fc, RG.majorationDouane);
-      majPop = 1+cd.taux;
-      tvaSeule = cd.tva;
+  // Abattement de base : ce que le catalogue contient et que ce véhicule n'a pas acquitté.
+  // Il ne vaut que tant que l'avantage court — une fois acquis, le véhicule rejoint le
+  // marché normal et sa valeur redevient celle du catalogue taxé.
+  let abattement=1, abattementMotif=null;
+  const avantageCourt = sousDelai || RG.avantagePermanent;
+  if(avantageCourt){
+    if(RG.baseHorsDouane){
+      const cd=chargeDouaniere(fc, null);
+      // Pour un rechargeable la charge se limite à la TVA, qui frappe bien le prix de détail :
+      // l'abattement s'y calcule exactement. Pour les autres, on retient l'écart MESURÉ au
+      // marché européen, la valeur en douane n'étant pas connue.
+      abattement = cd.tva ? 1/(1+cd.taux) : (1-VVPARAMS.baseRegime.abattementFranchise);
+      abattementMotif = cd.tva ? 'entré hors TVA' : 'entré hors droits de douane';
+    } else if(RG.baseTvaReduite){
+      const B=VVPARAMS.baseRegime;
+      abattement = (1+B.tvaReduite)/(1+B.tvaNormale);
+      abattementMotif = 'TVA réduite à '+Math.round(B.tvaReduite*100)+' % au lieu de '+Math.round(B.tvaNormale*100)+' %';
     }
-    if(RG.subventionne && VVPARAMS.populaire.plafondJumelle) venJum=venJumelle(v, anneeRef, AE);
+  }
+  if(RG!==VVPARAMS.regimes.aucun) popStatut = sousDelai ? 'incessible' : 'majore';
+  if(catalogueSubventionne && !geleAuPrixSubventionne){
+    // Le taux est celui du régime des voitures populaires : c'est la taxe dont CE CATALOGUE
+    // est exonéré, pas celle du régime éventuellement déclaré par ailleurs.
+    const cd=chargeDouaniere(fc, VVPARAMS.regimes.populaire.majorationDouane);
+    majPop = 1+cd.taux;
+    tvaSeule = cd.tva;
+    if(VVPARAMS.populaire.plafondJumelle) venJum=venJumelle(v, anneeRef, AE);
   }
   // ── Plafond « prix neuf du jour » ──
   // La valeur à neuf de référence ne peut pas dépasser ce que coûte réellement le véhicule
@@ -1508,8 +1616,10 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey){
   // soit davantage que son prix neuf du jour.
   // Le plafond s'applique AVANT la réintégration douanière des véhicules populaires : le prix
   // catalogue d'une populaire est le prix subventionné, la taxe se réintègre par-dessus.
-  const plafondNeuf=prixNeufCourant(v, AE);
-  let VEN=L*idx, neufPlafonne=false;
+  // Le plafond du prix neuf suit la même base : un diplomate remplace son véhicule en
+  // franchise, pas au tarif concession.
+  const plafondNeuf=(function(){ const x=prixNeufCourant(v, AE); return x==null?null:x*abattement; })();
+  let VEN=L*idx*abattement, neufPlafonne=false;
   if(plafondNeuf!=null && VEN>plafondNeuf){ VEN=plafondNeuf; neufPlafonne=true; }
   VEN*=majPop;
   // Garde-fou métier : la réintégration de la taxe ramène la populaire SUR le marché normal,
@@ -1522,9 +1632,14 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey){
   // c'est le segment de marché du véhicule, pas son prix subventionné, qui commande sa décote.
   // Cela garantit aussi que populaire et normale partagent exactement la même courbe d'âge —
   // sans quoi un simple franchissement de palier de gamme pourrait réinverser les deux.
-  const venGamme = venJum!=null ? venJum : VEN;
+  // La GAMME se lit toujours au NIVEAU DE MARCHÉ : un véhicule diplomatique reste du même
+  // segment que son homologue de droit commun, et se déprécie au même rythme. La classer sur
+  // la valeur abattue le faisait glisser d'une gamme à l'autre et changeait son taux — un
+  // avantage fiscal ne transforme pas une berline premium en citadine.
+  const venGamme = venJum!=null ? venJum : (abattement<1 ? VEN/abattement : VEN);
   return {VEN, idx, L, M, fc, reforme, predites, ancre, anneeEval:AE, majPop, popStatut,
-          venJum, plafonne, venGamme, plafondNeuf, neufPlafonne, regime:RG, regimeKey, tvaSeule};
+          venJum, plafonne, venGamme, plafondNeuf, neufPlafonne, regime:RG, regimeKey, tvaSeule,
+          abattement, abattementMotif};
 }
 
 // Capacité de la batterie, en kWh. Le champ de la base est une CHAÎNE avec son unité
@@ -1718,7 +1833,13 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh, poidsK
   // qui tient la pièce n'a aucune raison de se contenter d'une estimation.
   let taxePop=0, vvMarche=vv, taxeBase=null;
   const TP=VVPARAMS.populaire.taxeEpave;
-  if(TP.actif && epave && ven.regime && ven.regime.taxeEpave){
+  // L'AVANTAGE ACQUIS N'EST PLUS RÉCUPÉRABLE. Un taxi ou un véhicule d'agence de plus de
+  // cinq ans a purgé son affectation : il redevient de droit commun et ne doit plus rien.
+  // Seuls restent redevables les véhicules encore sous délai, et ceux dont l'avantage ne
+  // s'éteint jamais (corps diplomatique, FCR RS resté en série RS).
+  const avantageEnCours = !!(ven.regime && ven.regime.taxeEpave &&
+    (ven.popStatut==='incessible' || ven.regime.avantagePermanent));
+  if(TP.actif && epave && avantageEnCours){
     const RGx=ven.regime;
     const cdE=chargeDouaniere(ven.fc, null);
     if(taxeSaisie>0){ taxePop=Math.round(taxeSaisie/100)*100; taxeBase='decompte'; }
@@ -1808,8 +1929,8 @@ function renderVVBlock(v){
   const rgCourant=regimeDe(v);
   html+='<div class="vv-f-reg"><label class="spec-label" for="vvRegime">Régime douanier '+
     '<span class="lbl-src">carte grise</span></label>'+
-    '<select id="vvRegime" class="vv-input">'+
-    Object.keys(VVPARAMS.regimes).map(k=>'<option value="'+k+'"'+(rgCourant===k?' selected':'')+'>'+
+    '<select id="vvRegime" class="vv-input"'+(regimesPossibles(v).length<2?' disabled':'')+'>'+
+    regimesPossibles(v).map(k=>'<option value="'+k+'"'+(rgCourant===k?' selected':'')+'>'+
       VVPARAMS.regimes[k].label+'</option>').join('')+
     '</select><div class="fld-aide" id="vvRegAide">'+(VVPARAMS.regimes[rgCourant].note||
       'Aucun avantage douanier : calcul au marché normal.')+'</div></div>';
@@ -1906,11 +2027,21 @@ function coteGaugeHtml(relConseille, relCourant){
 
 // Construit la fiche de valeur vénale (squelette + curseur), puis délègue les chiffres.
 // SOH saisi, en fraction. Une case vide vaut « non mesuré », pas « zéro ».
-// Régime retenu : la saisie de l'expert prime ; à défaut, « populaire » est proposé quand
-// le nom du modèle le dit, sinon droit commun. Le régime figure sur la carte grise.
+// Régimes ouverts à CE véhicule. Une voiture populaire ne peut relever que du régime
+// populaire — c'est une déclinaison vendue sous ce seul statut, elle n'existe pas ailleurs
+// (Yassine Hadiji). Et réciproquement, aucun autre modèle ne peut être « populaire ».
+// Laisser les huit régimes ouverts partout permettait des combinaisons impossibles, et
+// c'est en en essayant une que l'incohérence de calcul est apparue.
+function regimesPossibles(v){
+  if(v && v.pop) return ['populaire'];
+  return Object.keys(VVPARAMS.regimes).filter(k=>k!=='populaire');
+}
+
+// Régime retenu : la saisie de l'expert prime, dans la limite de ce que le véhicule permet.
 function regimeDe(v){
-  if(vvInputs.regime && VVPARAMS.regimes[vvInputs.regime]) return vvInputs.regime;
-  return v && v.pop ? 'populaire' : 'aucun';
+  const ouverts=regimesPossibles(v);
+  if(vvInputs.regime && ouverts.indexOf(vvInputs.regime)!==-1) return vvInputs.regime;
+  return ouverts[0]==='populaire' ? 'populaire' : 'aucun';
 }
 
 function sohSaisi(){
@@ -1969,10 +2100,11 @@ function renderVVOutput(v){
         '<div class="vv-decomp" id="vvDecomp" hidden></div>'+
         '<span class="vv-prix-note">estimation — hors barème compagnie</span></div>'+
       coteGaugeHtml(base.relatif, courant)+
-      '<div id="vvBat"></div>'+
-      '<div class="vv-chips" id="vvChips"></div>'+
       '<div id="vvConf"></div>'+
       '<details class="vv-details"><summary>Détail du calcul et règles appliquées</summary>'+
+        '<div class="vv-chips" id="vvChips"></div>'+
+        '<div id="vvBat"></div>'+
+        '<div id="vvConfDetail"></div>'+
         '<div class="vv-details-body" id="vvDetail"></div>'+
         '<div id="vvNotices"></div>'+
       '</details>'+
@@ -2123,15 +2255,19 @@ function refreshVVValues(v){
   const cfEl=document.getElementById('vvConf');
   if(cfEl){
     const lib={bonne:'Estimation bien étayée', moyenne:'Estimation à confirmer', faible:'Estimation fragile'};
+    // Une seule ligne : le niveau, et le nombre de réserves. Le détail se lit au survol,
+    // et se déplie dans « Détail du calcul » — la fiche doit livrer un résultat, pas un dossier.
     cfEl.innerHTML =
-      '<details class="conf conf-'+cf.niveau+'"'+(cf.niveau==='faible'?' open':'')+'>'+
-        '<summary><span class="conf-pip"></span><b>'+lib[cf.niveau]+'</b>'+
-          (cf.motifs.length?'<span class="conf-n">'+cf.motifs.length+' réserve'+(cf.motifs.length>1?'s':'')+'</span>':'')+
-        '</summary>'+
-        (cf.motifs.length
-          ? '<ul class="conf-l">'+cf.motifs.map(m=>'<li>'+m+'</li>').join('')+'</ul>'
-          : '<div class="conf-l">Aucune réserve : catalogue détaillé, tarif récent, saisies complètes.</div>')+
-      '</details>';
+      '<div class="conf conf-'+cf.niveau+'" title="'+
+        (cf.motifs.length?cf.motifs.join(' \u2014 '):'Aucune réserve')+'">'+
+        '<span class="conf-pip"></span><b>'+lib[cf.niveau]+'</b>'+
+        (cf.motifs.length?'<span class="conf-n">'+cf.motifs.length+' réserve'+(cf.motifs.length>1?'s':'')+'</span>':'')+
+      '</div>';
+    const cfd=document.getElementById('vvConfDetail');
+    if(cfd) cfd.innerHTML = cf.motifs.length
+      ? '<div class="conf-t">Réserves sur cette estimation</div><ul class="conf-l">'+
+        cf.motifs.map(m=>'<li>'+m+'</li>').join('')+'</ul>'
+      : '<div class="conf-t">Aucune réserve : catalogue détaillé, tarif récent, saisies complètes.</div>';
   }
 
   const reset=document.getElementById('vvCoteReset');
@@ -2195,6 +2331,15 @@ function refreshVVValues(v){
         Math.round(VVPARAMS.batterie.sohGarantie*100)+' % de capacité, un remplacement est généralement envisagé'+
         (r.partBat.coutRemplacement?' (ordre de grandeur : '+fmt(r.partBat.coutRemplacement)+')':'')+
         '. Le modèle applique une décote proportionnelle à la capacité perdue ; au-delà de ce seuil, confrontez-la au devis réel.</div>';
+    }
+
+    // Avantage acquis d'un taxi ou d'une agence : plus de taxe, mais un véhicule qui a
+    // beaucoup travaillé. Le facteur d'usage doit le traduire, et l'expert doit y penser.
+    if(r.ven.regime && r.ven.regime.usageIntensif && r.ven.popStatut==='majore'){
+      h+='<div class="notice" style="margin-top:8px">🚕 <b>Avantage acquis</b> — le véhicule a dépassé les '+
+        r.ven.regime.incessibilite+' ans d\'affectation : il est désormais de <b>droit commun</b> et plus aucune taxe n\'est due. '+
+        'Mais il a subi une <b>utilisation intensive</b> : vérifiez que le champ Usage la traduit'+
+        (r.usage && /particulier/i.test(r.usage.label)?' — il est actuellement sur « Particulier »':'')+'.</div>';
     }
 
     // Régime populaire : dire ce qui est appliqué, et pourquoi.
@@ -2934,7 +3079,7 @@ function buildSpecsBlock(v, modelName, FY){
       if(isEV) evTag += '<span style="background:#E3F2FD;color:#0D47A1;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">⚡ 100% Électrique</span>';
       if(isPHEV) evTag += '<span style="background:#E8F5E9;color:#1B5E20;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">🔌 Hybride Rechargeable</span>';
       if(isHEV) evTag += '<span style="background:#F1F8E9;color:#33691E;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">🌿 Hybride Auto-Recharge</span>';
-      if(kwh) evTag += '<span style="background:#FFF3E0;color:#E65100;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">🔋 '+kwh+'</span>';
+      if(kwh) evTag += '<span style="background:#FFF3E0;color:var(--txt-orange);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">🔋 '+kwh+'</span>';
       evTag += '</div>';
       html += evTag;
     }
@@ -2981,7 +3126,7 @@ function verBadgesHtml(eg){
     const fc=fuelClass(eg.fuel);
     h+='<span class="vi-badge fuel-'+fc+'">'+eg.fuel+'</span>';
   }
-  if(eg.kwh) h+='<span class="vi-badge" style="background:#FFF3E0;color:#E65100">🔋 '+eg.kwh+'</span>';
+  if(eg.kwh) h+='<span class="vi-badge" style="background:#FFF3E0;color:var(--txt-orange)">🔋 '+eg.kwh+'</span>';
   if(eg.cc&&!eg.kwh) h+='<span class="vi-badge">'+eg.cc+'</span>';
   if(eg.pw) h+='<span class="vi-badge pw">'+eg.pw+'</span>';
   if(eg.tx) h+='<span class="vi-badge tx">'+eg.tx+'</span>';
