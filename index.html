@@ -622,6 +622,45 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .bat-depr-d b{color:var(--t1)}
 .bat-foot{margin-top:5px;font-size:9.5px;color:var(--t2);line-height:1.6}
 .bat-foot b{color:var(--t1)}
+/* Aide sous un champ : la règle de métier doit être lisible au moment du choix, pas
+   dans un manuel. Un expert ne doit jamais avoir à deviner si une réparation propre
+   se pénalise. */
+.fld-aide{font-size:9px;color:var(--t3);line-height:1.5;margin-top:3px;min-height:13px}
+.lbl-src{font-weight:500;text-transform:none;letter-spacing:0;color:var(--t3);font-size:8.5px}
+.vv-fields .vv-f-taxe{grid-column:auto}
+.vv-fields .vv-f-reg{grid-column:1/-1}
+/* Quand l'indemnité n'est pas la seule valeur vénale, sa composition doit être lisible
+   sous le montant — un expert doit pouvoir justifier chaque dinar. */
+.vv-decomp{display:flex;flex-direction:column;gap:1px;margin-top:5px;font-size:9.5px;color:var(--t2)}
+.vv-decomp b{color:var(--t1)}
+.vv-decomp i{font-style:normal;opacity:.75}
+/* ── Confiance de l'estimation ──
+   Un état se lit à la forme autant qu'à la couleur : la pastille change de teinte, mais le
+   libellé dit la même chose en toutes lettres, et les réserves sont nommées une par une. */
+.conf{margin-top:9px;border:1px solid var(--bd);border-radius:var(--rs);background:var(--sf2);
+  font-size:10px;overflow:hidden}
+.conf summary{display:flex;align-items:center;gap:6px;padding:7px 10px;cursor:pointer;
+  user-select:none;color:var(--t2)}
+.conf summary::-webkit-details-marker{display:none}
+.conf b{color:var(--t1);font-weight:700}
+.conf-pip{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.conf-n{margin-left:auto;font-size:9px;opacity:.8}
+.conf-l{margin:0;padding:0 10px 8px 26px;color:var(--t2);line-height:1.7}
+.conf-l li{margin:0}
+.conf-bonne{border-color:var(--ok)}
+.conf-bonne .conf-pip{background:var(--ok)}
+.conf-moyenne{border-color:var(--warn)}
+.conf-moyenne .conf-pip{background:var(--warn)}
+.conf-faible{border-color:var(--bad);background:var(--sf)}
+.conf-faible .conf-pip{background:var(--bad)}
+/* Bascule « mise à l'épave » : elle change la nature du calcul, elle doit se voir. */
+.vv-epave{grid-column:1/-1;display:flex;gap:8px;align-items:flex-start;padding:8px 10px;
+  border:1px solid var(--bd2);border-radius:var(--rs);background:var(--sf2);
+  font-size:10px;color:var(--t2);line-height:1.55;cursor:pointer}
+.vv-epave.on{border-color:var(--am);background:var(--aml);color:var(--am)}
+.vv-epave b{color:var(--t1)}
+.vv-epave.on b{color:var(--am)}
+.vv-epave input{margin-top:2px;flex-shrink:0;accent-color:var(--am)}
 .soh-wrap{position:relative;display:flex;align-items:center}
 .soh-wrap .vv-input{padding-right:26px}
 .soh-unit{position:absolute;right:9px;font-size:11.5px;color:var(--t3);pointer-events:none}
@@ -649,7 +688,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   <div class="logo">
     <div class="logo-ico">🚗</div>
     <div>
-      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v27</span></div>
+      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v35</span></div>
       <div class="logo-sub" id="dbStats">Chargement…</div>
     </div>
   </div>
@@ -776,9 +815,9 @@ let sel = {b:null, m:null, v:null};
 let FY  = null;
 // ── Version de l'application ──
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
-const VERSION = 'v27';
+const VERSION = 'v35';
 const VERSION_DATE = '29/08/2026';
-const VERSION_NOTES = 'batterie des hybrides simples · ligne de dévalorisation chiffrée · batterie de traction · plafond prix neuf du jour · cohérence des millésimes · parcours téléphone · thème sombre';
+const VERSION_NOTES = 'décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · assiettes de taxe par régime · TVA 7 % pour les rechargeables · régimes douaniers confirmés · taxe d\'épave étayée sur un cas réel · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · taxe au poids des populaires détruites · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -835,36 +874,165 @@ const VVPARAMS = {
   // Ce taux est signalé comme prédit dans la fiche, pour qu'il ne passe jamais pour une mesure.
   prediction: { nbAnnees: 5 },
 
-  // ── Véhicules populaires ──
-  // Le véhicule populaire est vendu hors taxe douanière, sous conditions de revenu et de
-  // puissance (<= 4 CV fiscaux). Il est INCESSIBLE pendant 2 ans à compter de l'achat, sauf
-  // cas particuliers (mise à l'épave notamment).
-  //   · avant 2 ans  : sa valeur suit le prix SUBVENTIONNÉ — il est invendable, il n'existe
-  //                    pas de marché auquel le comparer ;
-  //   · après 2 ans  : il rejoint le marché normal, sa valeur suit donc un prix à neuf TAXÉ.
-  // Sans cette réintégration, l'estimation serait mécaniquement trop basse d'un tiers.
+  // ══ Confiance de l'estimation ══
   //
-  // Taux douanier : 30 % pour les concessionnaires, confirmé par Yassine Hadiji (expert
-  // automobile) — c'est la référence retenue. Les sources publiques ne permettaient pas de
-  // l'établir : le portail des douanes refuse la consultation automatisée, les guides publics
-  // décrivent l'éligibilité sans le barème, et le « 25 ou 30 % » d'argusautomobile.tn porte
-  // sur le régime FCR (résidents à l'étranger), qui est autre chose.
+  // Une valeur vénale ne repose pas partout sur la même épaisseur de données, et l'écart
+  // est considérable. Mesuré sur la base : 40 % des modèles n'ont QU'UNE SEULE finition,
+  // 24 % ont un tarif qui s'arrête avant 2020, et 72 % des véhicules à batterie n'ont pas
+  // de capacité renseignée. C'est là — et non dans la formule — que se loge l'essentiel de
+  // la dispersion résiduelle : 12,9 % d'écart absolu médian par modèle, dont 21 groupes sur
+  // 55 au-delà de 20 %.
   //
-  // Pour mémoire, l'écart mesuré dans la base entre version populaire et version normale du
-  // même modèle la même année ressort à +56 % en médiane (43 couples, de +11 % à +102 %).
-  // Il n'est PAS utilisable comme taux : la version normale est souvent bien mieux équipée,
-  // l'écart mélange donc l'exonération fiscale et la différence de finition. Les couples les
-  // plus proches en équipement (VW Polo 2017 +11 %, Clio 2017 +15 %, Chery QQ +22 %) sont
-  // cohérents avec les 30 % retenus.
+  // Un expert doit pouvoir dire sur quoi son chiffre s'appuie, et le défendre. La fiche
+  // affiche donc un indicateur qui NOMME les fragilités au lieu de les taire. Il ne corrige
+  // rien : il avertit, ce qui est plus honnête que d'afficher partout la même précision
+  // apparente.
+  confiance: {
+    // Chaque défaut coûte des points ; le total classe l'estimation.
+    penalites: {
+      finitionUnique:      { pts:2, txt:'un seul niveau de finition au catalogue pour ce modèle' },
+      peuDeFinitions:      { pts:1, txt:'catalogue peu détaillé pour ce modèle' },
+      tarifAncien:         { pts:2, txt:'tarif catalogue arrêté avant {an}' },
+      tarifVieillissant:   { pts:1, txt:'dernier tarif connu : {an}' },
+      ancrageEnveloppe:    { pts:1, txt:'tarif du millésime corrigé pour rester cohérent' },
+      ancrageProche:       { pts:1, txt:'aucun tarif relevé l\'année de mise en circulation' },
+      batterieForfait:     { pts:2, txt:'capacité batterie inconnue, part forfaitaire' },
+      sohNonMesure:        { pts:2, txt:'état de santé de la batterie non mesuré' },
+      kmAbsent:            { pts:2, txt:'kilométrage non renseigné' },
+      anneesPredites:      { pts:1, txt:'indice prix extrapolé sur {n} année(s)' },
+      decompteManquant:    { pts:3, txt:'décompte des douanes indispensable et absent' },
+    },
+    seuils: { bonne:1, moyenne:3 },   // ≤1 : bonne · ≤3 : moyenne · au-delà : faible
+    seuilFinitions: 3,                // en deçà, catalogue jugé peu détaillé
+    ecartTarif: 6,                    // années depuis le dernier tarif avant alerte forte
+  },
+
+  // ══ Régimes douaniers de faveur ══
   //
-  // Enfin, la réintégration est PLAFONNÉE par la version normale du même modèle quand la base
-  // en contient une (voir venJumelle). Une populaire ne peut pas ressortir mieux valorisée que
-  // la voiture non subventionnée dont elle est la déclinaison : c'est le même véhicule, en
-  // moins bien équipé et avec un historique de revente contraint.
+  // La voiture populaire n'est qu'un cas particulier. Le même mécanisme vaut pour TOUT
+  // véhicule ayant bénéficié d'un avantage douanier (Yassine Hadiji) : FCR, corps
+  // diplomatique et consulaire, taxis et louages sous décret, agences de voyages…
+  //
+  // POINT DE STRUCTURE ESSENTIEL. Le régime n'est pas une propriété du MODÈLE, c'est une
+  // propriété du VÉHICULE : il figure sur la carte grise, pas au catalogue. Une Picanto
+  // ordinaire peut avoir été importée sous FCR. Le régime se SAISIT donc ; le repérage par
+  // le nom du modèle ne sert qu'à pré-sélectionner « populaire ».
+  //
+  // DEUXIÈME POINT, qui inverse la logique selon les régimes : d'où vient l'avantage ?
+  //   · Voiture populaire — le CATALOGUE lui-même est subventionné. La valeur à neuf doit
+  //     donc réintégrer la taxe une fois le délai passé (subventionne: true).
+  //   · FCR, diplomatique, taxi, agence — le véhicule est un modèle ordinaire, dont le tarif
+  //     catalogue INCLUT DÉJÀ la taxe. L'avantage a porté sur l'acheteur, pas sur le prix
+  //     affiché. Y appliquer une majoration le compterait deux fois (subventionne: false).
+  //
+  // Les durées et barèmes non documentés sont signalés comme tels : le portail des douanes
+  // refuse toute consultation automatisée, et aucun guide public ne publie ces barèmes.
+  regimes: {
+    aucun: { label:'Droit commun', court:'', subventionne:false, incessibilite:0,
+      majorationDouane:0, taxeEpave:false, note:'' },
+    populaire: { label:'Voiture populaire', court:'Populaire', subventionne:true,
+      incessibilite:2, majorationDouane:0.30, taxeEpave:true, sur:true,
+      assiette:'poids', source:'pratique',
+      note:'Exonération de la taxe douanière (30 % concessionnaire), incessible 2 ans, renouvellement du régime après 7 ans seulement — un sinistre total n\'y ouvre pas droit.' },
+    // ══ FCR — régime retenu TEL QUEL d'après le guide officiel automobile.tn ══
+    // Référence donnée par Yassine Hadiji. Elle corrige trois points que j'avais mal posés.
+    //
+    //   1. L'INCESSIBILITÉ DE LA SÉRIE RS EST DE DURÉE ILLIMITÉE, pas de deux ans :
+    //      « Exonération totale des droits et taxes dus, avec interdiction de cession pour
+    //      une durée illimitée. » Le véhicule reste donc hors marché tant qu'il n'est pas
+    //      régularisé — il n'y a aucun délai à laisser courir.
+    //
+    //   2. LA RÉGULARISATION PORTE SUR LES DROITS ET TAXES, PAS SUR LA VALEUR À NEUF, et son
+    //      taux est de 30 %, non de 25 % : « seulement 30 % des droits et des taxes dus »
+    //      pour lever l'interdiction de vente.
+    //
+    //   3. C'ÉTAIT UNE MESURE TRANSITOIRE, ouverte jusqu'au 31 DÉCEMBRE 2025. Passée cette
+    //      date, la fiche AVERTIT plutôt que d'appliquer un taux qui n'a peut-être plus cours.
+    //
+    // Les droits et taxes dus ne se déduisent pas d'un prix catalogue : ils dépendent de la
+    // valeur en douane, de la cylindrée et du barème du droit de consommation. Aucune
+    // estimation n'est donc produite — le décompte de la recette des douanes est requis.
+    fcr_rs: { label:'FCR — franchise totale (série RS)', court:'FCR RS', subventionne:false,
+      incessibilite:Infinity, majorationDouane:0, taxeEpave:true, sur:true,
+      assiette:'droitsEtTaxes', tauxAssiette:0.30, finMesureTransitoire:2025,
+      source:'publie',
+      note:'Exonération totale des droits et taxes, avec interdiction de cession pour une durée ILLIMITÉE : le véhicule demeure en série RS. La régularisation, seule voie pour vendre, coûtait 30 % des droits et taxes dus — mesure transitoire ouverte jusqu\'au 31 décembre 2025.' },
+    // Franchise PARTIELLE, série Tunisie : le véhicule est cessible après paiement de 25 %
+    // des droits normaux (essence et hybride ≤ 2000 cm³, diesel et hybride ≤ 2500 cm³,
+    // professionnels, électriques) ou 30 % au-delà. Les droits étant acquittés, il n'y a plus
+    // d'avantage en cours : il se traite exactement comme un véhicule TU ordinaire, sans
+    // délai et sans taxe d'épave. Le régime reste proposé dans la liste pour que l'expert
+    // puisse le consigner et voir écrit qu'il n'emporte aucune conséquence.
+    fcr_partiel: { label:'FCR — franchise partielle (série TU)', court:'FCR TU',
+      subventionne:false, incessibilite:0, majorationDouane:0, taxeEpave:false, sur:true,
+      source:'publie',
+      note:'Franchise partielle : le véhicule est cessible après paiement de 25 % des droits normaux (essence et hybride ≤ 2000 cm³, diesel et hybride ≤ 2500 cm³, professionnels, électriques) ou 30 % au-delà. Les droits ayant été acquittés, il n\'y a plus d\'avantage en cours : il se traite comme tout véhicule immatriculé en TU.' },
+    // Corps diplomatique : AUCUN DÉLAI. Le véhicule est assimilé à un véhicule ÉTRANGER
+    // disposant d'une autorisation permanente de circulation sur le territoire tunisien
+    // (confirmé par Yassine Hadiji). Il n'y a donc pas de délai à laisser courir : les droits
+    // deviennent exigibles dès qu'il quitte le régime, mise à l'épave comprise.
+    diplomatique: { label:'Corps diplomatique / consulaire', court:'Diplomatique',
+      subventionne:false, incessibilite:0, majorationDouane:0, taxeEpave:true, sur:true,
+      assiette:'poids', source:'pratique',
+      note:'Véhicule assimilé à un véhicule étranger, avec autorisation permanente de circulation en Tunisie. Aucun délai d\'incessibilité : les droits deviennent exigibles dès la sortie du régime.' },
+    // Taxi, louage et transport rural — le seul régime dont les textes ont pu être lus.
+    // Loi n° 2011-7 du 31/12/2011 (LF 2012, art. 19 à 23) et décret n° 2012-5 du 04/01/2012 :
+    // exonération du DROIT DE CONSOMMATION et TVA réduite, une fois TOUS LES CINQ ANS, sur
+    // véhicule neuf acquis auprès d'un assujetti. Le taux réduit de TVA était de 6 % ; il est
+    // passé à 7 % au 1er janvier 2018 (note commune, DGELF).
+    // POINT IMPORTANT POUR L'EXPERTISE : le renouvellement du bénéfice peut intervenir AVANT
+    // le terme des cinq ans en cas d'ENDOMMAGEMENT du véhicule, de vol, ou de changement de
+    // catégorie du permis de transport public. Un taxi détruit n'est donc pas bloqué comme
+    // l'est le propriétaire d'une populaire, qui doit attendre sept ans.
+    taxi_louage: { label:'Taxi / louage / transport rural', court:'Taxi-louage',
+      subventionne:false, incessibilite:5, majorationDouane:0, taxeEpave:true, sur:true,
+      assiette:'poids', source:'publie', renouvellementSinistre:true,
+      note:'Exonération du droit de consommation et TVA réduite à 7 %, une fois tous les cinq ans (LF 2012 art. 19-23, décret 2012-5). Le renouvellement du bénéfice est possible AVANT le terme en cas d\'endommagement, de vol ou de changement de catégorie du permis : l\'exploitant n\'est pas bloqué.' },
+    agence: { label:'Agence de voyages', court:'Agence de voyages',
+      subventionne:false, incessibilite:5, majorationDouane:0, taxeEpave:true, sur:true,
+      assiette:'poids', source:'pratique',
+      note:'Exonération liée à l\'activité de l\'agence. Ce régime n\'est pas couvert par les textes relatifs aux taxis et louages (LF 2012) : durée et barème reposent sur la pratique.' },
+    autre: { label:'Autre régime de faveur', court:'Régime de faveur',
+      subventionne:false, incessibilite:0, majorationDouane:0, taxeEpave:true, sur:false,
+      assiette:'poids', source:'pratique',
+      note:'Régime privilégié non listé. La taxe due se saisit d\'après le décompte de la recette des douanes.' },
+  },
+
+  // ══ Électriques et hybrides rechargeables : la charge douanière se résume à la TVA ══
+  // Règle confirmée par Yassine Hadiji, et valable pour TOUS les acquéreurs — particuliers,
+  // régimes RS et concessionnaires : sur un véhicule électrique ou hybride rechargeable, il
+  // n'y a plus de droit de douane, la charge se réduit à une TVA de 7 %.
+  //
+  // VÉRIFIÉE, Y COMPRIS POUR LES HYBRIDES RECHARGEABLES. L'analyse de la loi de finances
+  // 2026 donne le barème complet, identique pour les deux énergies :
+  //     droit de consommation 0 %  ·  TVA 7 % (contre 19 %)  ·  droits de douane 0 %
+  //     carte grise −50 %  ·  vignette −50 %
+  // et précise que « les véhicules hybrides rechargeables sont désormais alignés sur le même
+  // régime fiscal que les voitures 100 % électriques » — c'est la RECHARGEABILITÉ qui
+  // déclenche le régime, pas l'absence de moteur thermique. Confirmé par ailleurs par l'ANME
+  // (La Presse, avril 2026) et managers.tn (août 2026).
+  // Recoupement sur la base elle-même : les tarifs PHEV ont chuté de 24,7 % en 2026,
+  // davantage que toute autre énergie — cohérent avec une exonération de cette ampleur.
+  //
+  // Elle s'applique donc aux DEUX endroits où une charge douanière intervient :
+  //   · la réintégration de la taxe dans la valeur à neuf d'une populaire au-delà de son
+  //     délai — 7 % au lieu de 30 % si le véhicule est électrique ;
+  //   · la taxe de régularisation due à la mise à l'épave, quelle que soit l'assiette
+  //     normalement prévue par le régime.
+  // La négliger reviendrait à réclamer à un assuré roulant en électrique une taxe calculée
+  // sur un barème thermique qui ne le concerne plus.
+  tvaElectrique: { taux: 0.07, energies: ['elec', 'phev'] },
+
   populaire: {
-    dureeIncessibilite: 2,     // années pendant lesquelles le véhicule ne peut être revendu
-    majorationDouane: 0.30,    // taux douanier concessionnaire, réintégré une fois le délai écoulé
-    plafondJumelle: true,      // ne jamais dépasser la version normale équivalente
+    plafondJumelle: true,      // une populaire ne dépasse jamais sa version normale
+    // ── Taxe due à la mise à l'épave d'un véhicule sous régime de faveur ──
+    // Le barème n'est publié nulle part. Le tarif ci-dessous vient d'un CAS RÉEL rapporté
+    // par Yassine Hadiji : une Renault Kwid Populaire mise à l'épave a acquitté 8 000 DT.
+    // Le poids à vide de cette version (1.0 L manuelle, 4 CV) est de 736 kg, d'où 10,87 DT/kg.
+    // Ce montant représente aussi 30 % de sa valeur vénale — les deux lectures concordent,
+    // le barème au poids semble calibré sur le droit de douane exonéré.
+    // UNE SEULE OBSERVATION : à réviser dès qu'un deuxième décompte sera connu.
+    taxeEpave: { dtParKg: 10.9, tauxValeurDefaut: 0.30, actif: true },
   },
 
   // ── F_âge : dépréciation liée à l'âge ──
@@ -954,18 +1122,32 @@ const VVPARAMS = {
     taxi:        {label:'Taxi / VTC',                  coef:0.85},
   },
 
-  // ── F_état ── échelle -10 (Mauvais) à +10 (Très bon) => ±10 % autour du neutre.
+  // ── F_état ── échelle -10 à +10 => ±10 % autour du neutre.
+  //
+  // C'est le facteur du JUGEMENT VISUEL DE L'EXPERT, et il obéit à une règle de métier
+  // précise (Yassine Hadiji) : un sinistre mal réparé se décèle — jeux de tôlerie, écarts
+  // de teinte, reprises apparentes — et se sanctionne. Mais un véhicule réparé SELON LES
+  // NORMES DU CONSTRUCTEUR, avec une finition quasi parfaite, ne subit AUCUN MALUS : il
+  // reste au niveau neutre. Le passé accidenté ne se déduit pas par principe ; seul le
+  // constat d'une réparation défectueuse le fait.
+  // Les libellés portent donc cette règle, plutôt qu'une échelle abstraite de « bon » à
+  // « mauvais » qui laissait l'expert deviner s'il devait pénaliser une réparation propre.
   baseEtat: 1.0,
   etats: {
-    mauvais: {label:'Mauvais',  idx:-10},
-    moyen:   {label:'Moyen',    idx:-5},
-    normal:  {label:'Normal',   idx:0},
-    bon:     {label:'Bon',      idx:5},
-    tresbon: {label:'Très bon', idx:10},
+    mauvais: {label:'Réparation non conforme', aide:'défauts décelables : jeux de tôlerie, écarts de teinte, reprises apparentes', idx:-10},
+    moyen:   {label:'Réparation visible',      aide:'travail correct mais finition imparfaite, ou usure marquée', idx:-5},
+    normal:  {label:'Conforme — aucun malus',  aide:'véhicule sain, ou réparé aux normes constructeur avec finition quasi parfaite', idx:0},
+    bon:     {label:'Bon entretien',           aide:'usure inférieure à la moyenne de son âge', idx:5},
+    tresbon: {label:'Exceptionnel',             aide:'état de présentation remarquable pour son âge', idx:10},
   },
 
   // ── F_carburant ── prime/décote de l'énergie sur le marché de l'OCCASION (le neuf est
   // déjà traité par l'indice ci-dessus). Estimation de départ, non calibrée.
+  // F_carburant porte la DEMANDE locale pour l'énergie, sur le marché de l'occasion.
+  // Pour l'électrique, c'est ici que loge le déficit d'infrastructure de recharge tunisien
+  // (environ 200 bornes pour un peu plus de 400 véhicules en circulation ; objectif de
+  // 10 000 bornes en 2030, ANME avril 2026) : il pèse sur l'envie d'acheter, pas sur
+  // l'usure. Valeurs POSÉES, non calibrées — aucune source ne les mesure.
   carburant: {essence:1.00, diesel:0.98, hev:1.00, phev:0.97, elec:0.95, gpl:0.98},
 
   // ── Batterie de traction ──
@@ -1004,15 +1186,56 @@ const VVPARAMS = {
     sohMin: 0.40, sohMax: 1.02,
   },
 
-  // Surcroît de dévalorisation des véhicules à batterie. Les VE se déprécient plus vite que
-  // les thermiques : 38 à 42 % à trois ans contre 35 à 40 % (Cox Automotive, novembre 2025),
-  // soit un rythme annuel supérieur d'environ 8 %. On applique ce RAPPORT au taux de la gamme
-  // — jamais les taux européens eux-mêmes, qui n'ont rien à voir avec le marché tunisien.
-  // Le niveau, lui, reste porté par l'indice par énergie et le plafond du prix neuf du jour,
-  // qui captent déjà l'effondrement tarifaire tunisien de 2025-2026.
-  // À REMESURER dès qu'un marché de l'occasion électrique existera en Tunisie : la base ne
-  // contient aujourd'hui qu'une finition électrique antérieure à 2023.
-  surcoutDeprBatterie: {elec:1.08, phev:1.08},
+  // ── Dévalorisation des véhicules électriques ──
+  //
+  // Règle de métier (Yassine Hadiji) : un VE tunisien suit OBLIGATOIREMENT la courbe
+  // européenne, parce qu'il est vendu au même coût qu'en Europe — droits de douane
+  // supprimés, TVA à 7 % — et roule dans des conditions comparables. Il ne bénéficie donc
+  // PAS du soutien de valeur qui tient le marché tunisien de l'occasion thermique, lequel
+  // vient précisément des droits d'importation élevés et de l'offre de neuf contrainte.
+  // Appliquer aux VE le taux d'une gamme thermique tunisienne (4,27 à 8,33 %/an) était donc
+  // une erreur d'analyse : ces taux mesurent une rareté qui n'existe pas pour l'électrique.
+  //
+  // Deux corrections locales, et deux seulement :
+  //   · le CLIMAT — la Tunisie est plus chaude, la batterie s'y dégrade plus vite ;
+  //   · l'INFRASTRUCTURE DE RECHARGE — environ 200 bornes pour un peu plus de 400 véhicules
+  //     en circulation, objectif de 10 000 bornes en 2030 (ANME, avril 2026). Cette rareté
+  //     pèse sur la DEMANDE, pas sur le rythme d'usure : elle est portée par F_carburant
+  //     (elec 0,95), pas par le taux de dépréciation.
+  ve: {
+    // Décote observée en Europe et aux États-Unis, RAPPORTÉE AU PRIX D'ACHAT D'ORIGINE :
+    //   · 3 ans, 38 à 42 %   (Cox Automotive, novembre 2025)        → 15,7 %/an
+    //   · 5 ans, 49,1 %      (iSeeCars, 1,1 million de ventes)       → 12,7 %/an
+    //   · 5 ans, environ 59 % (Recharged, marché américain 2025-26)  → 16,4 %/an
+    // Médiane des trois : 15 %/an.
+    tauxEuropeBrut: 0.15,
+    // Une étude de valeur résiduelle rapporte la valeur au prix d'achat D'ORIGINE : elle
+    // englobe donc le mouvement du prix du NEUF survenu depuis. Or notre valeur à neuf est
+    // déjà ramenée au prix du jour (indice par énergie, puis plafond du prix neuf du jour).
+    // Il faut donc retrancher du taux brut la part imputable au neuf, sans quoi elle serait
+    // comptée deux fois.
+    //
+    // J'AVAIS POSÉ 5 %/AN EN CROYANT QUE LES PRIX DU NEUF ÉLECTRIQUE AVAIENT BEAUCOUP BAISSÉ
+    // EN EUROPE. C'EST FAUX, et la vérification l'a montré : d'après Transport & Environment
+    // (mars 2026), le prix moyen d'un VE neuf dans l'UE a AUGMENTÉ de 5 000 € entre 2020 et
+    // 2024, et n'a baissé qu'en 2025 — de 1 800 € (−4 %), à 42 700 €, première baisse depuis
+    // 2020. Sur la fenêtre des études de valeur résiduelle, le prix du neuf européen est donc
+    // à peu près STABLE, et non en chute.
+    //
+    // Retranchant la seule baisse réellement constatée (−4 % sur 2025, soit environ 1,3 %/an
+    // lissés sur une fenêtre de trois ans), il reste 13,7 %/an — contre 10,1 % avec mon
+    // hypothèse initiale. La correction est lourde, mais elle va dans le sens de la règle
+    // posée par Yassine : un VE tunisien suit la courbe européenne, et cette courbe est raide.
+    //
+    // L'effondrement tarifaire tunisien de 2025-2026, lui, n'est PAS compté ici : il agit sur
+    // la valeur à neuf (indice par énergie et plafond du prix du jour), pas sur le rythme de
+    // dévalorisation. Les deux effets sont multiplicatifs et indépendants.
+    baisseNeufAnnuelle: 0.013,
+    // Climat : +0,4 point de dégradation batterie par an en climat chaud (Geotab). L'effet
+    // sur la VALEUR est cette perte de capacité supplémentaire, pondérée par le poids de la
+    // batterie dans le véhicule — un surcroît d'usure ne coûte que ce que vaut la pièce.
+    deltaClimatBatterie: 0.004,
+  },
 };
 
 // ── Calcul automatique de l'indice depuis la base ──
@@ -1094,7 +1317,7 @@ function venJumelle(v, anneeRef, anneeEval){
   }
   let best=null;
   for(const x of pool){
-    const r=computeVEN(x, anneeRef, anneeEval);
+    const r=computeVEN(x, anneeRef, anneeEval, 'aucun');
     if(r && isFinite(r.VEN) && (best===null || r.VEN<best)) best=r.VEN;
   }
   return best;
@@ -1141,6 +1364,12 @@ function indexMultiplier(anneePrix, anneeEval, fuelClassKey){
 // `anneeEval` : année à laquelle on se place pour évaluer (par défaut l'année courante).
 // En expertise, un sinistre doit être évalué à SA date — et une réforme fiscale postérieure
 // ne doit donc pas s'appliquer, ce que la borne de l'indice garantit.
+// La charge douanière d'un véhicule à batterie rechargeable se résume à la TVA.
+function chargeDouaniere(fc, tauxRegime){
+  const T=VVPARAMS.tvaElectrique;
+  return (T && T.energies.indexOf(fc)!==-1) ? {taux:T.taux, tva:true} : {taux:tauxRegime, tva:false};
+}
+
 // Prix du véhicule NEUF à la date d'évaluation, quand la finition est encore commercialisée
 // à cette date. C'est la valeur de remplacement à neuf : ce qu'il en coûte d'aller chercher
 // le même véhicule en concession ce jour-là.
@@ -1176,8 +1405,21 @@ function venSerie(v, AE, fc){
   const tMin=Math.min.apply(null, VVPARAMS.gammes.map(g=>g.tauxDeprAn));
   const penteKm=VVPARAMS.malusPar10000km*VVPARAMS.kmRefAnnuel/10000;
   const borneRel=(1/(1-tMin))*(1-penteKm)*0.995;
+  // AU-DELÀ DU PLANCHER DE VALEUR RÉSIDUELLE, l'âge ne fait plus rien gagner : F_âge est
+  // bloqué à sa valeur plancher et cesse de croître avec le millésime. La marge tombe donc
+  // à zéro, sinon la baisse du tarif reprend le dessus et l'ordre s'inverse à nouveau.
+  // Le cas est apparu en portant la décote des VE de 10,1 à 13,8 %/an : à ce rythme le
+  // plancher de 12 % est atteint dès 13 ans, et 50 inversions sont réapparues sur les
+  // millésimes anciens (Geely EX2, MG S6, Dongfeng Box…).
+  // L'âge de bascule se calcule avec le taux le PLUS RAPIDE possible — c'est lui qui touche
+  // le plancher en premier, et une marge trop petite reste toujours sûre.
+  const tMax=Math.max(VVPARAMS.ve.tauxEuropeBrut,
+                      Math.max.apply(null, VVPARAMS.gammes.map(g=>g.tauxDeprAn)));
+  const agePlancher=Math.log(VVPARAMS.valeurResiduelle)/Math.log(1-tMax);
+  const borneRelPlancher=(1-penteKm)*0.995;
   for(let y=y1-1; y>=y0; y--){
-    const max=par[y+1].ven*borneRel;
+    const rel=(AE-y)>=agePlancher ? borneRelPlancher : borneRel;
+    const max=par[y+1].ven*rel;
     if(par[y].ven>max){ par[y].ven=max; par[y].env=true; }
   }
   const out={par, y0, y1};
@@ -1185,7 +1427,7 @@ function venSerie(v, AE, fc){
   return out;
 }
 
-function computeVEN(v, anneeRef, anneeEval){
+function computeVEN(v, anneeRef, anneeEval, regimeKey){
   const fc=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
   const AE = (anneeEval!=null && isFinite(anneeEval)) ? anneeEval : CY;
 
@@ -1239,16 +1481,22 @@ function computeVEN(v, anneeRef, anneeEval){
   // Véhicule populaire : une fois le délai d'incessibilité passé, il s'échange sur le marché
   // normal — la valeur à neuf de référence doit donc réintégrer la taxe douanière dont il a
   // été exonéré. Avant ce délai, il est invendable : on reste au prix subventionné.
-  let majPop=1, popStatut=null, venJum=null, plafonne=false;
-  if(v.pop){
+  // Régime douanier : saisi par l'expert (il figure sur la carte grise, pas au catalogue).
+  // À défaut, le repérage par le nom du modèle propose « populaire ».
+  const RG = VVPARAMS.regimes[regimeKey] || VVPARAMS.regimes[v.pop?'populaire':'aucun'];
+  let majPop=1, popStatut=null, venJum=null, plafonne=false, tvaSeule=false;
+  if(RG && RG!==VVPARAMS.regimes.aucun){
     const ageEval = (anneeRef!=null && isFinite(anneeRef)) ? (AE-anneeRef) : null;
-    if(ageEval!=null && ageEval < VVPARAMS.populaire.dureeIncessibilite){
-      popStatut='incessible';
-    } else {
-      majPop = 1+VVPARAMS.populaire.majorationDouane;
-      popStatut='majore';
+    const sousDelai = RG.incessibilite>0 && ageEval!=null && ageEval<RG.incessibilite;
+    popStatut = sousDelai ? 'incessible' : 'majore';
+    // La majoration ne vaut QUE pour un catalogue subventionné (la populaire). Ailleurs le
+    // tarif inclut déjà la taxe : l'appliquer la compterait deux fois.
+    if(!sousDelai && RG.subventionne){
+      const cd=chargeDouaniere(fc, RG.majorationDouane);
+      majPop = 1+cd.taux;
+      tvaSeule = cd.tva;
     }
-    if(VVPARAMS.populaire.plafondJumelle) venJum=venJumelle(v, anneeRef, AE);
+    if(RG.subventionne && VVPARAMS.populaire.plafondJumelle) venJum=venJumelle(v, anneeRef, AE);
   }
   // ── Plafond « prix neuf du jour » ──
   // La valeur à neuf de référence ne peut pas dépasser ce que coûte réellement le véhicule
@@ -1276,7 +1524,7 @@ function computeVEN(v, anneeRef, anneeEval){
   // sans quoi un simple franchissement de palier de gamme pourrait réinverser les deux.
   const venGamme = venJum!=null ? venJum : VEN;
   return {VEN, idx, L, M, fc, reforme, predites, ancre, anneeEval:AE, majPop, popStatut,
-          venJum, plafonne, venGamme, plafondNeuf, neufPlafonne};
+          venJum, plafonne, venGamme, plafondNeuf, neufPlafonne, regime:RG, regimeKey, tvaSeule};
 }
 
 // Capacité de la batterie, en kWh. Le champ de la base est une CHAÎNE avec son unité
@@ -1325,24 +1573,82 @@ function facteurBatterie(soh, age, part){
   return {f:1+part.part*ecart, attendu:att, ecart, soh};
 }
 
+// Confiance de l'estimation : on liste les fragilités réelles, on les pondère, on classe.
+// Rien n'est corrigé — l'expert est averti de ce sur quoi le chiffre repose.
+function evaluerConfiance(v, r){
+  const C=VVPARAMS.confiance, P=C.penalites, motifs=[];
+  let pts=0;
+  const add=(cle, subs)=>{
+    const d=P[cle]; let t=d.txt;
+    if(subs) for(const k of Object.keys(subs)) t=t.replace('{'+k+'}', subs[k]);
+    motifs.push(t); pts+=d.pts;
+  };
+  // Couverture catalogue du modèle
+  const fr=finitionsDe(v);
+  if(fr!=null){
+    if(fr<=1) add('finitionUnique');
+    else if(fr<C.seuilFinitions) add('peuDeFinitions');
+  }
+  // Fraîcheur du tarif
+  const dernier=yOf(v.d);
+  if(r.anneeEval-dernier>=C.ecartTarif) add('tarifAncien', {an:dernier+1});
+  else if(r.anneeEval-dernier>=3) add('tarifVieillissant', {an:dernier});
+  // Qualité de l'ancrage
+  if(r.ven.ancre==='enveloppe') add('ancrageEnveloppe');
+  else if(r.ven.ancre==='proche') add('ancrageProche');
+  // Indice extrapolé
+  if(r.ven.predites>0) add('anneesPredites', {n:r.ven.predites});
+  // Saisies manquantes
+  if(r.km==null) add('kmAbsent');
+  if(r.partBat){
+    if(!r.partBat.mesuree) add('batterieForfait');
+    if(r.bat.soh==null) add('sohNonMesure');
+  }
+  if(r.taxeBase==='decompteRequis') add('decompteManquant');
+
+  const niveau = pts<=C.seuils.bonne ? 'bonne' : pts<=C.seuils.moyenne ? 'moyenne' : 'faible';
+  return {pts, niveau, motifs};
+}
+
+// Nombre de finitions du modèle auquel appartient cette finition. Calculé une fois et
+// mémorisé sur l'objet : la base ne change pas en cours de session.
+function finitionsDe(v){
+  if(v.__nf!==undefined) return v.__nf;
+  let n=null;
+  for(const b of Object.keys(DB)) for(const m of Object.keys(DB[b]))
+    if(DB[b][m].indexOf(v)!==-1) n=DB[b][m].length;
+  return (v.__nf=n);
+}
+
 // VV = valeur vénale estimée. Nécessite FY (année de 1ère MEC, barre du haut).
 // `coteAjustee` (facultatif) : position de cotation forcée par l'expert via le curseur.
 // Elle remplace le `relatif` calculé, sans effacer ce dernier — la fiche affiche les deux
 // pour que l'écart entre la recommandation et le jugement de l'expert reste visible.
-function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh){
+function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh, poidsKg, epave, regimeKey, taxeSaisie){
   if(!FY) return null;
   const AE = (anneeEval!=null && isFinite(anneeEval)) ? anneeEval : CY;
   // L'âge se compte à la date d'évaluation, pas à aujourd'hui.
   const age=Math.max(0, AE-FY);
-  const ven=computeVEN(v, FY, AE); // prix ancré sur la MEC, actualisé à la date d'évaluation
+  const ven=computeVEN(v, FY, AE, regimeKey); // prix ancré sur la MEC, actualisé à la date d'évaluation
 
   // F_âge : géométrique, au rythme propre à la gamme du véhicule (déterminée par sa valeur
   // à neuf), avec valeur résiduelle plancher.
   const venClass = (ven.venGamme!=null && isFinite(ven.venGamme)) ? ven.venGamme : ven.VEN;
   const gamme=VVPARAMS.gammes.find(g=>venClass<g.maxVEN)||VVPARAMS.gammes[VVPARAMS.gammes.length-1];
-  // Les véhicules à batterie se déprécient plus vite : on majore le taux de la gamme.
-  const surcout=VVPARAMS.surcoutDeprBatterie[ven.fc]||1;
-  const tauxDepr=gamme.tauxDeprAn*surcout;
+  // Taux de dépréciation : celui de la gamme pour un thermique, la courbe européenne
+  // corrigée du climat pour un véhicule à batterie (voir VVPARAMS.ve).
+  const partBatPre = partBatterie(v, ven.fc, ven.VEN);
+  let tauxDepr=gamme.tauxDeprAn, baseVE=null;
+  if(partBatPre && (ven.fc==='elec'||ven.fc==='phev')){
+    const VE=VVPARAMS.ve;
+    const net=VE.tauxEuropeBrut-VE.baisseNeufAnnuelle;
+    const climat=partBatPre.part*VE.deltaClimatBatterie;
+    // Plancher : un véhicule à batterie ne peut pas se déprécier plus lentement que son
+    // équivalent thermique de même gamme.
+    tauxDepr=Math.max(gamme.tauxDeprAn, net+climat);
+    baseVE={brut:VE.tauxEuropeBrut, neuf:VE.baisseNeufAnnuelle, net, climat};
+  }
+  const surcout=tauxDepr/gamme.tauxDeprAn;
   const fAge=Math.max(Math.pow(1-tauxDepr, age), VVPARAMS.valeurResiduelle);
 
   const etat=VVPARAMS.etats[etatKey]||VVPARAMS.etats.normal;
@@ -1361,10 +1667,20 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh){
     fKm=1-Math.max(-VVPARAMS.plafondBonusKm, Math.min(impact, VVPARAMS.plafondMalusKm));
   }
 
+  // AU PLANCHER DE VALEUR RÉSIDUELLE, PAS DE PRIME AU FAIBLE KILOMÉTRAGE.
+  // Un véhicule parvenu à sa valeur résiduelle vaut ce que vaut sa carcasse : il ne se
+  // revend pas 15 % plus cher parce qu'il a peu roulé. Sans cette règle, l'âge ne faisant
+  // plus rien perdre une fois le plancher atteint, le seul bonus kilométrique suffisait à
+  // faire ressortir un millésime plus ANCIEN au-dessus d'un plus récent — 50 inversions,
+  // toutes sur des véhicules de plus de treize ans (Geely EX2, MG S6, Dongfeng Box…).
+  // Le MALUS, lui, continue de s'appliquer : un kilométrage démesuré déprécie encore.
+  const auPlancher = fAge <= VVPARAMS.valeurResiduelle + 1e-9;
+  if(auPlancher && fKm>1) fKm=1;
+
   const fCarb = VVPARAMS.carburant[ven.fc]!==undefined ? VVPARAMS.carburant[ven.fc] : 1;
 
   // F_batterie : neutre tant qu'aucun état de santé n'a été mesuré.
-  const partBat=partBatterie(v, ven.fc, ven.VEN);
+  const partBat=partBatPre;
   const bat=facteurBatterie(soh, age, partBat);
   const fBat=bat.f;
   // Batterie sous garantie et sous le seuil : elle sera remplacée, ce qui RELÈVE la valeur.
@@ -1387,17 +1703,51 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh){
   const borneNeuf = (ven.popStatut==='majore') ? null : ven.plafondNeuf;
   let vv = Math.round(ven.VEN*ratio/100)*100, vvPlafonnee=false;
   if(borneNeuf!=null && vv>borneNeuf){ vv=Math.floor(borneNeuf/100)*100; vvPlafonnee=true; }
+  // Taxe douanière due par l'assuré sur une populaire encore incessible. Elle s'ajoute
+  // APRÈS le plafond du prix neuf : ce n'est pas de la valeur de marché, c'est une charge
+  // que l'indemnité doit couvrir pour que l'assuré rentre dans ses droits.
+  //
+  // ELLE N'EST DUE QU'À LA MISE À L'ÉPAVE. Évaluer une populaire encore incessible qui roule
+  // toujours ne déclenche aucune taxe — l'appliquer d'office aurait gonflé toutes les
+  // estimations de ces véhicules. D'où une bascule explicite, jamais cochée par défaut.
+  // L'assiette de la taxe dépend du régime :
+  //   · populaire, diplomatique, taxi, agence — au POIDS (cas Kwid : 10,9 DT/kg) ;
+  //   · FCR RS — 25 % de la VALEUR À NEUF, c'est le prix de la régularisation vers TU ;
+  //   · à défaut de poids — un pourcentage de la valeur vénale, en filet.
+  // Et dans tous les cas, un montant saisi d'après le décompte des douanes PRIME : l'expert
+  // qui tient la pièce n'a aucune raison de se contenter d'une estimation.
+  let taxePop=0, vvMarche=vv, taxeBase=null;
+  const TP=VVPARAMS.populaire.taxeEpave;
+  if(TP.actif && epave && ven.regime && ven.regime.taxeEpave){
+    const RGx=ven.regime;
+    const cdE=chargeDouaniere(ven.fc, null);
+    if(taxeSaisie>0){ taxePop=Math.round(taxeSaisie/100)*100; taxeBase='decompte'; }
+    else if(cdE.tva){ taxePop=Math.round(ven.VEN*cdE.taux/100)*100; taxeBase='tva'; }
+    else if(RGx.assiette==='droitsEtTaxes'){
+      // Les droits et taxes dus dépendent de la valeur en douane, de la cylindrée et du
+      // barème du droit de consommation : ils ne se déduisent PAS d'un prix catalogue.
+      // Aucune estimation n'est produite — le décompte des douanes est indispensable.
+      taxePop=0; taxeBase='decompteRequis';
+    }
+    else if(RGx.assiette==='valeurNeuf' && RGx.tauxAssiette>0){
+      taxePop=Math.round(ven.VEN*RGx.tauxAssiette/100)*100; taxeBase='valeurNeuf';
+    }
+    else if(poidsKg>0 && TP.dtParKg>0){ taxePop=Math.round(poidsKg*TP.dtParKg/100)*100; taxeBase='poids'; }
+    else { taxePop=Math.round(vv*TP.tauxValeurDefaut/100)*100; taxeBase='valeur'; }
+    vv+=taxePop;
+  }
   // `relatif` isole ce qui est propre À CE véhicule : état, kilométrage, usage, énergie —
   // hors âge et hors gamme, qui sont des caractéristiques subies. C'est cette part qui dit
   // si le véhicule est bien ou mal coté POUR SON ÂGE.
   return {vv, ven, fAge, fEtat, fKm, fCarb, fUsage, fBat, ratio, relatif, relatifEff, ajuste,
-          gamme, tauxDepr, surcout, age, ecartKm, kmRef, etat, usage, km, anneeEval:AE,
+          gamme, tauxDepr, surcout, baseVE, age, ecartKm, kmRef, etat, usage, km, anneeEval:AE,
+          taxePop, vvMarche, poidsKg, taxeBase, epave:!!epave,
           vvPlafonnee, borneNeuf, partBat, bat, garantieBat};
 }
 
 // État des champs du module Valeur vénale — conservé au niveau module pour survivre
 // à un changement de finition/modèle (l'expert n'a pas à ressaisir km/état/usage à chaque clic).
-let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null, anneeEval:null, soh:''};
+let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null, anneeEval:null, soh:'', poids:'', dtkg:'', epave:false, regime:null, taxe:''};
 
 // Bloc HTML du module (inséré dans la fiche résultat, sous le prix neuf).
 //
@@ -1447,12 +1797,23 @@ function renderVVBlock(v){
   html+='<div class="vv-fields">';
   html+='<div class="vv-f-km"><label class="spec-label" for="vvKm">Kilométrage réel</label>'+
     '<input type="number" id="vvKm" min="0" step="1000" inputmode="numeric" placeholder="ex. 85 000" value="'+(vvInputs.km||'')+'" class="vv-input"></div>';
-  html+='<div><label class="spec-label" for="vvEtat">État</label><select id="vvEtat" class="vv-input">'+
+  html+='<div><label class="spec-label" for="vvEtat">État / qualité de réparation</label>'+
+    '<select id="vvEtat" class="vv-input" title="Un véhicule réparé aux normes du constructeur ne subit aucun malus.">'+
     Object.keys(VVPARAMS.etats).map(k=>'<option value="'+k+'"'+(vvInputs.etat===k?' selected':'')+'>'+VVPARAMS.etats[k].label+'</option>').join('')+
-    '</select></div>';
+    '</select><div class="fld-aide" id="vvEtatAide">'+(VVPARAMS.etats[vvInputs.etat]||VVPARAMS.etats.normal).aide+'</div></div>';
   html+='<div><label class="spec-label" for="vvUsage">Usage</label><select id="vvUsage" class="vv-input">'+
     Object.keys(VVPARAMS.usages).map(k=>'<option value="'+k+'"'+(vvInputs.usage===k?' selected':'')+'>'+VVPARAMS.usages[k].label+'</option>').join('')+
     '</select></div>';
+  // Régime douanier : première question à poser, puisqu'elle commande tout le reste.
+  const rgCourant=regimeDe(v);
+  html+='<div class="vv-f-reg"><label class="spec-label" for="vvRegime">Régime douanier '+
+    '<span class="lbl-src">carte grise</span></label>'+
+    '<select id="vvRegime" class="vv-input">'+
+    Object.keys(VVPARAMS.regimes).map(k=>'<option value="'+k+'"'+(rgCourant===k?' selected':'')+'>'+
+      VVPARAMS.regimes[k].label+'</option>').join('')+
+    '</select><div class="fld-aide" id="vvRegAide">'+(VVPARAMS.regimes[rgCourant].note||
+      'Aucun avantage douanier : calcul au marché normal.')+'</div></div>';
+
   // État de santé de la batterie : proposé uniquement là où il a un sens. Sur un véhicule à
   // batterie c'est la mesure la plus discriminante entre deux exemplaires de même âge.
   const fcV=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
@@ -1466,6 +1827,34 @@ function renderVVBlock(v){
           'placeholder="attendu à cet âge : '+attendu+'" value="'+(vvInputs.soh||'')+'" class="vv-input">'+
         '<span class="soh-unit">%</span>'+
       '</div></div>';
+  }
+  // Populaire encore incessible : la taxe douanière au poids conditionne l'indemnité.
+  // Les deux valeurs viennent du dossier — la carte grise pour le poids, le décompte de la
+  // recette des douanes pour le tarif — donc les deux se saisissent.
+  const venApercu=computeVEN(v, FY, vvInputs.anneeEval||CY, rgCourant);
+  if(venApercu && venApercu.regime && venApercu.regime.taxeEpave && VVPARAMS.populaire.taxeEpave.actif){
+    html+='<label class="vv-epave'+(vvInputs.epave?' on':'')+'">'+
+      '<input type="checkbox" id="vvEpave"'+(vvInputs.epave?' checked':'')+'>'+
+      '<span><b>Mise à l\'épave</b> — sinistre total sur un véhicule sous régime de faveur.'+
+      ' La taxe douanière due par l\'assuré s\'ajoute alors à l\'indemnité.</span></label>';
+  }
+  if(venApercu && venApercu.regime && venApercu.regime.taxeEpave && VVPARAMS.populaire.taxeEpave.actif && vvInputs.epave){
+    html+='<div class="vv-f-taxe">'+
+      '<label class="spec-label" for="vvPoids">Poids à vide <span class="lbl-src">carte grise</span></label>'+
+      '<div class="soh-wrap"><input type="number" id="vvPoids" min="0" step="10" inputmode="numeric" '+
+        'placeholder="ex. 950" value="'+(vvInputs.poids||'')+'" class="vv-input"><span class="soh-unit">kg</span></div>'+
+      '</div>'+
+      '<div class="vv-f-taxe">'+
+      '<label class="spec-label" for="vvDtKg">Taxe douanière <span class="lbl-src">décompte douanes</span></label>'+
+      '<div class="soh-wrap"><input type="number" id="vvDtKg" min="0" step="0.1" inputmode="decimal" '+
+        'placeholder="'+VVPARAMS.populaire.taxeEpave.dtParKg+'" value="'+(vvInputs.dtkg||'')+'" class="vv-input"><span class="soh-unit">DT/kg</span></div>'+
+      '<div class="fld-aide">à défaut de poids : '+Math.round(VVPARAMS.populaire.taxeEpave.tauxValeurDefaut*100)+'\u00a0% de la valeur</div>'+
+      '</div>'+
+      '<div class="vv-f-reg"><label class="spec-label" for="vvTaxe">Montant du décompte '+
+        '<span class="lbl-src">recette des douanes — prime sur tout calcul</span></label>'+
+        '<div class="soh-wrap"><input type="number" id="vvTaxe" min="0" step="100" inputmode="numeric" '+
+        'placeholder="laisser vide pour estimer" value="'+(vvInputs.taxe||'')+'" class="vv-input">'+
+        '<span class="soh-unit">DT</span></div></div>';
   }
   html+='</div>';
   html+='<div id="vvOut"></div>';
@@ -1517,6 +1906,13 @@ function coteGaugeHtml(relConseille, relCourant){
 
 // Construit la fiche de valeur vénale (squelette + curseur), puis délègue les chiffres.
 // SOH saisi, en fraction. Une case vide vaut « non mesuré », pas « zéro ».
+// Régime retenu : la saisie de l'expert prime ; à défaut, « populaire » est proposé quand
+// le nom du modèle le dit, sinon droit commun. Le régime figure sur la carte grise.
+function regimeDe(v){
+  if(vvInputs.regime && VVPARAMS.regimes[vvInputs.regime]) return vvInputs.regime;
+  return v && v.pop ? 'populaire' : 'aucun';
+}
+
 function sohSaisi(){
   const el=document.getElementById('vvSoh');
   if(!el || el.value==='') return null;
@@ -1526,12 +1922,39 @@ function sohSaisi(){
   return Math.max(B.sohMin, Math.min(v/100, B.sohMax));
 }
 
+function poidsSaisi(){
+  const el=document.getElementById('vvPoids');
+  if(!el || el.value==='') return null;
+  const x=parseFloat(el.value);
+  return (isFinite(x)&&x>0&&x<5000)?x:null;
+}
+// Tarif au kilo : la saisie de l'expert prime toujours ; à défaut, le tarif étayé sur le
+// cas Kwid sert de valeur de départ, jamais de vérité.
+const TARIF_DEFAUT=10.9;
+function tarifSaisi(){
+  const el=document.getElementById('vvDtKg');
+  if(!el || el.value==='') return TARIF_DEFAUT;
+  const x=parseFloat(el.value);
+  return (isFinite(x)&&x>=0&&x<500)?x:TARIF_DEFAUT;
+}
+function taxeSaisieDT(){
+  const el=document.getElementById('vvTaxe');
+  if(!el || el.value==='') return null;
+  const x=parseFloat(el.value);
+  return (isFinite(x)&&x>0&&x<1000000)?x:null;
+}
+function epaveCochee(){
+  const el=document.getElementById('vvEpave');
+  return !!(el&&el.checked);
+}
+
 function renderVVOutput(v){
   const el=document.getElementById('vvOut');
   if(!el||!FY) return;
   const kmField=document.getElementById('vvKm');
   const km=kmField&&kmField.value!==''?parseFloat(kmField.value):null;
-  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage, null, vvInputs.anneeEval, sohSaisi());
+  VVPARAMS.populaire.taxeEpave.dtParKg=tarifSaisi();
+  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage, null, vvInputs.anneeEval, sohSaisi(), poidsSaisi(), epaveCochee(), regimeDe(v), taxeSaisieDT());
   if(!base){ el.innerHTML=''; return; }
   const courant = vvInputs.cote!=null ? vvInputs.cote : base.relatif;
 
@@ -1541,12 +1964,14 @@ function renderVVOutput(v){
   el.innerHTML =
     '<div class="vv-resultat">'+
       '<div class="vv-prix">'+
-        '<span class="vv-prix-lbl">Valeur vénale estimée</span>'+
+        '<span class="vv-prix-lbl" id="vvPrixLbl">Valeur vénale estimée</span>'+
         '<span class="vv-prix-val" id="vvPrix"></span>'+
+        '<div class="vv-decomp" id="vvDecomp" hidden></div>'+
         '<span class="vv-prix-note">estimation — hors barème compagnie</span></div>'+
       coteGaugeHtml(base.relatif, courant)+
       '<div id="vvBat"></div>'+
       '<div class="vv-chips" id="vvChips"></div>'+
+      '<div id="vvConf"></div>'+
       '<details class="vv-details"><summary>Détail du calcul et règles appliquées</summary>'+
         '<div class="vv-details-body" id="vvDetail"></div>'+
         '<div id="vvNotices"></div>'+
@@ -1573,16 +1998,37 @@ function refreshVVValues(v){
   if(!FY) return;
   const kmField=document.getElementById('vvKm');
   const km=kmField&&kmField.value!==''?parseFloat(kmField.value):null;
-  const soh=sohSaisi();
-  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage, null, vvInputs.anneeEval, soh);
+  const soh=sohSaisi(), poids=poidsSaisi();
+  VVPARAMS.populaire.taxeEpave.dtParKg=tarifSaisi();
+  const ep=epaveCochee();
+  const rg=regimeDe(v);
+  const tx=taxeSaisieDT();
+  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage, null, vvInputs.anneeEval, soh, poids, ep, rg, tx);
   if(!base) return;
-  const r=computeVV(v, km, vvInputs.etat, vvInputs.usage, vvInputs.cote, vvInputs.anneeEval, soh);
+  const r=computeVV(v, km, vvInputs.etat, vvInputs.usage, vvInputs.cote, vvInputs.anneeEval, soh, poids, ep, rg, tx);
   const info=coteInfo(r.relatifEff);
   const ecart=(r.relatifEff-1)*100;
 
   const prix=document.getElementById('vvPrix');
   // L'unité est composée à part : elle doit se lire comme une unité, pas concurrencer le montant.
   if(prix) prix.innerHTML=r.vv.toLocaleString('fr-TN')+'<em>DT</em>';
+  const lbl=document.getElementById('vvPrixLbl');
+  if(lbl) lbl.textContent = r.taxePop>0 ? 'Indemnité — valeur vénale + taxe douanière' : 'Valeur vénale estimée';
+  const dec=document.getElementById('vvDecomp');
+  if(dec){
+    dec.innerHTML = r.taxePop>0
+      ? '<span>Valeur vénale <b>'+fmt(r.vvMarche)+'</b></span>'+
+        '<span>+ taxe douanière <b>'+fmt(r.taxePop)+'</b> <i>'+
+        (r.taxeBase==='decompte' ? '(décompte de la recette des douanes)'
+         : r.taxeBase==='tva' ? '(TVA '+Math.round(VVPARAMS.tvaElectrique.taux*100)+' % — véhicule rechargeable, plus de droit de douane)'
+         : r.taxeBase==='valeurNeuf' ? '('+Math.round(r.ven.regime.tauxAssiette*100)+' % de la valeur à neuf — régularisation vers TU)'
+         : r.taxeBase==='poids' ? '('+r.poidsKg.toLocaleString('fr-TN')+' kg × '+tarifSaisi()+' DT/kg, soit '+
+            Math.round(r.taxePop/r.vvMarche*100)+' % de la valeur)'
+         : '(poids non renseigné : '+Math.round(VVPARAMS.populaire.taxeEpave.tauxValeurDefaut*100)+' % de la valeur)')+
+        '</i></span>'
+      : '';
+    dec.hidden = !(r.taxePop>0);
+  }
 
   const lab=document.getElementById('vvCoteLabel');
   if(lab){ lab.textContent='🎯 '+info.label; lab.style.color=info.color; }
@@ -1603,15 +2049,19 @@ function refreshVVValues(v){
     const c=[];
     c.push('<span class="vv-chip"><b>'+(r.ratio*100).toFixed(0)+' %</b> du neuf</span>');
     c.push('<span class="vv-chip">'+r.gamme.nom+'</span>');
-    if(r.ven.popStatut==='majore')
-      c.push('<span class="vv-chip info">🏷️ Populaire · '+(r.ven.plafonne
-        ? 'alignée sur la version normale'
-        : '+'+Math.round(VVPARAMS.populaire.majorationDouane*100)+' %')+'</span>');
-    else if(r.ven.popStatut==='incessible')
-      c.push('<span class="vv-chip warn">🏷️ Populaire · incessible</span>');
+    if(r.ven.regime && r.ven.regime.court){
+      const nom=r.ven.regime.court;
+      if(r.ven.popStatut==='incessible')
+        c.push('<span class="vv-chip warn">🏷️ '+nom+' · incessible</span>');
+      else
+        c.push('<span class="vv-chip info">🏷️ '+nom+(r.ven.majPop>1
+          ? (r.ven.plafonne?' · alignée sur la version normale':' · +'+Math.round((r.ven.majPop-1)*100)+' %')
+          : ' · délai écoulé')+'</span>');
+    }
+    if(r.taxePop>0) c.push('<span class="vv-chip warn">⚖️ Taxe d\'épave</span>');
     if(r.bat && r.bat.soh!=null)
       c.push('<span class="vv-chip '+(r.bat.ecart<=-0.08?'warn':'info')+'">🔋 SOH '+Math.round(r.bat.soh*100)+' %</span>');
-    if(r.surcout>1) c.push('<span class="vv-chip info">⚡ Décote VE renforcée</span>');
+    if(r.baseVE) c.push('<span class="vv-chip info">⚡ Décote européenne '+(r.tauxDepr*100).toFixed(1).replace('.',',')+' %/an</span>');
     if(r.vvPlafonnee || r.ven.neufPlafonne) c.push('<span class="vv-chip info">🔻 Plafonnée au prix neuf du jour</span>');
     if(r.ven.reforme) c.push('<span class="vv-chip info">⚖️ Réforme '+r.ven.reforme.annee+'</span>');
     if(r.anneeEval<CY) c.push('<span class="vv-chip warn">📆 Évaluation '+r.anneeEval+'</span>');
@@ -1652,10 +2102,12 @@ function refreshVVValues(v){
             '<span class="bat-depr-t">Dévalorisation retenue</span>'+
             '<span class="bat-depr-v">'+(r.tauxDepr*100).toFixed(2).replace('.',',')+'\u00a0%/an</span>'+
           '</div>'+
-          '<div class="bat-depr-d">'+r.gamme.nom.toLowerCase()+' '+
-            (r.gamme.tauxDeprAn*100).toFixed(2).replace('.',',')+'\u00a0%'+
-            (r.surcout>1?' <b>+'+Math.round((r.surcout-1)*100)+'\u00a0%</b> au titre du véhicule à batterie'
-                        :' (aucune majoration)')+
+          '<div class="bat-depr-d">'+(r.baseVE
+            ? 'courbe européenne '+(r.baseVE.brut*100).toFixed(0)+'\u00a0% \u2212 '+
+              (r.baseVE.neuf*100).toFixed(0)+'\u00a0% déjà portés par le prix du jour + '+
+              (r.baseVE.climat*100).toFixed(1).replace('.',',')+'\u00a0% climat'+
+              (r.tauxDepr>r.baseVE.net+r.baseVE.climat+1e-9?' (plancher gamme)':'')
+            : r.gamme.nom.toLowerCase()+' '+(r.gamme.tauxDeprAn*100).toFixed(2).replace('.',',')+'\u00a0%')+
             ' \u2192 <b>\u00d7'+r.fAge.toFixed(3).replace('.',',')+'</b> à '+r.age+'\u00a0an'+(r.age>1?'s':'')+'</div>'+
           '<div class="bat-foot">'+etatTxt+
             (mes!=null?' · effet sur la valeur <b>'+signePct((r.fBat-1)*100)+'</b>':'')+
@@ -1664,6 +2116,22 @@ function refreshVVValues(v){
           '</div>'+
         '</div>';
     }
+  }
+
+  // ── Confiance de l'estimation ──
+  const cf=evaluerConfiance(v, r);
+  const cfEl=document.getElementById('vvConf');
+  if(cfEl){
+    const lib={bonne:'Estimation bien étayée', moyenne:'Estimation à confirmer', faible:'Estimation fragile'};
+    cfEl.innerHTML =
+      '<details class="conf conf-'+cf.niveau+'"'+(cf.niveau==='faible'?' open':'')+'>'+
+        '<summary><span class="conf-pip"></span><b>'+lib[cf.niveau]+'</b>'+
+          (cf.motifs.length?'<span class="conf-n">'+cf.motifs.length+' réserve'+(cf.motifs.length>1?'s':'')+'</span>':'')+
+        '</summary>'+
+        (cf.motifs.length
+          ? '<ul class="conf-l">'+cf.motifs.map(m=>'<li>'+m+'</li>').join('')+'</ul>'
+          : '<div class="conf-l">Aucune réserve : catalogue détaillé, tarif récent, saisies complètes.</div>')+
+      '</details>';
   }
 
   const reset=document.getElementById('vvCoteReset');
@@ -1730,16 +2198,28 @@ function refreshVVValues(v){
     }
 
     // Régime populaire : dire ce qui est appliqué, et pourquoi.
-    if(r.ven.popStatut==='majore'){
-      h+='<div class="notice ok" style="margin-top:8px">🏷️ <b>Véhicule populaire</b> — son prix catalogue est exonéré de taxe douanière. Le délai d\'incessibilité de '+
-        VVPARAMS.populaire.dureeIncessibilite+' ans étant écoulé, le véhicule s\'échange sur le marché normal : la valeur à neuf de référence est majorée de <b>'+
-        Math.round(VVPARAMS.populaire.majorationDouane*100)+' %</b> (taux douanier concessionnaire) pour réintégrer cette taxe et le comparer au marché normal.'+
+    if(r.ven.popStatut==='majore' && r.ven.majPop>1){
+      h+='<div class="notice ok" style="margin-top:8px">🏷️ <b>'+r.ven.regime.label+'</b> — '+r.ven.regime.note+
+        ' Le délai de '+r.ven.regime.incessibilite+' ans étant écoulé, le véhicule s\'échange sur le marché normal : la valeur à neuf de référence est majorée de <b>'+
+        Math.round((r.ven.majPop-1)*100)+' %</b> pour réintégrer la taxe et le comparer au marché normal.'+
         (r.ven.plafonne
           ? ' Cette majoration dépassait ici le prix à neuf de la <b>version normale du même modèle</b> : elle a été ramenée à ce niveau, la populaire ne pouvant valoir davantage que la voiture non subventionnée dont elle est la déclinaison.'
           : '')+'</div>';
+    } else if(r.taxePop>0){
+      h+='<div class="notice warn" style="margin-top:8px">⚖️ <b>Mise à l\'épave — '+r.ven.regime.label+'</b> — le véhicule a bénéficié d\'un avantage douanier ; la douane réclame à l\'assuré une taxe que l\'indemnité doit couvrir. '+
+        (r.ven.regimeKey==='populaire'?'Il ne pourra en outre pas racheter de populaire avant <b>sept ans</b>. ':'')+
+        (r.ven.regime.renouvellementSinistre?'<b>À noter</b> : l\'endommagement du véhicule ouvre droit au renouvellement du bénéfice AVANT le terme des cinq ans (LF 2012, décret 2012-5) — l\'exploitant n\'est pas bloqué. ':'')+
+        (r.taxeBase==='decompte' ? 'Montant repris du <b>décompte de la recette des douanes</b>.'
+         : r.taxeBase==='tva' ? 'Véhicule rechargeable : la charge douanière se résume à la <b>TVA de '+Math.round(VVPARAMS.tvaElectrique.taux*100)+' %</b>, appliquée à la valeur à neuf.'
+         : r.taxeBase==='valeurNeuf' ? 'Régularisation vers une immatriculation TU : <b>'+Math.round(r.ven.regime.tauxAssiette*100)+' % de la valeur à neuf</b> (échelonnement selon l\'âge à vérifier).'
+         : r.taxeBase==='poids' ? 'Taxe calculée sur le poids : <b>'+r.poidsKg.toLocaleString('fr-TN')+' kg × '+tarifSaisi()+' DT/kg</b>.'
+         : 'Poids non renseigné : la taxe est estimée à <b>'+Math.round(VVPARAMS.populaire.taxeEpave.tauxValeurDefaut*100)+' %</b> de la valeur vénale.')+
+        ' Le barème n\'étant publié nulle part, le tarif par défaut vient d\'un cas réel — une Renault Kwid Populaire de 736 kg ayant acquitté 8 000 DT, soit 10,9 DT/kg, ce qui représente aussi 29 % de sa valeur. <b>Une seule observation</b> : saisissez le décompte réel de la recette des douanes dès que vous l\'avez.</div>';
     } else if(r.ven.popStatut==='incessible'){
-      h+='<div class="notice warn" style="margin-top:8px">🏷️ <b>Véhicule populaire encore incessible</b> — moins de '+
-        VVPARAMS.populaire.dureeIncessibilite+' ans depuis la mise en circulation. Il ne peut être revendu, sauf cas particulier (mise à l\'épave notamment). La valeur à neuf reste le prix subventionné, sans réintégration de la taxe douanière.</div>';
+      h+='<div class="notice warn" style="margin-top:8px">🏷️ <b>'+r.ven.regime.label+' — encore sous délai</b> — moins de '+
+        r.ven.regime.incessibilite+' ans depuis la mise en circulation. '+r.ven.regime.note+
+        (r.ven.regime.subventionne?' La valeur à neuf reste le prix subventionné, sans réintégration de la taxe douanière.':'')+
+        (r.ven.regime.sur===false?' <b>Durée et barème à confirmer</b> : ces éléments ne sont publiés nulle part.':'')+'</div>';
     }
     // Évaluation à une date passée : le dire clairement, c'est une décision d'expertise.
     if(r.anneeEval<CY){
@@ -1771,16 +2251,43 @@ function wireVVInputs(v){
   // Modifier l'état, le kilométrage ou l'usage change la valeur CONSEILLÉE : un ajustement
   // manuel antérieur deviendrait trompeur, on le remet donc sur le nouveau conseil.
   const relance=()=>{ vvInputs.cote=null; renderVVOutput(v); };
+  // Cocher « mise à l'épave » fait apparaître deux champs : le bloc doit être reconstruit,
+  // pas seulement recalculé.
+  const relance2=(veh)=>{
+    vvInputs.cote=null;
+    const sect=document.getElementById('vvSect');
+    if(sect){ sect.outerHTML=renderVVBlock(veh); wireVVInputs(veh); }
+    else renderVVOutput(veh);
+  };
   const anneeField=document.getElementById('vvAnnee');
   if(anneeField) anneeField.addEventListener('change',()=>{ vvInputs.anneeEval=parseInt(anneeField.value); majEtatAnnee(); relance(); });
   const kmField=document.getElementById('vvKm');
   if(kmField) kmField.addEventListener('input',()=>{ vvInputs.km=kmField.value; relance(); });
   const etatField=document.getElementById('vvEtat');
-  if(etatField) etatField.addEventListener('change',()=>{ vvInputs.etat=etatField.value; relance(); });
+  if(etatField) etatField.addEventListener('change',()=>{
+    vvInputs.etat=etatField.value;
+    const aide=document.getElementById('vvEtatAide');
+    if(aide) aide.textContent=(VVPARAMS.etats[etatField.value]||VVPARAMS.etats.normal).aide;
+    relance();
+  });
   const usageField=document.getElementById('vvUsage');
   if(usageField) usageField.addEventListener('change',()=>{ vvInputs.usage=usageField.value; relance(); });
   const sohField=document.getElementById('vvSoh');
   if(sohField) sohField.addEventListener('input',()=>{ vvInputs.soh=sohField.value; relance(); });
+  const poidsField=document.getElementById('vvPoids');
+  if(poidsField) poidsField.addEventListener('input',()=>{ vvInputs.poids=poidsField.value; relance(); });
+  const dtkgField=document.getElementById('vvDtKg');
+  if(dtkgField) dtkgField.addEventListener('input',()=>{ vvInputs.dtkg=dtkgField.value; relance(); });
+  const regField=document.getElementById('vvRegime');
+  if(regField) regField.addEventListener('change',()=>{
+    vvInputs.regime=regField.value;
+    if(!VVPARAMS.regimes[regField.value].taxeEpave) vvInputs.epave=false;
+    relance2(v);
+  });
+  const taxeField=document.getElementById('vvTaxe');
+  if(taxeField) taxeField.addEventListener('input',()=>{ vvInputs.taxe=taxeField.value; relance(); });
+  const epaveField=document.getElementById('vvEpave');
+  if(epaveField) epaveField.addEventListener('change',()=>{ vvInputs.epave=epaveField.checked; renderVVBlock&&0; relance2(v); });
 }
 
 // ── Wait for data ──
