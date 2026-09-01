@@ -513,6 +513,14 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .vv-fields{display:grid;grid-template-columns:1fr 1fr;gap:9px 8px;margin-bottom:3px}
 .vv-fields .vv-f-km{grid-column:1/-1}
 .vv-fields label{display:block;margin-bottom:3px}
+/* ── Alignement des champs sur une même rangée ──
+   Un intitulé qui passe sur deux lignes poussait SON menu vers le bas, désalignant la
+   rangée entière (« État / qualité de réparation » face à « Usage »). On réserve donc à
+   tous les intitulés la même hauteur — deux lignes — et on les cale en bas : les contrôles
+   partent alors du même niveau, quel que soit le nombre de lignes de leur libellé.
+   Corriger la longueur d'un seul libellé n'aurait tenu que jusqu'au prochain. */
+.vv-fields .spec-label{display:flex;align-items:flex-end;min-height:2.4em;line-height:1.2;
+  margin-bottom:4px}
 .vv-input{width:100%;padding:7px 9px;border:1px solid var(--bd2);border-radius:7px;font-size:12.5px;
   font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;background:var(--sf);color:var(--t1)}
 .vv-input:focus{outline:2px solid var(--pr3);outline-offset:1px;border-color:var(--pr3)}
@@ -716,7 +724,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   <div class="logo">
     <div class="logo-ico">🚗</div>
     <div>
-      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v36</span></div>
+      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v38</span></div>
       <div class="logo-sub" id="dbStats">Chargement…</div>
     </div>
   </div>
@@ -843,9 +851,9 @@ let sel = {b:null, m:null, v:null};
 let FY  = null;
 // ── Version de l'application ──
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
-const VERSION = 'v36';
+const VERSION = 'v38';
 const VERSION_DATE = '29/08/2026';
-const VERSION_NOTES = 'base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · assiettes de taxe par régime · TVA 7 % pour les rechargeables · régimes douaniers confirmés · taxe d\'épave étayée sur un cas réel · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · taxe au poids des populaires détruites · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
+const VERSION_NOTES = 'régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · assiettes de taxe par régime · TVA 7 % pour les rechargeables · régimes douaniers confirmés · taxe d\'épave étayée sur un cas réel · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · taxe au poids des populaires détruites · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -1868,7 +1876,7 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh, poidsK
 
 // État des champs du module Valeur vénale — conservé au niveau module pour survivre
 // à un changement de finition/modèle (l'expert n'a pas à ressaisir km/état/usage à chaque clic).
-let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null, anneeEval:null, soh:'', poids:'', dtkg:'', epave:false, regime:null, taxe:''};
+let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null, anneeEval:null, soh:'', poids:'', dtkg:'', epave:false, regime:null, taxe:'', privilege:false};
 
 // Bloc HTML du module (inséré dans la fiche résultat, sous le prix neuf).
 //
@@ -1918,22 +1926,33 @@ function renderVVBlock(v){
   html+='<div class="vv-fields">';
   html+='<div class="vv-f-km"><label class="spec-label" for="vvKm">Kilométrage réel</label>'+
     '<input type="number" id="vvKm" min="0" step="1000" inputmode="numeric" placeholder="ex. 85 000" value="'+(vvInputs.km||'')+'" class="vv-input"></div>';
-  html+='<div><label class="spec-label" for="vvEtat">État / qualité de réparation</label>'+
+  html+='<div><label class="spec-label" for="vvEtat">État / réparation</label>'+
     '<select id="vvEtat" class="vv-input" title="Un véhicule réparé aux normes du constructeur ne subit aucun malus.">'+
     Object.keys(VVPARAMS.etats).map(k=>'<option value="'+k+'"'+(vvInputs.etat===k?' selected':'')+'>'+VVPARAMS.etats[k].label+'</option>').join('')+
     '</select><div class="fld-aide" id="vvEtatAide">'+(VVPARAMS.etats[vvInputs.etat]||VVPARAMS.etats.normal).aide+'</div></div>';
   html+='<div><label class="spec-label" for="vvUsage">Usage</label><select id="vvUsage" class="vv-input">'+
     Object.keys(VVPARAMS.usages).map(k=>'<option value="'+k+'"'+(vvInputs.usage===k?' selected':'')+'>'+VVPARAMS.usages[k].label+'</option>').join('')+
     '</select></div>';
-  // Régime douanier : première question à poser, puisqu'elle commande tout le reste.
+  // Régime douanier : replié derrière une case, parce qu'il ne concerne qu'une minorité de
+  // véhicules. Une voiture populaire, elle, n'a pas le choix : la case est cochée et figée.
   const rgCourant=regimeDe(v);
-  html+='<div class="vv-f-reg"><label class="spec-label" for="vvRegime">Régime douanier '+
-    '<span class="lbl-src">carte grise</span></label>'+
-    '<select id="vvRegime" class="vv-input"'+(regimesPossibles(v).length<2?' disabled':'')+'>'+
-    regimesPossibles(v).map(k=>'<option value="'+k+'"'+(rgCourant===k?' selected':'')+'>'+
-      VVPARAMS.regimes[k].label+'</option>').join('')+
-    '</select><div class="fld-aide" id="vvRegAide">'+(VVPARAMS.regimes[rgCourant].note||
-      'Aucun avantage douanier : calcul au marché normal.')+'</div></div>';
+  const priv=privilegeActif(v);
+  const figee=!!v.pop;
+  html+='<label class="vv-epave vv-f-reg'+(priv?' on':'')+'">'+
+    '<input type="checkbox" id="vvPriv"'+(priv?' checked':'')+(figee?' disabled':'')+'>'+
+    '<span><b>Privilège douanier</b> — le véhicule a bénéficié d\'un avantage : FCR, corps '+
+    'diplomatique, taxi ou louage sous décret, agence de voyages.'+
+    (figee?' <i>Ce modèle n\'est vendu que sous le régime des voitures populaires.</i>':'')+
+    '</span></label>';
+  if(priv){
+    html+='<div class="vv-f-reg"><label class="spec-label" for="vvRegime">Régime '+
+      '<span class="lbl-src">carte grise</span></label>'+
+      '<select id="vvRegime" class="vv-input"'+(regimesFaveur(v).length<2?' disabled':'')+'>'+
+      regimesFaveur(v).map(k=>'<option value="'+k+'"'+(rgCourant===k?' selected':'')+'>'+
+        VVPARAMS.regimes[k].label+'</option>').join('')+
+      '</select><div class="fld-aide" id="vvRegAide">'+(VVPARAMS.regimes[rgCourant].note||'')+
+      '</div></div>';
+  }
 
   // État de santé de la batterie : proposé uniquement là où il a un sens. Sur un véhicule à
   // batterie c'est la mesure la plus discriminante entre deux exemplaires de même âge.
@@ -2037,11 +2056,22 @@ function regimesPossibles(v){
   return Object.keys(VVPARAMS.regimes).filter(k=>k!=='populaire');
 }
 
+// Les régimes de FAVEUR, c'est-à-dire tout sauf le droit commun.
+function regimesFaveur(v){ return regimesPossibles(v).filter(k=>k!=='aucun'); }
+
+// Le privilège douanier est-il en jeu ? Une voiture populaire l'est toujours — c'est son
+// statut de vente. Pour les autres, c'est une case à cocher : l'immense majorité des
+// véhicules relèvent du droit commun, et leur imposer un menu déroulant en permanence
+// n'apportait qu'un champ de plus à lire et à ignorer.
+function privilegeActif(v){ return !!(v && v.pop) || !!vvInputs.privilege; }
+
 // Régime retenu : la saisie de l'expert prime, dans la limite de ce que le véhicule permet.
 function regimeDe(v){
-  const ouverts=regimesPossibles(v);
-  if(vvInputs.regime && ouverts.indexOf(vvInputs.regime)!==-1) return vvInputs.regime;
-  return ouverts[0]==='populaire' ? 'populaire' : 'aucun';
+  if(v && v.pop) return 'populaire';
+  if(!privilegeActif(v)) return 'aucun';
+  const faveur=regimesFaveur(v);
+  if(vvInputs.regime && faveur.indexOf(vvInputs.regime)!==-1) return vvInputs.regime;
+  return faveur[0];
 }
 
 function sohSaisi(){
@@ -2423,6 +2453,12 @@ function wireVVInputs(v){
   if(poidsField) poidsField.addEventListener('input',()=>{ vvInputs.poids=poidsField.value; relance(); });
   const dtkgField=document.getElementById('vvDtKg');
   if(dtkgField) dtkgField.addEventListener('input',()=>{ vvInputs.dtkg=dtkgField.value; relance(); });
+  const privField=document.getElementById('vvPriv');
+  if(privField) privField.addEventListener('change',()=>{
+    vvInputs.privilege=privField.checked;
+    if(!privField.checked){ vvInputs.regime=null; vvInputs.epave=false; }
+    relance2(v);
+  });
   const regField=document.getElementById('vvRegime');
   if(regField) regField.addEventListener('change',()=>{
     vvInputs.regime=regField.value;
