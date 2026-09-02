@@ -157,6 +157,409 @@ La pastille d'année vire à l'ambre dès qu'on s'écarte de l'année courante, 
 
 L'écart à l'année courante est signalé explicitement dans la fiche : *« Évaluation au 2022 et non à l'année courante (2026). L'âge retenu est de 6 ans, et l'évolution des prix postérieure à 2022 — réformes fiscales comprises — n'est pas appliquée. »*
 
+### 3.11 bis  Téléphone : la marque n'était nulle part
+
+Signalé par Yassine sur capture : à l'ouverture sur téléphone, **rien n'indique où choisir la marque**. L'écran affiche un hamburger, puis les blocs Modèle et Finition, et un message « ← Sélectionnez une marque » dont la flèche désigne une colonne de gauche qui, sur téléphone, n'existe pas.
+
+**La cause.** La colonne des marques est masquée sous 768 px, remplacée par un tiroir ouvert depuis le hamburger. Une barre marque existait bien — mais en `display:none`, rendue visible seulement par une classe ajoutée *après* le premier choix. L'écran d'accueil, c'est-à-dire exactement le moment où l'utilisateur cherche par où commencer, était donc le seul où la première étape n'avait aucune représentation.
+
+**Corrections :**
+
+- **La barre marque est permanente** sur téléphone, avec deux états : « Choisir une marque · Parcourir » en accent plein tant que rien n'est choisi, puis les initiales, le nom de la marque et « ⇄ Changer » une fois le choix fait. C'est elle, et non le hamburger, qui porte la première étape.
+- **C'est un vrai bouton**, avec un libellé accessible qui suit l'état, et un anneau de focus au clavier — c'était un `div` avec un `onclick`.
+- **Les trois colonnes sont numérotées** ① Marque ② Modèle ③ Finition. La numérotation encode ici un ordre réel — on ne peut pas choisir un modèle avant une marque — et chaque pastille change d'aspect selon qu'elle est franchie, active ou pas encore ouverte.
+- **Les invitations ne désignent plus une colonne absente** : la flèche pointe à gauche sur grand écran, vers le haut sur téléphone, et le texte devient « Choisissez d'abord une marque ».
+
+Dix contrôles automatiques couvrent ce parcours, dont l'absence de toute dépendance à l'ancienne classe d'affichage conditionnel.
+
+---
+
+### 3.10 bis  La dévalorisation, chiffrée à l'écran
+
+Signalé par Yassine sur une BMW i4 eDrive40 : la majoration de dévalorisation des véhicules à batterie n'apparaissait nulle part sous forme de chiffre. Une pastille annonçait « ⚡ Décote VE renforcée » sans jamais dire **de combien**, et le taux ne figurait que dans le bloc replié « Détail du calcul ». Un expert doit pouvoir citer ce taux et le défendre : il ne peut pas rester sous un pli.
+
+Le panneau batterie porte désormais la ligne, à son propre rang, séparée du reste par un filet :
+
+> **DÉVALORISATION RETENUE** — **9,00 %/an**
+> luxe / premium 8,33 % **+8 %** au titre du véhicule à batterie → **×0,910** à 1 an
+
+Trois éléments, et pas un de plus : le taux appliqué, sa décomposition entre le taux de gamme et la majoration, et le facteur d'âge qui en résulte. Sur un véhicule thermique la même ligne indique « aucune majoration ».
+
+Le cas a par ailleurs mis en évidence un point à dire franchement : **la BMW i4 n'a pas de capacité batterie renseignée** dans la base, comme 60 des 130 finitions électriques. La part de la batterie y est donc forfaitaire (25 %), et le coût de remplacement ne peut pas être affiché. Le panneau l'indique explicitement — « capacité non renseignée dans la base, part forfaitaire » — plutôt que de laisser croire à une mesure.
+
+---
+
+### 3.10 ter  Repère de version
+
+Une livraison a été rejetée par Yassine avec la remarque « aucun changement des codes de fichier n'a été aperçu ». Elle était fondée : le même `app.html` avait été renvoyé deux fois, et surtout **rien dans l'application ne permettait de savoir quelle build s'exécutait**. Un fichier remplacé mais servi depuis le cache du navigateur était indiscernable de l'ancien.
+
+Un badge de version figure maintenant dans la barre du haut, à côté du titre, sur tous les supports. Il porte le numéro de build, et son infobulle la date et le contenu de la version ; le tout est également écrit dans la console au démarrage. Quatre contrôles garantissent qu'il ne disparaîtra pas — dont la vérification qu'il n'est pas masqué sur téléphone.
+
+---
+
+### 3.10 quater  Hybrides simples : une jauge impossible à remplir
+
+En vérifiant le déploiement, un défaut de cohérence interne est apparu. Deux endroits décidaient séparément de ce qu'est un « véhicule à batterie » :
+
+- le **calcul** reconnaissait `elec`, `phev` **et `hev`** — un hybride simple obtenait donc un panneau batterie ;
+- le **formulaire** ne reconnaissait que `elec` et `phev` — il n'offrait aucun champ d'état de santé.
+
+Résultat sur un Chery Tiggo 4 HEV : une jauge batterie affichée, et aucun moyen de la renseigner. Le défaut vient de la duplication elle-même, pas d'un oubli ponctuel : deux listes séparées finissent toujours par diverger.
+
+La correction supprime la duplication — une fonction unique `aBatterie(fc)` sert des deux côtés — et un test parcourt **toutes les classes d'énergie de la base** (essence, diesel, elec, phev, hev) en vérifiant que le formulaire et le calcul sont d'accord sur chacune.
+
+---
+
+### 3.10 quinquies  Généralisation : tous les régimes douaniers de faveur
+
+La voiture populaire n'était qu'un cas particulier. La même règle vaut pour **tout véhicule ayant bénéficié d'un avantage douanier** (Yassine Hadiji) : FCR, corps diplomatique et consulaire, taxis et louages sous décret, agences de voyages.
+
+#### Un point de structure qui change tout
+
+**Le régime n'est pas une propriété du modèle, c'est une propriété du véhicule.** Il figure sur la carte grise, pas au catalogue : une Picanto ordinaire peut avoir été importée sous FCR. Le régime se **saisit** donc ; le repérage par le nom du modèle ne sert plus qu'à pré-sélectionner « populaire ».
+
+#### Un second point, qui inverse la logique selon les régimes
+
+D'où vient l'avantage ?
+
+- **Voiture populaire** — le **catalogue lui-même** est subventionné. La valeur à neuf doit donc réintégrer la taxe une fois le délai passé.
+- **FCR, diplomatique, taxi, agence** — le véhicule est un modèle ordinaire dont le tarif catalogue **inclut déjà la taxe**. L'avantage a porté sur l'acheteur, pas sur le prix affiché. Y appliquer une majoration la compterait deux fois.
+
+C'est le piège de cette généralisation, et il est verrouillé par un test : *seule* la populaire porte l'attribut « catalogue subventionné », et la majoration ne s'applique qu'à elle.
+
+#### Ce qui a pu être documenté, et ce qui ne l'a pas été
+
+| Régime | Délai | Assiette de la taxe | Statut |
+|---|---|---|---|
+| Voiture populaire | 2 ans | Poids (10,9 DT/kg) | Confirmé |
+| FCR — exonération totale (RS) | 2 ans | **25 % de la valeur à neuf** | Confirmé |
+| FCR — série TU (droits acquittés) | — | **Aucune** | Confirmé |
+| Corps diplomatique / consulaire | **aucun** | Poids | Confirmé |
+| Taxi / louage sous décret | 5 ans | Poids | Confirmé |
+| Agence de voyages | 5 ans | Poids | Confirmé |
+
+#### Le régime FCR, repris tel quel du guide officiel
+
+Sur demande de Yassine, le guide automobile.tn fait désormais foi. Il **corrige trois points que j'avais mal posés**, dont deux venaient de sa propre indication antérieure — preuve qu'un texte de référence vaut mieux qu'un souvenir, y compris celui d'un praticien :
+
+1. **L'incessibilité de la série RS est de durée ILLIMITÉE**, pas de deux ans. « Exonération totale des droits et taxes dus, avec interdiction de cession pour une durée illimitée. » Le véhicule reste hors marché tant qu'il n'est pas régularisé ; il n'y a aucun délai à laisser courir. Dans le calcul, `incessibilite: Infinity` reproduit cela exactement — un RS ne bascule jamais en « délai écoulé », quel que soit son âge, ce qu'un test vérifie à 2, 6 et 11 ans.
+2. **La régularisation porte sur les droits et taxes, pas sur la valeur à neuf, et son taux est de 30 %**, non de 25 % : « seulement 30 % des droits et des taxes dus » pour lever l'interdiction de vente. Les 25 % concernent l'autre option — la franchise **partielle** en série TU — et se lisent également sur les droits.
+3. **C'était une mesure transitoire, ouverte jusqu'au 31 décembre 2025.** Passée cette date, la fiche avertit au lieu d'appliquer un taux qui n'a peut-être plus cours.
+
+Conséquence pratique : les droits et taxes dus dépendent de la valeur en douane, de la cylindrée et du barème du droit de consommation. Ils **ne se déduisent pas** d'un prix catalogue. Aucune estimation n'est donc fabriquée pour un FCR RS — le décompte de la recette des douanes est exigé, et son absence est signalée comme la réserve la plus lourde de l'indicateur de confiance.
+
+---
+
+### 3.15  Indicateur de confiance : dire sur quoi le chiffre repose
+
+La dispersion résiduelle — 12,9 % d'écart absolu médian par modèle, dont 21 groupes sur 55 au-delà de 20 % — ne vient pas de la formule mais de l'épaisseur des données. Mesuré sur la base :
+
+- **40 % des modèles n'ont qu'une seule finition** au catalogue ;
+- **24 % ont un tarif qui s'arrête avant 2020** ;
+- **72 % des véhicules à batterie n'ont pas de capacité renseignée** ;
+- l'ancrage sur le millésime est exact dans 54 % des cas seulement, proche dans 31 %, corrigé par l'enveloppe dans 15 %.
+
+Plutôt que d'afficher partout la même précision apparente, la fiche **nomme les fragilités**. Onze réserves possibles, pondérées, classent l'estimation en *bien étayée*, *à confirmer* ou *fragile* — avec le détail en toutes lettres : « un seul niveau de finition au catalogue pour ce modèle », « tarif catalogue arrêté avant 2013 », « état de santé de la batterie non mesuré », « décompte des douanes indispensable et absent »…
+
+**L'indicateur a été validé, pas seulement construit.** Confronté aux 564 annonces exploitables du fichier de marché, il prédit réellement l'erreur :
+
+| Niveau | n | Écart absolu médian au prix réel |
+|---|---|---|
+| Bien étayée | 211 | **13,4 %** |
+| À confirmer | 315 | **16,4 %** |
+| Fragile | 38 | **26,1 %** |
+
+L'écart est **1,95 fois plus grand** sur les estimations que l'indicateur juge fragiles. Il n'est donc pas décoratif : il mérite sa place dans une fiche que l'expert doit défendre. La répartition n'est pas dégénérée non plus — 27 % bien étayées, 60 % à confirmer, 14 % fragiles.
+
+Il ne corrige rien, et c'est délibéré : il avertit. Les réserves qu'il nomme sont aussi la feuille de route de ce qui améliorerait la base — compléter les finitions des modèles pauvres, rafraîchir les tarifs figés, renseigner les capacités batterie.
+
+---
+
+#### Vérification sur les textes de loi
+
+Yassine a demandé que ces valeurs soient vérifiées avant d'être retenues — à raison, je les avais implémentées d'abord. La vérification, menée sur les textes qu'il a nommés, a **confirmé une règle que j'avais signalée comme incertaine** et **corrigé une affirmation de ma part** :
+
+- **La TVA de 7 % s'applique bien aux hybrides rechargeables comme aux électriques.** J'avais noté cette extension comme « moins fermement sourcée ». L'analyse de la loi de finances 2026 donne le barème complet et identique pour les deux énergies — droit de consommation 0 %, TVA 7 % contre 19 %, droits de douane 0 %, carte grise et vignette réduites de moitié — et précise que « les véhicules hybrides rechargeables sont désormais alignés sur le même régime fiscal que les voitures 100 % électriques ». C'est la **rechargeabilité** qui déclenche le régime, pas l'absence de moteur thermique. Le recoupement tient : les tarifs PHEV de la base ont chuté de 24,7 % en 2026, davantage que toute autre énergie.
+
+- **Il n'y a PAS de divergence sur le FCR RS, contrairement à ce que j'avais écrit.** Quatre sources publiques donnent « 25 ou 30 % » — mais elles décrivent le FCR **partiel à l'importation** (série TU), assis sur les **droits et taxes**. C'est une autre opération. Le coût de régularisation d'un véhicule **déjà en RS** n'est documenté nulle part : auto-prix.tn indique explicitement ne pas le donner. Les 25 % de la valeur à neuf ne sont donc pas contredits — ce sont deux « 25 % » qu'il ne faut pas confondre. J'ai corrigé le commentaire du code, qui annonçait à tort une divergence assumée.
+
+- **Le régime taxi / louage / transport rural est le seul dont les textes ont pu être lus.** Loi n° 2011-7 (LF 2012, art. 19 à 23) et décret n° 2012-5 : exonération du droit de consommation et TVA réduite, **une fois tous les cinq ans** — ce qui confirme le délai retenu. Le taux réduit était de 6 %, porté à **7 % au 1er janvier 2018**. Et surtout, un point qui intéresse directement l'expertise : **le renouvellement du bénéfice peut intervenir avant le terme en cas d'endommagement du véhicule, de vol, ou de changement de catégorie du permis.** Un taxi détruit n'est donc pas bloqué comme l'est le propriétaire d'une populaire, qui doit attendre sept ans. La fiche le signale désormais.
+
+- **L'agence de voyages n'est pas couverte** par ces textes : son régime reste appuyé sur la seule pratique.
+
+Chaque régime porte maintenant sa **source** — `publie` ou `pratique` — et un test vérifie qu'aucun ne l'omet. Un rapport d'expertise doit pouvoir citer ses appuis.
+
+Trois de ces règles ont demandé une correction de ce que j'avais posé, et deux d'entre elles étaient des erreurs de fond :
+
+- **Le FCR en série TU n'est pas un régime de faveur.** C'est un véhicule tunisien qui **a acquitté ses droits** (25 % pour l'essence ≤ 2000 cm³, le diesel ≤ 2500 cm³, l'hybride et l'électrique ; 30 % au-delà). Il se traite comme tout véhicule TU. Lui appliquer une taxe d'épave aurait fait payer une seconde fois un assuré déjà en règle. Le régime reste proposé dans la liste, pour que l'expert puisse le consigner et voir écrit qu'il n'emporte aucune conséquence.
+- **Le diplomatique n'a aucun délai.** Le véhicule est assimilé à un **véhicule étranger** disposant d'une autorisation permanente de circulation en Tunisie. Il n'y a donc pas de délai à laisser courir : les droits deviennent exigibles dès la sortie du régime.
+- **Le FCR RS ne se régularise pas à 30 % des droits mais à 25 % de la valeur à neuf.** Les guides publics — automobile.tn, sayarti.tn — parlent de « 25 ou 30 % des **droits de douane** » selon la cylindrée ; ce n'est pas la même assiette, et cela donne un montant trois à quatre fois moindre. C'est la lecture de l'expert qui est retenue : il voit les décomptes réels, les guides compilent des textes. Un échelonnement selon l'âge reste à vérifier.
+
+#### Électriques et rechargeables : la charge se résume à la TVA
+
+Sur un véhicule électrique ou hybride rechargeable, il n'y a plus de droit de douane : la charge se réduit à une **TVA de 7 %** — pour les particuliers, les régimes RS et les concessionnaires indifféremment.
+
+Cette règle intervient aux **deux** endroits où une charge douanière apparaît, et n'en oublier aucun était le vrai enjeu :
+
+1. la réintégration de la taxe dans la valeur à neuf d'une populaire au-delà de son délai — 7 % au lieu de 30 % si le véhicule est rechargeable ;
+2. la taxe de régularisation due à la mise à l'épave, **quelle que soit** l'assiette normalement prévue par le régime : la TVA prime sur le tarif au poids comme sur les 25 % de la valeur à neuf.
+
+La négliger aurait réclamé à un assuré roulant en électrique une taxe calculée sur un barème thermique qui ne le concerne plus. Douze assertions couvrent les quatre régimes croisés avec les deux énergies.
+
+#### Le décompte réel prime toujours
+
+Un champ **« Montant du décompte »** a été ajouté : dès qu'il est renseigné, il l'emporte sur toute estimation, quelle que soit l'assiette. Un expert qui tient la pièce de la recette des douanes n'a aucune raison de se contenter d'un calcul.
+
+La bascule « mise à l'épave » apparaît désormais pour **tout régime de faveur**, jamais pour le droit commun — et cocher le droit commun ne peut produire aucune taxe, ce qu'un test vérifie.
+
+---
+
+### 3.12  F_état : le jugement visuel de l'expert, et sa règle
+
+Règle de métier posée par Yassine Hadiji : **un sinistre mal réparé se décèle et se sanctionne — mais un véhicule réparé selon les normes du constructeur, avec une finition quasi parfaite, ne subit aucun malus.** Le passé accidenté ne se déduit pas par principe ; seul le constat d'une réparation défectueuse le fait.
+
+L'échelle précédente (Mauvais / Moyen / Normal / Bon / Très bon) était muette là-dessus et laissait l'expert deviner s'il devait pénaliser une réparation propre. Les libellés portent désormais la règle, chacun avec sa ligne d'aide affichée sous le champ :
+
+| Niveau | Ce qu'il désigne | Effet |
+|---|---|---|
+| Réparation non conforme | jeux de tôlerie, écarts de teinte, reprises apparentes | −10 % |
+| Réparation visible | travail correct mais finition imparfaite, ou usure marquée | −5 % |
+| **Conforme — aucun malus** | véhicule sain, **ou réparé aux normes constructeur** | **0** |
+| Bon entretien | usure inférieure à la moyenne de son âge | +5 % |
+| Exceptionnel | présentation remarquable pour son âge | +10 % |
+
+Le barème lui-même reste **posé**, non calibré : seuls des dossiers d'expertise clos permettraient de le mesurer.
+
+---
+
+### 3.13  Véhicules électriques : la courbe européenne, pas la tunisienne
+
+Correction d'analyse apportée par Yassine : **un VE tunisien suit obligatoirement la courbe européenne.** Il est vendu au même coût qu'en Europe — droits de douane supprimés, TVA à 7 % — et roule dans des conditions comparables. Il ne bénéficie donc **pas** du soutien de valeur qui tient le marché tunisien de l'occasion thermique, lequel vient précisément des droits d'importation élevés et de l'offre de neuf contrainte.
+
+Appliquer aux VE le taux d'une gamme thermique tunisienne (4,27 à 8,33 %/an) majoré de 8 %, comme le faisait la version précédente, était une erreur : ces taux mesurent une rareté qui n'existe pas pour l'électrique.
+
+**Le taux brut, mesuré à l'étranger** — décote rapportée au prix d'achat d'origine :
+
+| Source | Horizon | Décote | Taux annuel |
+|---|---|---|---|
+| Cox Automotive (nov. 2025) | 3 ans | 38–42 % | 15,7 %/an |
+| iSeeCars (1,1 M de ventes) | 5 ans | 49,1 % | 12,7 %/an |
+| Recharged (marché US 2025-26) | 5 ans | ~59 % | 16,4 %/an |
+
+Médiane retenue : **15 %/an**.
+
+**Un piège réel, mais que j'avais mal chiffré.** Une étude de valeur résiduelle rapporte la valeur au prix d'achat *d'origine* : elle englobe donc le mouvement du prix du **neuf** survenu depuis. Notre valeur à neuf étant déjà ramenée au prix du jour, il faut retrancher cette part du taux brut, sans quoi elle serait comptée deux fois.
+
+J'avais posé **5 %/an**, en croyant que les prix du neuf électrique avaient beaucoup baissé en Europe. **C'est faux.** D'après Transport & Environment (mars 2026), le prix moyen d'un VE neuf dans l'UE a **augmenté de 5 000 € entre 2020 et 2024**, et n'a baissé qu'en 2025 — de 1 800 € (−4 %), à 42 700 €, première baisse depuis 2020. Sur la fenêtre des études de valeur résiduelle, le prix du neuf européen est donc à peu près **stable**, et non en chute.
+
+En ne retranchant que la baisse réellement constatée — 1,3 %/an lissés — il reste **13,8 %/an** au lieu de 10,1 %. La correction est lourde, mais elle va dans le sens de la règle posée par Yassine : un VE tunisien suit la courbe européenne, et cette courbe est raide. Un test verrouille désormais le fait que cette correction reste marginale, pour qu'on ne retombe pas dans l'hypothèse d'un neuf en chute libre.
+
+L'effondrement tarifaire tunisien de 2025-2026 n'est pas compté ici : il agit sur la valeur à neuf (indice par énergie et plafond du prix du jour), pas sur le rythme de dévalorisation. Les deux effets sont multiplicatifs et indépendants.
+
+**Une conséquence inattendue, et un défaut trouvé.** Porter la décote de 10,1 à 13,8 %/an fait atteindre le plancher de valeur résiduelle dès **13 ans** au lieu de 18. Cinquante inversions d'âge sont aussitôt réapparues sur les millésimes anciens. Le diagnostic n'était pas celui que je croyais : ni l'ancrage ni l'enveloppe n'étaient en cause — une fois au plancher, `F_âge` cesse de croître avec le millésime et la valeur à neuf est identique, si bien que **le seul bonus kilométrique décidait du classement**, et il favorise le plus vieux (son kilométrage normal de référence est plus élevé).
+
+La règle ajoutée est aussi la bonne économiquement : **au plancher de valeur résiduelle, il n'y a pas de prime au faible kilométrage.** Un véhicule parvenu à sa valeur de carcasse ne se revend pas 15 % plus cher parce qu'il a peu roulé. Le malus, lui, continue de s'appliquer : un kilométrage démesuré déprécie encore. Zéro inversion restante, et la validation marché s'est **améliorée** au passage — écart absolu médian de 12,9 % à **12,1 %**, biais médian de +7,3 % à +6,2 %, 35 groupes sur 55 sous les 20 % contre 34.
+
+**Les deux corrections locales, et deux seulement :**
+
+- **Le climat.** La Tunisie est plus chaude : +0,4 point de dégradation batterie par an (Geotab). L'effet sur la *valeur* est cette perte de capacité supplémentaire pondérée par le poids de la batterie — un surcroît d'usure ne coûte que ce que vaut la pièce. Soit +0,1 point pour une batterie pesant 25 % de la valeur.
+- **L'infrastructure de recharge.** Environ **200 bornes pour un peu plus de 400 véhicules** en circulation, objectif de 10 000 bornes en 2030 (ANME, avril 2026). Cette rareté pèse sur la **demande**, pas sur le rythme d'usure : elle est portée par `F_carburant` (elec 0,95), pas par le taux de dépréciation. Ce coefficient trouve ainsi sa justification, même s'il reste posé.
+
+Taux final pour un électrique courant : **10,1 %/an**, contre 9,0 % dans la version précédente et 8,33 % pour un thermique de même gamme. Un plancher garantit qu'un véhicule à batterie ne se déprécie jamais plus lentement que son équivalent thermique. La fiche affiche la décomposition complète : *« courbe européenne 15 % − 5 % déjà portés par le prix du jour + 0,1 % climat »*.
+
+---
+
+### 3.14  Le panneau de résultat en double — et ce que le module « épave » n'avait rien à faire là
+
+Deux défauts signalés le même jour, l'un d'affichage, l'autre de conception. Ils se sont révélés liés.
+
+#### Le doublon : un `</div>` de trop
+
+La fiche apparaissait **deux fois** dans la colonne de droite, à l'identique. La cause est arithmétique : le bloc de saisie « mise à l'épave » émettait **une balise fermante de plus qu'il n'en ouvrait**. Ce `</div>` orphelin fermait `.vv-fields` trop tôt ; le `</div>` prévu pour `.vv-fields` fermait alors `#vvSect`, et **`#vvOut` — le conteneur du résultat — se retrouvait à l'extérieur de la section**, comme frère et non comme enfant.
+
+C'est ce déplacement qui produisait le doublon. Cocher une case appelle `relance2`, qui remplace `#vvSect` par son `outerHTML` : le nouveau balisage apportait son propre `#vvOut`, pendant que **l'ancien, devenu orphelin, restait dans la page**. Chaque basculement ajoutait donc un panneau de plus. Le montant, la jauge, l'indicateur de confiance : tout se dupliquait.
+
+Deux enseignements. D'abord, l'imbrication ne se voyait qu'à l'état où les champs poids et tarif étaient affichés — l'un des rares états de ce formulaire, et celui de la capture. Ensuite, un navigateur *répare* silencieusement un balisage déséquilibré, chacun à sa façon ; jsdom l'avait réparé autrement et n'avait rien montré. **Un test structurel a donc été ajouté** : pour chaque état du formulaire (ordinaire, populaire, à batterie, avec et sans privilège), `renderVVBlock` doit rendre **un seul élément racine**, avec autant de balises ouvrantes que de fermantes, et `#vvOut` doit se trouver **à l'intérieur** de `#vvSect`. Un second test bascule les cases plusieurs fois de suite et vérifie qu'il ne reste qu'un panneau.
+
+#### Le module « épave » : hors sujet, et retiré
+
+Le titre du montant basculait sur « **Indemnité — valeur vénale + taxe douanière** » dès qu'une taxe était calculée. Rappel de Yassine : *« c'est une plateforme pour calculer la valeur vénale, aucune relation avec une indemnité quelconque »*. C'est juste, et cela tranche une ambiguïté que je traînais depuis plusieurs versions.
+
+La ligne est nette :
+
+- **la taxe de régularisation due à la mise à l'épave est une charge du règlement de sinistre** — elle ne dit rien de ce que vaut le véhicule ;
+- **le régime douanier, lui, change bel et bien la valeur vénale**, parce qu'il change la base de calcul (§ 3.17).
+
+Le premier est parti, le second reste. Ont été supprimés : la case « mise à l'épave », les champs poids, tarif au kilo et montant du décompte, le calcul de la taxe et ses quatre assiettes, la décomposition sous le montant, la pastille, la notice, la réserve « décompte manquant » de l'indicateur de confiance, et les paramètres correspondants. Le titre du montant est désormais fixe : **« Valeur vénale estimée »**.
+
+Un test garde la trace du retrait : treize identifiants (`taxePop`, `vvMarche`, `taxeBase`, `vvEpave`, `Indemnité`…) ne doivent réapparaître nulle part dans le fichier.
+
+#### Nettoyage entraîné
+
+- Sept règles `.spec-fuel` : composant retiré de longue date, feuille de style jamais nettoyée.
+- `.vi-badge.fuel-ess` ne s'appliquait **jamais** : `fuelClass()` renvoie `essence`, pas `ess`. La pastille des véhicules à essence s'affichait en gris neutre depuis toujours, au lieu de sa couleur. Renommée.
+- Les écouteurs, l'état de saisie et les fonctions d'accès aux champs supprimés.
+
+Le fichier passe de 196 à 179 Ko. Un script de détection (`deadcode.js`) a été ajouté à la batterie : il liste les classes CSS jamais posées, les fonctions jamais appelées et les identifiants jamais lus.
+
+---
+
+### 3.16  Régimes de faveur : quatre erreurs de conception corrigées
+
+Une capture d'écran de Yassine sur une Citroën C3 Populaire de 2016 a ouvert une série de corrections, dont trois de conception.
+
+**1. Le catalogue subventionné est une propriété de la FINITION, pas du régime.** Je liais la réintégration de la taxe au régime déclaré : choisir « droit commun » sur une populaire faisait donc traiter le prix **subventionné** comme un prix de marché — 21 000 DT au lieu de 27 300, un quart trop bas sur un chiffre qui sert à indemniser. Le tarif d'une « C3 Populaire » est exonéré de taxe douanière quoi qu'il arrive : il faut l'y réintégrer pour obtenir une valeur de marché. Seule l'incessibilité du régime **populaire** gèle le prix subventionné — le délai d'un autre régime porte sur d'autres droits.
+
+**2. Une voiture populaire ne relève que du régime populaire**, et réciproquement aucun autre modèle ne peut l'être. Les huit régimes étaient ouverts partout, autorisant des combinaisons impossibles — et c'est en en essayant une que l'incohérence ci-dessus est apparue. Le sélecteur est désormais restreint, et verrouillé sur les populaires.
+
+**3. L'avantage d'un taxi ou d'une agence s'éteint à cinq ans.** Passé ce terme il est définitivement acquis : le véhicule redevient de droit commun et plus aucune taxe n'est due. Mais il a subi une **utilisation intensive** — la fiche rappelle à l'expert de vérifier que le champ Usage la traduit.
+
+**4. Il n'existe qu'une seule immatriculation FCR : RS.** Le « FCR série TU » a été retiré de la liste : un véhicule passé en série TU a acquitté ses droits, c'est du droit commun. Le proposer comme régime distinct laissait croire à un statut qui n'existe pas.
+
+---
+
+### 3.17  La base de calcul n'est pas la même selon le régime
+
+Correction de Yassine : *« la valeur vénale d'un véhicule en droit commun ne peut pas être égale à celle en corps diplomatique, car la base de calcul n'est pas la même »*. C'est exact, et je l'avais manqué.
+
+Le prix catalogue de la base est un prix **tunisien taxé**. Or certains véhicules ne l'ont jamais acquitté : corps diplomatique et FCR RS sont entrés en franchise totale ; taxi, louage et agence sont exonérés du droit de consommation et taxés à 7 % de TVA au lieu de 19 % tant que l'affectation court. Leur valeur à neuf doit donc être **abattue** — le sens inverse exact de la voiture populaire, où l'on réintègre une taxe absente du catalogue.
+
+**Combien retirer ? Pas le taux douanier** — et c'est la comparaison européenne demandée par Yassine qui l'a montré. Les droits de douane frappent la **valeur en douane**, pas le prix de détail : diviser un prix TTC par 1,30 en retire beaucoup trop.
+
+Tarif tunisien **courant** contre prix français neuf converti (1 € = 3,3809 TND, cours BCT du 19/08/2026) :
+
+| Modèle | Tunisie | France | converti | écart |
+|---|---|---|---|---|
+| Dacia Sandero | 58 450 DT | 13 290 € | 44 932 DT | **+30 %** |
+| Renault Clio | 66 950 DT | 19 900 € | 67 280 DT | **0 %** |
+| Peugeot 208 | 64 900 DT | 20 750 € | 70 154 DT | **−7 %** |
+| Dacia Duster | 106 950 DT | 19 990 € | 67 584 DT | **+58 %** |
+| | | | **médiane** | **+15 %** |
+
+Un véhicule entré sans droits devrait valoir à peu près le prix européen : l'abattement qui l'y ramène est donc d'environ **13 %**, non de 23 %. La valeur retenue vient de cette mesure, pas du taux douanier.
+
+**Ma première version de cette comparaison était fausse** et il faut le dire : je prenais le prix le plus bas toutes finitions confondues, donc des tarifs de 2012 pour des modèles encore vendus — d'où un « catalogue tunisien 52 % sous le prix français », absurde. La comparaison ne vaut que sur le tarif **en vigueur**.
+
+**Faiblesse à connaître** : quatre modèles, dispersion large (−7 % à +58 %) parce que les finitions d'entrée ne se correspondent pas d'un marché à l'autre. C'est un ordre de grandeur, pas une calibration.
+
+La majoration des populaires, elle, n'est pas concernée : elle repose sur une mesure interne à la base — l'écart entre le tarif populaire et celui de la jumelle non populaire la moins chère du même millésime, **100 paires sur 13 modèles, médiane +46 %** (Picanto +45, Grand i10 +35, Panda +29, Polo +24, QQ +22, Celerio +78). La majoration retenue, **+30 %**, reste volontairement en deçà : les finitions ne se correspondent pas exactement, et une part de l'écart tient à l'équipement plutôt qu'au régime.
+
+**Enfin, la gamme se lit toujours au niveau de marché.** Classer un véhicule diplomatique sur sa valeur abattue le faisait glisser d'une gamme à l'autre et changeait son taux de dépréciation : un avantage fiscal ne transforme pas une berline premium en citadine.
+
+---
+
+### 3.18  Contrastes : le contrôle qui manquait
+
+Une capture en thème sombre montrait l'en-tête de la fiche résultat quasi illisible. La cause : `--gn` sert de **fond** sous du texte blanc dans ce composant, alors que je l'avais éclairci pour le thème sombre — où il sert de **texte** ailleurs. Un jeton dont le rôle change ne peut pas servir aux deux.
+
+L'audit précédent ne testait qu'une liste de paires choisies à la main. Il vérifie maintenant **toutes** les règles qui fixent à la fois un fond et une couleur, dans les deux thèmes, dégradés compris : **112 paires**. Il en a trouvé **23 défaillantes**, dont l'en-tête à 1,70:1. Toutes corrigées, par des jetons de rôle (`--sur-vert`, `--sur-bleu`, `--txt-orange`…) qui restent sombres ou clairs selon ce qu'ils portent, et non selon le thème.
+
+Au passage, le chip « Modèle » fuyait sur grand écran : son `display:none` ne vivait qu'à l'intérieur du média téléphone, si bien qu'aucune règle ne s'appliquait en desktop. Même défaut que la barre marque, à l'envers.
+
+---
+
+### 3.19  Alléger la fiche
+
+Sur demande de Yassine, la fenêtre de résultat ne garde que ce qui se lit d'un coup d'œil : le **montant** et sa composition, la **jauge de cotation**, et une **ligne de confiance**. Les pastilles, le panneau batterie, le détail du calcul et les notices passent sous le pli « Détail du calcul et règles appliquées ». La ligne de confiance n'est plus elle-même un bloc dépliable — le détail de ses réserves se lit au survol et se déplie avec le reste. Sept contrôles vérifient ce partage.
+
+---
+
+### 3.11  Interface : le résultat comme cadran
+
+La fiche a été reprise là où elle était encore un formulaire prolongé plutôt qu'un instrument de mesure.
+
+- **Le montant est le seul élément à cette échelle.** Un intitulé en capitales le nomme, l'unité est composée à part pour rester une unité, un filet d'accent tient le bloc à gauche, et l'ensemble est posé sur une carte propre plutôt qu'à la suite des champs de saisie.
+- **Un bloc batterie** apparaît sur les véhicules à batterie : une jauge situe la capacité mesurée entre ce qu'on attend de cet âge et le seuil de garantie, avec la part de la batterie dans la valeur, l'effet chiffré sur l'estimation et l'ordre de grandeur d'un remplacement. Un champ de saisie du SOH est ajouté au formulaire, uniquement là où il a un sens.
+- **Thème sombre complet.** Les composants ne lisent que des jetons ; seuls les jetons sont redéfinis, dans les deux états (préférence système et choix explicite), ce qui évite le défaut classique d'une couleur qui ne s'applique jamais dans l'état non marqué. Les contrastes ont été calculés : les neuf paires de référence passent le seuil AA dans les deux thèmes, de 3,53:1 pour le texte tertiaire à 17,88:1 pour le texte principal.
+- **Détails d'exécution** : piles de repli typographiques réelles derrière Inter et Syne, `:focus-visible` visible partout, respect de `prefers-reduced-motion`, `theme-color` déclinée par thème, vrai signe moins dans les pourcentages signés.
+
+Quatre contrôles automatiques gardent tout cela : parité des jetons entre les deux blocs sombres, absence de règle de composant à l'intérieur d'un bloc de thème, absence de couleur de texte littérale sans fond propre, et présence des règles de style essentielles (une refonte du CSS en avait déjà supprimé par accident, sans qu'aucun test ne bronche).
+
+---
+
+### 3.9 ter  Cohérence des millésimes — un véhicule plus récent ne peut pas valoir moins
+
+Un audit systématique de la formule (211 finitions, tous millésimes de 2008 à 2026, paramètres identiques) a révélé **63 inversions d'âge** : un véhicule plus récent ressortant **moins cher** que son aîné, jusqu'à **−21 %**. Le pire cas : Renault Laguna Coupé 2.0 170 BVA, 56 300 DT pour un 2012 contre 46 100 DT pour un 2013.
+
+**La cause.** Le tarif d'une finition ne monte pas toujours — restylage dépouillé, changement de fiscalité, baisse commerciale. La Laguna coûtait 79 900 DT au tarif 2012 et 65 900 DT en 2013. L'estimation, ancrée sur le tarif de l'époque du véhicule, héritait mécaniquement de cet écart. Or sur le marché de l'occasion, personne ne paie davantage un millésime plus ancien parce qu'il coûtait plus cher neuf : ce qui les sépare, c'est l'âge.
+
+**Ce qu'il fallait corriger, exactement.** Pas que le tarif baisse — cela arrive et c'est un fait. Que la valeur **vénale** s'inverse. Or l'âge accorde déjà un écart : `VV(a) < VV(a+1)` tant que `VEN(a) < VEN(a+1)/(1−taux)`. La série des valeurs à neuf est donc balayée à rebours, millésime par millésime, en n'imposant que cette borne. Les creux de tarif légitimes sont préservés ; seules les vraies inversions cèdent.
+
+Trois détails ont demandé deux itérations chacun :
+
+- **Le taux de référence** est celui de la gamme qui se déprécie *le plus lentement* (4,27 %/an). C'est la contrainte la plus serrée, donc celle qui garantit l'ordre pour toutes les gammes.
+- **Le kilométrage entre dans le compte.** À kilométrage égal, le repère normal d'un véhicule plus récent est plus bas, donc son bonus kilométrique est plus faible — de 1,05 %/an. Sans en tenir compte, l'enveloppe consommait toute la marge et l'ordre s'inversait quand même (Ford Ka 1.2 Titanium à 120 000 km : 25 800 DT en 2013 contre 25 400 DT en 2016). La borne annuelle retenue est donc `1/(1−taux) × (1−pente km) × 0,995`, le dernier facteur absorbant l'arrondi à la centaine.
+- **La série est construite en une fois et mise en cache** par finition et par année d'évaluation : les contrôles appellent le calcul des dizaines de milliers de fois.
+
+**Résultat : 0 inversion** sur le même échantillon. Les 4 discontinuités restantes sont celles, **voulues**, de la bascule d'incessibilité des véhicules populaires (§ 3.10). La validation sur les 580 annonces est inchangée (écart absolu médian 12,9 %).
+
+L'audit a par ailleurs écarté une fausse alerte : 69 cas de valeur vénale « supérieure à la valeur à neuf ». L'écart maximal est de **49 DT** — c'est l'arrondi à la centaine, pas un défaut de formule.
+
+---
+
+### 3.9 quater  Véhicules électriques : la batterie comme poste de valeur
+
+Sur un véhicule à batterie, la batterie est le premier poste de valeur et **le seul dont l'usure se mesure**. C'est elle qui fait l'écart entre deux exemplaires de même âge, et rien dans le modèle ne la représentait.
+
+#### Ce que la base contient
+
+**130 finitions électriques**, dont 70 avec une capacité exploitable, plus 84 hybrides rechargeables et 59 hybrides. Un premier piège, silencieux : le champ de capacité est une **chaîne avec son unité** (`"100kWh"`, `"42.5 kWh"`). Toute arithmétique directe dessus donne `NaN` — et un `NaN` dans une part de batterie ne lève aucune erreur, il désactive juste le module partout sans le dire. La lecture passe donc par un extracteur qui rejette aussi les valeurs absurdes, et un test vérifie qu'au moins 50 finitions restent exploitables.
+
+Second constat, décisif : **la base ne contient qu'une seule finition électrique antérieure à 2023** (118 des 130 sont apparues en 2024 ou après). Il n'existe donc **aucune courbe de dévalorisation électrique tunisienne à mesurer**. Tout ce qui suit est étayé sur des sources externes, explicitement signalées comme telles.
+
+#### Le contexte tunisien, qui domine tout le reste
+
+La fiscalité des véhicules électriques a été refondue : **droits de douane ramenés de 30 % à zéro, TVA de 19 % à 7 %, taxe de circulation divisée par deux**, et puissance fiscale recalculée sur une grille propre aux électriques. Le parc commercialisé est passé d'environ 15 à plus de 60 modèles, avec des baisses dépassant **40 %** sur certains — un véhicule à 100 000 DT s'échangeant désormais autour de 58 000 DT (ANME, août 2026).
+
+La base le confirme sur ses propres relevés : **30 des 37 finitions électriques suivies sur au moins deux ans ont un tarif en baisse**, jusqu'à −36 % (BMW iX xDrive40 Impressive, 424 900 → 269 900 DT). L'indice par énergie mesure −3,5 % en 2025 et −8,3 % en 2026 pour l'électrique, contre −4,3 % pour l'ensemble.
+
+**Conséquence pratique : le plafond « prix neuf du jour » (§ 3.9 bis) est ce qui protège le plus les estimations de VE.** Un électrique acheté 100 000 DT en 2024 et remplaçable à 58 000 DT aujourd'hui ne peut pas être indemnisé au-dessus de 58 000 DT, et c'est cette borne — pas une hypothèse de dévalorisation — qui le garantit.
+
+#### F_batterie : l'écart à la norme de l'âge, pas l'état absolu
+
+Le facteur batterie est construit **comme F_km** : sur l'écart à ce qu'on attend de cet âge.
+
+`F_batterie = 1 + part_batterie × (SOH_mesuré / SOH_attendu − 1)`
+
+Sans mesure d'état de santé, le facteur vaut **1** et rien ne change : on ne présume pas d'une usure qu'on n'a pas constatée. La fiche invite alors à faire le relevé.
+
+**SOH attendu** : dégradation de **2,4 %/an**, composée de 2,0 %/an pour les voitures particulières (Geotab 2025, 22 700 véhicules, 21 modèles) et de **+0,4 point de pénalité climat chaud** — la Tunisie en est un. La courbe donne 82,3 % de capacité à 8 ans, contre 81,6 % mesurés par Geotab : l'écart est de 0,7 point.
+
+**Part de la batterie dans la valeur** : mesurée quand la capacité est connue (`capacité × 380 DT/kWh ÷ valeur à neuf`), forfaitaire sinon (25 % en électrique, 12 % en hybride rechargeable, 3 % en hybride), bornée entre 5 % et 40 %. Deux bases de coût sont distinguées et il ne faut pas les confondre : **380 DT/kWh** (bas de la fourchette client, 130 $/kWh au cours BCT du 19/08/2026) pour *pondérer* la batterie dans la valeur du véhicule, la marge et la main-d'œuvre d'un remplacement n'étant pas de la valeur incorporée ; **480 DT/kWh** pour le *devis indicatif affiché* à l'expert, pose comprise.
+
+La forme est juste à ses deux extrêmes : batterie morte (SOH → 0) = perte de toute la part batterie ; batterie neuve = part intacte. Un test le vérifie sur toute la plage 40–102 %.
+
+**Le seuil de garantie est signalé, pas chiffré.** Sous 70 % de capacité et dans les 8 ans / 160 000 km usuels, la batterie est remplacée au titre de la garantie — ce qui **relève** la valeur au lieu de l'abaisser. Le modèle ne peut pas le présumer (cela dépend du contrat) : la fiche le dit à l'expert, avec l'ordre de grandeur du remplacement.
+
+#### Décote renforcée des véhicules à batterie
+
+Les VE se déprécient plus vite : **38 à 42 % à trois ans contre 35 à 40 %** pour les thermiques (Cox Automotive, novembre 2025), soit un rythme annuel supérieur d'environ **8 %**. C'est ce **rapport** qui est appliqué au taux de la gamme — jamais les taux européens eux-mêmes, qui n'ont rien à voir avec le marché tunisien. Le niveau, lui, reste porté par l'indice par énergie et le plafond du prix neuf du jour.
+
+**À remesurer** dès qu'un marché de l'occasion électrique existera en Tunisie. Il n'existe pas encore : 500 à 520 immatriculations sur toute l'année 2025, 185 sur les deux premiers mois de 2026.
+
+---
+
+### 3.9 bis  Plafond « prix neuf du jour » — quand le tarif catalogue baisse
+
+Signalé par Yassine sur une **Chery Tiggo 4 Pro** de 2025 : valeur vénale estimée **81 900 DT** alors que le même véhicule **neuf** se vend **75 000 DT** en concession. Une occasion ne peut pas valoir plus que sa version neuve disponible le jour même — c'est la valeur de remplacement à neuf, et c'est une borne économique dure.
+
+**La cause : un tarif en baisse.** L'historique de cette finition est décroissant — 88 490 DT en janvier 2025, 84 490 en août, 79 900 en janvier 2026, 75 000 en mars 2026. L'estimation partait, comme pour tout véhicule, du prix de l'époque de la mise en circulation (88 490 DT), qu'elle actualisait ensuite. Cette logique est la bonne pour un modèle retiré du catalogue : on n'a que le prix de son époque et il faut le porter à aujourd'hui. Elle devient absurde quand le prix d'aujourd'hui est **connu** et **plus bas**.
+
+Le phénomène n'est pas marginal : sur les **394 finitions encore commercialisées en 2026**, **221 ont un tarif inférieur à leur maximum historique** — l'effet de la concurrence chinoise et des baisses de gamme sur le marché tunisien. **170** d'entre elles produisaient une valeur à neuf supérieure au prix du jour, jusqu'à +54 % (BMW X3 20i xDrive Pack M : 382 290 DT calculés contre 248 900 DT au tarif du jour).
+
+**Deux bornes ont été posées**, l'une après l'autre parce que la première ne suffisait pas :
+
+1. **Sur la valeur à neuf de référence.** Quand la finition est encore au catalogue à la date d'évaluation, sa valeur à neuf ne peut pas dépasser le prix qui y figure ce jour-là. Le plafond est appliqué *avant* la réintégration douanière des véhicules populaires : leur prix catalogue est le prix subventionné, la taxe se réintègre par-dessus.
+2. **Sur le résultat lui-même.** Le premier plafond laissait encore passer les véhicules quasi neufs : à un âge nul, `F_âge` vaut 1 et les bonus d'état (jusqu'à +10 %) et de kilométrage (jusqu'à +15 %) repassaient au-dessus du prix neuf. La valeur vénale est donc bornée à son tour.
+
+**Une exception, assumée** : une populaire au-delà de son délai d'incessibilité dépasse légitimement son prix subventionné, puisqu'elle s'échange précisément sur le marché **taxé**. La borne ne s'y applique pas — c'est l'objet même de la réintégration douanière décrite ci-dessous.
+
+**Vérification** : 5 455 combinaisons finition × millésime × état ont été sondées sur les modèles encore commercialisés. **Aucune valeur vénale au-dessus du prix neuf du jour**, contre 980 avant correction. L'invariant est tenu par le jeu de tests (`test_vv.js`, section 12 ter). Chery Tiggo 4 Pro 2025 : **71 800 DT**, sous les 75 000 DT du neuf.
+
+Quand la borne joue, la fiche l'affiche — pastille `🔻 Plafonnée au prix neuf du jour`, et une note rappelant le tarif du jour et, le cas échéant, la baisse constatée depuis l'époque du véhicule.
+
+---
+
 ### 3.10 Véhicules populaires : réintégration de la taxe douanière
 
 Le véhicule populaire est vendu **hors taxe douanière**, sous conditions de revenu et de puissance (≤ 4 CV fiscaux), et il est **incessible pendant 2 ans**, sauf cas particuliers (mise à l'épave notamment). Passé ce délai il s'échange sur le marché normal — sa valeur vénale doit donc se comparer à un prix à neuf **taxé**, et non au prix subventionné du catalogue. Partir du prix subventionné sous-estimait mécaniquement ces véhicules.
@@ -175,6 +578,23 @@ Le véhicule populaire est vendu **hors taxe douanière**, sous conditions de re
 Pour mémoire, j'avais tenté de le mesurer dans la base, qui contient les deux versions de plusieurs modèles : l'écart ressort à **+56 % en médiane sur 43 couples**. Ce chiffre n'est **pas** utilisable comme taux — la version normale est souvent bien mieux équipée, l'écart mélange donc l'exonération fiscale et la différence de finition, ce que confirme sa dispersion de +11 % à +102 %. Les couples les plus proches en équipement (VW Polo 2017 +11 %, Clio 2017 +15 %, Chery QQ 2016 +22 %) sont en revanche cohérents avec les 30 % retenus.
 
 Le paramètre reste isolé dans `VVPARAMS.populaire` et se corrige d'une ligne si le taux évolue.
+
+#### Le plafond par la version normale — correction d'une inversion
+
+La majoration forfaitaire, appliquée seule, produisait un résultat faux et visible : **une populaire pouvait ressortir mieux valorisée que la voiture non subventionnée dont elle est la déclinaison.** Le cas signalé par Yassine : deux Chery QQ 2016, mêmes paramètres (125 000 km, état normal, usage particulier, évaluation 2026) — 22 900 DT pour la normale, **24 400 DT** pour la populaire.
+
+La mécanique de l'erreur est arithmétique. Les deux versions sont bien ancrées sur leur prix catalogue 2016 : 22 900 DT pour la normale, 18 760 DT pour la populaire. Mais 18 760 × 1,30 = **24 388**, soit davantage que le prix à neuf réel de la version normale la même année. La réintégration de la taxe est censée ramener la populaire *sur* le marché normal ; ici elle la plaçait *au-dessus*.
+
+Mesuré sur la base, l'écart réel entre version populaire et version normale au même millésime — en retenant de chaque côté la finition la moins chère — ressort à **+48,5 % en médiane sur 47 couples prix/année**, et il descend jusqu'à **+0 %** (KIA Picanto). Autrement dit : dans **19 % des couples**, un forfait de +30 % dépasse déjà le prix de la version normale. Le taux de 30 % n'est donc pas en cause — c'est bien le taux douanier — mais il ne peut pas s'appliquer sans borne, parce que le prix subventionné auquel on l'applique et le prix normal de référence ne sont pas séparés par la seule fiscalité.
+
+**Deux règles ont donc été ajoutées**, l'une et l'autre appuyées sur la version normale du même modèle lorsqu'elle figure dans la base (**15 des 17 modèles populaires**, les deux exceptions — Chery Tiggo 1X, Renault Kwid — n'existant qu'en version populaire et conservant la majoration simple) :
+
+1. **Plafonnement.** La valeur à neuf de la populaire ne peut pas dépasser celle de sa jumelle normale, calculée pour la même année de référence et la même date d'évaluation. On retient de la jumelle la finition **la moins chère** disponible à l'année : une populaire est par construction une entrée de gamme, la comparer à une finition haute la surévaluerait.
+2. **Gamme héritée.** Le rythme de dépréciation se lit sur la valeur à neuf de la **version normale**, pas sur le prix subventionné. C'est le segment de marché qui commande la décote, pas la subvention. Sans cela, un simple franchissement de palier de gamme (99 000 DT à 4,27 %/an contre 101 000 DT à 6,98 %/an) aurait pu réinverser les deux versions sur un véhicule ancien, malgré le plafond.
+
+**Vérification systématique** : 391 couples populaire/normale ont été comparés à paramètres identiques, sur toutes les finitions populaires jumelées et tous les millésimes 2010–2026. **Aucune inversion** — 149 à égalité (plafond actif), 242 en dessous. La règle est désormais tenue par le jeu de tests (`test_vv.js`, section 12 bis), avec le cas Chery QQ 2016 vérifié nommément : 22 900 DT des deux côtés.
+
+Quand le plafond joue, la fiche le dit — la pastille devient `🏷️ Populaire · alignée sur la version normale`, et le détail du calcul indique la valeur à neuf sur laquelle le plafonnement a été fait.
 
 **Une discontinuité assumée.** À la levée de l'incessibilité, la valeur vénale *augmente* : sur une Chery QQ populaire, 21 200 DT à 1 an contre 26 100 DT à 3 ans. Ce n'est pas une anomalie de calcul — la majoration de 30 % dépasse deux années de dépréciation, et elle traduit un fait réel : le véhicule vient d'entrer sur un marché où il vaut ce que vaut son équivalent taxé. La fiche l'explique dans les deux états.
 
@@ -345,7 +765,7 @@ L'application devait montrer qu'elle a changé de nature : d'un consultateur de 
 
 La fiche exposait sa méthode au même rang que son résultat — trois paragraphes explicatifs (régime populaire, date d'évaluation, péremption des tarifs) déroulés sous le montant, plus une ligne détaillant la gamme et son taux annuel. Une fiche d'expertise doit livrer un résultat, pas un exposé.
 
-Ce qui reste visible tient maintenant en trois éléments : le **montant**, la **jauge de cotation**, et une rangée de **pastilles** résumant ce qui a pesé — `74 % du neuf`, `Grand public`, `🏷️ Populaire · +30 %`, `📆 Évaluation 2023`, `⚖️ Réforme 2026`, `✏️ Cotation ajustée`. Les règles complètes sont repliées dans « Détail du calcul et règles appliquées », consultables à la demande.
+Ce qui reste visible tient maintenant en trois éléments : le **montant**, la **jauge de cotation**, et une rangée de **pastilles** résumant ce qui a pesé — `74 % du neuf`, `Grand public`, `🏷️ Populaire · +30 %` (ou `🏷️ Populaire · alignée sur la version normale` quand le plafond joue), `📆 Évaluation 2023`, `⚖️ Réforme 2026`, `✏️ Cotation ajustée`. Les règles complètes sont repliées dans « Détail du calcul et règles appliquées », consultables à la demande.
 
 Le montant a par ailleurs été remonté à 30 px et posé sur sa propre ligne.
 
