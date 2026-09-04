@@ -713,7 +713,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   <div class="logo">
     <div class="logo-ico">🚗</div>
     <div>
-      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v42</span></div>
+      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v44</span></div>
       <div class="logo-sub" id="dbStats">Chargement…</div>
     </div>
   </div>
@@ -840,9 +840,9 @@ let sel = {b:null, m:null, v:null};
 let FY  = null;
 // ── Version de l'application ──
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
-const VERSION = 'v42';
-const VERSION_DATE = '02/09/2026';
-const VERSION_NOTES = 'panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
+const VERSION = 'v44';
+const VERSION_DATE = '05/09/2026';
+const VERSION_NOTES = 'le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -925,10 +925,18 @@ const VVPARAMS = {
       sohNonMesure:        { pts:2, txt:'état de santé de la batterie non mesuré' },
       kmAbsent:            { pts:2, txt:'kilométrage non renseigné' },
       anneesPredites:      { pts:1, txt:'indice prix extrapolé sur {n} année(s)' },
+      serieDiscontinue:    { pts:2, txt:'saut de tarif de {p} % en {an}, sans rapport avec le marché' },
+      phaseAnterieure:     { pts:1, txt:'véhicule d\'une phase antérieure du modèle' },
+      phaseACheval:        { pts:2, txt:'millésime à cheval sur un changement de génération' },
     },
     seuils: { bonne:1, moyenne:3 },   // ≤1 : bonne · ≤3 : moyenne · au-delà : faible
     seuilFinitions: 3,                // en deçà, catalogue jugé peu détaillé
     ecartTarif: 6,                    // années depuis le dernier tarif avant alerte forte
+    // Un saut de tarif qui dépasse de 12 points le mouvement du marché de la même énergie
+    // n'est pas une hausse ordinaire. Trois causes possibles, toutes gênantes pour le
+    // calcul : changement de génération non documenté, substitution de finition sous le
+    // même nom, ou fin d'une promotion. On ne tranche pas — on avertit.
+    sautTarif: 0.12,
   },
 
   // ══ Régimes douaniers de faveur ══
@@ -1424,11 +1432,102 @@ function chargeDouaniere(fc, tauxRegime){
   return (T && T.energies.indexOf(fc)!==-1) ? {taux:T.taux, tva:true} : {taux:tauxRegime, tva:false};
 }
 
+// ══════════ CHANGEMENTS DE PHASE : une série tarifaire, deux véhicules différents ══════════
+//
+// Défaut signalé par Yassine sur la RAV 4 Hybride : « le prix affiché est celui de la phase
+// actuelle alors qu'elle est différente de la phase qui la précède ».
+//
+// La base suit UNE finition par son nom et empile ses tarifs successifs. Quand le
+// concessionnaire remplace le modèle par sa génération suivante en gardant le même intitulé,
+// les deux véhicules se retrouvent dans la MÊME série. Le tarif du jour devient celui du
+// nouveau modèle, et il sert alors de référence à des millésimes qui n'ont rien à voir avec
+// lui : une RAV 4 Hybride de 2022 était comparée aux 204 800 DT de la XA60 de 2026.
+//
+// GENS, déjà dans la base, décrit des générations — mais uniquement pour l'AFFICHAGE
+// (frise, badge, encadré des caractéristiques). Rien ne s'en servait dans le calcul, et sa
+// couverture s'arrête à 2024 (117 modèles sur 739).
+//
+// PHASES tient donc les frontières VÉRIFIÉES, avec leur source. On n'inscrit ici qu'un
+// changement de produit ÉTABLI — une hausse de tarif, même forte, n'en est pas une preuve :
+// sur les vingt modèles dont le tarif courant résulte d'un saut divergeant du marché, la
+// recherche n'en a confirmé qu'UN SEUL (voir le rapport, § 3.20). Les autres sont des
+// révisions tarifaires, des fins de promotion ou des substitutions de finition.
+const PHASES = {
+  'Toyota RAV 4 Hybride': [
+    { date:'14.06.2026', gen:'XA60',
+      motif:'6e génération lancée en Tunisie par BSB Toyota le 14 juin 2026 à 204 800 DT. '+
+            'La XA50 sortante était tarifée 184 800 DT et a quitté le catalogue. '+
+            'Changement de groupe motopropulseur : 218 ch → 230 ch.',
+      source:'automobile.tn, 14.06.2026' }
+  ]
+};
+
+// Rang de phase d'une DATE de tarif pour un modèle : 0 avant la première frontière, 1 après,
+// etc. Sans frontière connue, tout appartient à la phase 0 — le comportement d'avant.
+function rangPhase(modelName, dateStr){
+  const fr=PHASES[modelName];
+  if(!fr || !fr.length || !dateStr) return 0;
+  const cle = d => d.slice(6)+d.slice(3,5)+d.slice(0,2);   // JJ.MM.AAAA -> AAAAMMJJ
+  let r=0;
+  for(const f of fr) if(cle(dateStr) >= cle(f.date)) r++;
+  return r;
+}
+// Rang de phase d'une ANNÉE de mise en circulation. Une année qui contient une frontière est
+// AMBIGUË : le véhicule peut relever de l'une ou l'autre phase. On retient alors la phase
+// SORTANTE — c'est la plus prudente, et l'année est signalée comme à cheval.
+function phaseDeAnnee(modelName, annee){
+  const fr=PHASES[modelName];
+  if(!fr || !fr.length || !annee) return {rang:0, aCheval:false};
+  let rang=0, aCheval=false;
+  for(const f of fr){
+    const yf=parseInt(f.date.slice(6));
+    if(annee > yf) rang++;
+    else if(annee === yf) aCheval=true;
+  }
+  return {rang, aCheval};
+}
+// Les points de tarif appartenant à la même phase qu'un millésime donné. C'est le seul
+// matériau légitime pour ancrer sa valeur à neuf et pour plafonner sa valeur vénale.
+function histPhase(v, modelName, anneeRef){
+  if(!v.hist || !v.hist.length) return v.hist||[];
+  if(!PHASES[modelName] || !anneeRef) return v.hist;
+  const r=phaseDeAnnee(modelName, anneeRef).rang;
+  const sel=v.hist.filter(h=>rangPhase(modelName, h.d)===r);
+  return sel.length ? sel : v.hist;
+}
+// Le modèle auquel appartient une finition, mémorisé une fois pour toutes : PHASES et GENS
+// sont indexés par nom de modèle, or le calcul ne reçoit que la finition.
+function modeleDe(v){
+  if(v.__mod!==undefined) return v.__mod;
+  for(const b of Object.keys(DB)) for(const m of Object.keys(DB[b]))
+    if(DB[b][m].indexOf(v)!==-1) return (v.__mod=m);
+  return (v.__mod=null);
+}
+
 // Prix du véhicule NEUF à la date d'évaluation, quand la finition est encore commercialisée
 // à cette date. C'est la valeur de remplacement à neuf : ce qu'il en coûte d'aller chercher
 // le même véhicule en concession ce jour-là.
-function prixNeufCourant(v, anneeEval){
+//
+// `anneeRef` (facultatif) : l'année de 1ère MEC. Quand elle relève d'une phase antérieure,
+// le prix du jour retenu est le DERNIER TARIF DE SA PROPRE PHASE, actualisé — et non celui
+// du modèle qui lui a succédé. Sans quoi le plafond d'une RAV 4 de 2022 valait 204 800 DT,
+// le prix d'une voiture qui n'existait pas encore.
+function prixNeufCourant(v, anneeEval, anneeRef){
   if(!v.hist || !v.hist.length) return null;
+  const mod=modeleDe(v);
+  if(anneeRef && PHASES[mod]){
+    const rRef=phaseDeAnnee(mod, anneeRef).rang;
+    const rNow=rangPhase(mod, v.d);
+    if(rRef < rNow){
+      // La phase du véhicule n'est plus commercialisée : son prix de remplacement à neuf est
+      // le dernier tarif qu'elle a connu, actualisé jusqu'à l'année d'évaluation.
+      const pts=histPhase(v, mod, anneeRef);
+      const dernier=pts[pts.length-1];
+      if(!dernier) return null;
+      const fc=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
+      return Math.round(dernier.p * indexMultiplier(yOf(dernier.d), anneeEval, fc).m);
+    }
+  }
   if(yOf(v.d) < anneeEval) return null;          // finition retirée du catalogue : pas de prix du jour
   let dernier=null;
   for(const h of v.hist) if(yOf(h.d)<=anneeEval) dernier=h;   // hist trié par date croissante
@@ -1442,10 +1541,14 @@ function venSerie(v, AE, fc){
   const cle=AE+'|'+fc;
   if(v.__vs && v.__vs[cle]) return v.__vs[cle];
   const y0=yOf(v.hist[0].d), y1=Math.max(yOf(v.hist[v.hist.length-1].d), AE);
+  const mod=modeleDe(v);
   const par={};
   for(let y=y0; y<=y1; y++){
+    // Le point d'ancrage se cherche DANS LA PHASE du millésime : le tarif de la génération
+    // suivante ne dit rien de ce que valait celle-ci.
+    const pts=histPhase(v, mod, y);
     let best=null, gap=Infinity;
-    for(const h of v.hist){ const g=Math.abs(yOf(h.d)-y); if(g<gap){ gap=g; best=h; } }
+    for(const h of pts){ const g=Math.abs(yOf(h.d)-y); if(g<gap){ gap=g; best=h; } }
     const r=indexMultiplier(yOf(best.d), AE, fc);
     par[y]={p:best.p, y:yOf(best.d), idx:r.m, predites:r.predites, gap, ven:best.p*r.m, env:false};
   }
@@ -1603,7 +1706,7 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey){
   // catalogue d'une populaire est le prix subventionné, la taxe se réintègre par-dessus.
   // Le plafond du prix neuf suit la même base : un diplomate remplace son véhicule en
   // franchise, pas au tarif concession.
-  const plafondNeuf=(function(){ const x=prixNeufCourant(v, AE); return x==null?null:x*abattement; })();
+  const plafondNeuf=(function(){ const x=prixNeufCourant(v, AE, anneeRef); return x==null?null:x*abattement; })();
   let VEN=L*idx*abattement, neufPlafonne=false;
   if(plafondNeuf!=null && VEN>plafondNeuf){ VEN=plafondNeuf; neufPlafonne=true; }
   VEN*=majPop;
@@ -1622,7 +1725,7 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey){
   // la valeur abattue le faisait glisser d'une gamme à l'autre et changeait son taux — un
   // avantage fiscal ne transforme pas une berline premium en citadine.
   const venGamme = venJum!=null ? venJum : (abattement<1 ? VEN/abattement : VEN);
-  return {VEN, idx, L, M, fc, reforme, predites, ancre, anneeEval:AE, majPop, popStatut,
+  return {VEN, idx, L, M, fc, reforme, predites, ancre, anneeEval:AE, anneeRef, majPop, popStatut,
           venJum, plafonne, venGamme, plafondNeuf, neufPlafonne, regime:RG, regimeKey, tvaSeule,
           abattement, abattementMotif};
 }
@@ -1675,6 +1778,28 @@ function facteurBatterie(soh, age, part){
 
 // Confiance de l'estimation : on liste les fragilités réelles, on les pondère, on classe.
 // Rien n'est corrigé — l'expert est averti de ce sur quoi le chiffre repose.
+// Le plus gros saut de tarif entre le millésime du véhicule et l'année d'évaluation, mesuré
+// en ÉCART au mouvement du marché de la même énergie — pas en hausse absolue. Une hausse qui
+// suit le marché n'est pas suspecte ; une hausse qui s'en détache signale que la série ne
+// suit plus le même véhicule. Sur les 2 522 finitions de la base, 20 modèles encore au
+// catalogue sont dans ce cas ; un seul, la RAV 4 Hybride, a pu être confirmé comme un vrai
+// changement de génération (§ 3.20 du rapport). D'où un avertissement, et non une correction.
+function discontinuite(v, anneeRef, anneeEval){
+  if(!v.hist || v.hist.length<2) return null;
+  const S=VVPARAMS.confiance.sautTarif;
+  const fc=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
+  let pire=null;
+  for(let i=1;i<v.hist.length;i++){
+    const a=v.hist[i-1], c=v.hist[i];
+    const y0=yOf(a.d), y1=yOf(c.d);
+    if(y1<=anneeRef || y0>anneeEval || !(a.p>0)) continue;   // hors de la période qui nous concerne
+    const attendu = (y0===y1) ? 1 : indexMultiplier(y0, y1, fc).m;
+    const ecart = (c.p/a.p)/attendu - 1;
+    if(ecart>=S && (!pire || ecart>pire.ecart)) pire={ecart, d0:a.d, d1:c.d, p0:a.p, p1:c.p};
+  }
+  return pire;
+}
+
 function evaluerConfiance(v, r){
   const C=VVPARAMS.confiance, P=C.penalites, motifs=[];
   let pts=0;
@@ -1698,6 +1823,16 @@ function evaluerConfiance(v, r){
   else if(r.ven.ancre==='proche') add('ancrageProche');
   // Indice extrapolé
   if(r.ven.predites>0) add('anneesPredites', {n:r.ven.predites});
+  // Discontinuité de la série tarifaire entre le millésime et le tarif du jour
+  const d=discontinuite(v, r.ven.anneeRef!=null?r.ven.anneeRef:dernier, r.anneeEval);
+  if(d) add('serieDiscontinue', {p:Math.round(d.ecart*100), an:yOf(d.d1)});
+  // Phase du modèle
+  const mod=modeleDe(v);
+  if(PHASES[mod] && r.ven.anneeRef){
+    const ph=phaseDeAnnee(mod, r.ven.anneeRef);
+    if(ph.aCheval) add('phaseACheval');
+    else if(ph.rang < rangPhase(mod, v.d)) add('phaseAnterieure');
+  }
   // Saisies manquantes
   if(r.km==null) add('kmAbsent');
   if(r.partBat){
@@ -1812,7 +1947,7 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh, regime
 
 // État des champs du module Valeur vénale — conservé au niveau module pour survivre
 // à un changement de finition/modèle (l'expert n'a pas à ressaisir km/état/usage à chaque clic).
-let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null, anneeEval:null, soh:'', regime:null, privilege:false};
+let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null, coteCle:null, anneeEval:null, soh:'', regime:null, privilege:false};
 
 // Bloc HTML du module (inséré dans la fiche résultat, sous le prix neuf).
 //
@@ -1991,9 +2126,19 @@ function sohSaisi(){
   return Math.max(B.sohMin, Math.min(v/100, B.sohMax));
 }
 
+// L'ajustement manuel du curseur ne vaut QUE pour le véhicule sur lequel il a été porté.
+// Signalé par Yassine : la position réglée sur une consultation était conservée telle quelle
+// à la consultation suivante, et le curseur s'affichait décalé du repère de conseil sans que
+// rien ne le justifie. Le kilométrage, l'état et l'usage remettent déjà le curseur au conseil
+// (`relance`) ; il manquait le cas du CHANGEMENT DE VÉHICULE — et celui du changement d'année
+// de 1ère MEC, qui refait tout le calcul.
+function cleCote(v){ return (v && v.v ? v.v : '') + '|' + (modeleDe(v)||'') + '|' + FY; }
+
 function renderVVOutput(v){
   const el=document.getElementById('vvOut');
   if(!el||!FY) return;
+  const cle=cleCote(v);
+  if(vvInputs.coteCle !== cle){ vvInputs.cote=null; vvInputs.coteCle=cle; }
   const kmField=document.getElementById('vvKm');
   const km=kmField&&kmField.value!==''?parseFloat(kmField.value):null;
   const base=computeVV(v, km, vvInputs.etat, vvInputs.usage, null, vvInputs.anneeEval, sohSaisi(), regimeDe(v));
@@ -2717,6 +2862,46 @@ function clearRes(){
   document.getElementById('resCol').classList.remove('has-result');
   const mainEl=document.querySelector('.main'); if(mainEl) mainEl.classList.remove('with-result');
 }
+// Bloc du prix catalogue. Sans année de MEC, c'est le tarif du jour. Avec une MEC qui relève
+// d'une PHASE ANTÉRIEURE, c'est le dernier tarif de CETTE phase qui est mis en avant : afficher
+// le prix de la génération suivante sous le nom d'un véhicule de 2022 était le défaut signalé.
+function blocPrix(v, modelName, mecAnnee){
+  const fr=PHASES[modelName];
+  let h='<div class="price-block">';
+  if(fr && fr.length && mecAnnee){
+    const ph=phaseDeAnnee(modelName, mecAnnee);
+    const rNow=rangPhase(modelName, v.d);
+    // Une année qui CONTIENT la frontière est ambiguë, pas antérieure : ce cas se traite en
+    // premier, sinon le véhicule serait rattaché d'office à la phase sortante sans le dire.
+    if(ph.aCheval){
+      h+='<span class="price-val">'+v.p.toLocaleString('fr-TN')+'</span>'+
+         '<span class="price-unit">DT</span><span class="price-lbl">TTC</span></div>'+
+         '<div class="notice warn" style="margin:-6px 0 12px">🔀 <b>Millésime à cheval</b> — '+
+         'la génération a changé le '+fr[ph.rang].date+'. Un véhicule de '+mecAnnee+
+         ' peut relever de l\'une ou l\'autre phase ; la carte grise et le numéro de série '+
+         'tranchent. Par prudence, le calcul retient la phase <b>sortante</b>.</div>';
+      return h;
+    }
+    if(ph.rang < rNow){
+      const pts=histPhase(v, modelName, mecAnnee);
+      const dernier=pts[pts.length-1];
+      const f=fr[ph.rang];
+      h+='<span class="price-val">'+dernier.p.toLocaleString('fr-TN')+'</span>'+
+         '<span class="price-unit">DT</span><span class="price-lbl">TTC · tarif de sa phase</span></div>'+
+         '<div class="notice warn" style="margin:-6px 0 12px">🔀 <b>Changement de génération</b> — '+
+         'le tarif du jour de ce modèle ('+fmt(v.p)+') est celui de la '+
+         (f.gen?'<b>'+f.gen+'</b>, ':'')+'phase lancée le '+f.date+'. Un véhicule de '+mecAnnee+
+         ' appartient à la phase précédente : c\'est son dernier tarif, <b>'+fmt(dernier.p)+
+         '</b> ('+dernier.d+'), qui sert de référence — au prix du jour comme au plafond de la '+
+         'valeur vénale. <span style="opacity:.75">'+f.motif+' Source : '+f.source+'.</span></div>';
+      return h;
+    }
+  }
+  h+='<span class="price-val">'+v.p.toLocaleString('fr-TN')+'</span>'+
+     '<span class="price-unit">DT</span><span class="price-lbl">TTC</span></div>';
+  return h;
+}
+
 function rResult(){
   const v=sel.v; if(!v) return;
   document.getElementById('resCol').classList.add('has-result');
@@ -2760,7 +2945,7 @@ function rResult(){
       '<div class="rcard-ver">'+v.v+'</div>'+
     '</div>'+
     '<div class="rcard-body">'+banner+
-    '<div class="price-block"><span class="price-val">'+v.p.toLocaleString('fr-TN')+'</span><span class="price-unit">DT</span><span class="price-lbl">TTC</span></div>'+
+    blocPrix(v, sel.m, FY)+
     renderVVBlock(v)+
     (buildSpecsBlock(v, sel.m, FY))+(genSect?'<div class="sect"><div class="sect-hd"><span class="sect-title">Générations — prix par phase</span></div>'+genSect+'</div>':'')+
     (v.hist.length>=2?

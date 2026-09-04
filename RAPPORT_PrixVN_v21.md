@@ -404,6 +404,97 @@ Le fichier passe de 196 à 179 Ko. Un script de détection (`deadcode.js`) a ét
 
 ---
 
+### 3.21  Le curseur de cotation devait repartir du conseil
+
+Défaut signalé par Yassine, capture à l'appui : le curseur s'affichait **décalé de son repère de conseil** — le trait vertical clair sur la piste — sans que rien dans la consultation en cours ne le justifie.
+
+La cause tient à un choix délibéré, mal borné. L'état du module (`vvInputs`) vit **au niveau du module** et non de la fiche, pour que l'expert n'ait pas à ressaisir kilométrage, état et usage à chaque clic sur une finition. L'ajustement manuel du curseur y était rangé avec le reste — et survivait donc lui aussi au changement de véhicule.
+
+Or ce n'est pas la même chose. Un kilométrage se reporte d'un véhicule à l'autre ; **un jugement de cotation, non** : il porte sur un exemplaire précis, sur ce que l'expert a vu de celui-là. Le conserver silencieusement, c'est appliquer à une voiture l'appréciation portée sur une autre.
+
+Le remède est une clé d'appartenance : l'ajustement est étiqueté avec la finition, le modèle et l'année de 1ère MEC sur lesquels il a été porté. Dès que l'un des trois change, l'ajustement tombe et le curseur revient sur le conseil calculé.
+
+Les trois champs de saisie remettaient déjà le curseur au conseil (`relance`), pour une raison différente mais convergente : modifier le kilométrage, l'état ou l'usage **change le conseil lui-même**, et un ajustement antérieur deviendrait trompeur. Ce qui manquait, ce sont les deux entrées qui ne passent pas par ces champs : **le changement de véhicule** et **le changement d'année de 1ère MEC**.
+
+Un test parcourt désormais la séquence complète — ouverture, déplacement du curseur, autre finition, autre modèle, autre millésime — et vérifie à chaque étape que l'ajustement est tombé, puis que le curseur et son repère de conseil sont bien **superposés**.
+
+---
+
+### 3.20  Changements de phase : une série tarifaire, deux véhicules différents
+
+Défaut signalé par Yassine sur la RAV 4 Hybride : *« le prix affiché est celui de la phase actuelle alors qu'elle est différente de la phase qui la précède »*. Il a raison, et le défaut est structurel.
+
+#### Le mécanisme
+
+La base suit **une finition par son nom** et empile ses tarifs successifs. Quand le concessionnaire remplace le modèle par sa génération suivante en gardant le même intitulé, les deux véhicules se retrouvent dans la **même série**. Le tarif du jour devient celui du nouveau modèle, et il sert alors de référence à des millésimes qui n'ont rien à voir avec lui.
+
+Sur la RAV 4 Hybride 2.5 L, la série ne fait qu'une seule entrée de 2019 à 2026 :
+
+| Date | Tarif | Ce que c'est réellement |
+|---|---|---|
+| 07.09.2019 → 09.09.2025 | 159 000 → 168 500 DT | **XA50**, 5ᵉ génération |
+| 05.01.2026 | 189 800 DT | XA50, après la loi de finances 2026 |
+| 04.03.2026 | 184 800 DT | XA50, dernier tarif connu |
+| **14.06.2026** | **204 800 DT** | **XA60, 6ᵉ génération** |
+
+Une RAV 4 Hybride de 2022 était donc affichée avec un prix catalogue de **204 800 DT** — le prix d'une voiture qui n'existait pas encore — et son plafond de valeur vénale était calé sur ce montant.
+
+`GENS`, déjà présent dans la base, décrit des générations pour 117 modèles sur 739 — mais **uniquement pour l'affichage** (frise, badge, encadré des caractéristiques). Rien ne s'en servait dans le calcul, et sa couverture s'arrête à 2024. La RAV 4 Hybride n'y figure même pas.
+
+#### La vérification, étendue à tout le catalogue
+
+Plutôt que de corriger un cas, j'ai cherché **tous** les modèles susceptibles du même défaut. Le repère n'est pas la hausse absolue mais l'**écart au mouvement du marché** de la même énergie la même année — une hausse qui suit le marché n'a rien de suspect.
+
+Sur les **2 522 finitions**, 655 présentent un tel saut ; en ne retenant que ceux qui aboutissent au **tarif courant d'un modèle encore vendu**, il reste **20 modèles**. Chacun a été vérifié sur internet (automobile.tn, sayarti, tunisie-tribune, ilboursa, largus, autoevolution).
+
+**Résultat : un seul cas sur vingt est un vrai changement de génération.**
+
+| Verdict | Modèles |
+|---|---|
+| **Nouvelle génération** | Toyota RAV 4 Hybride (XA60, lancée le 14.06.2026 à 204 800 DT) |
+| Changement de millésime / définition produit | Land Rover Defender 110, Range Rover Velar, VW Crafter |
+| **Substitution de finition** sous le même nom | Seat Ibiza (Style → Move), Seat Leon (Emotion retirée), Mercedes Classe A (180 → 200), Opel Crossland (Edition → Elegance) |
+| Fin de campagne promotionnelle | BMW Série 2 Gran Coupé, Série 3, Série 4, X1, Mini Cooper 3 et 5 portes, Mini Countryman |
+| Révision tarifaire de l'importateur | Mercedes GLE et GLE Coupé, EQS Berline et EQS SUV, VW Caddy Cargo, DFSK K01S, Peugeot Landtrek |
+
+Deux enseignements de méthode, qui valent pour les prochaines mises à jour :
+
+- **Une hausse de prix, même de 48 %, ne prouve rien.** Le Defender 110 P400 S bondit de 364 200 à 540 000 DT ; ce n'est pas une nouvelle génération (la L663 court depuis 2020) mais un changement de millésime avec montée en équipement — automobile.tn a d'ailleurs créé une fiche distincte, au slug `…-p400-2025-s`.
+- **Les tarifs tunisiens intègrent des promotions récurrentes** (« Summer Days » chez BMW, « MINI Days »). Une remontée de tarif est souvent la fin d'une promo, pas une hausse. Le 218 Pack M est aujourd'hui affiché à 174 900 DT barré 206 900 DT : les deux valeurs de la série sont le même véhicule.
+
+#### Ce qui a été implémenté
+
+**Une table `PHASES`** tient les frontières **vérifiées**, chacune avec sa date, son motif et sa source. Elle ne contient aujourd'hui qu'une entrée — la RAV 4 Hybride — et c'est délibéré : on n'y inscrit qu'un changement de produit établi.
+
+Trois conséquences dans le calcul :
+
+1. **L'ancrage** — `venSerie` ne cherche le tarif d'un millésime que **dans sa propre phase**. Le tarif de la génération suivante ne dit rien de ce que valait celle-ci.
+2. **Le plafond « prix neuf du jour »** — pour un véhicule d'une phase révolue, le prix de remplacement à neuf est le **dernier tarif de sa propre phase, actualisé**, et non celui du modèle qui lui a succédé. La RAV 4 de 2022 est désormais plafonnée à 184 800 DT et non à 204 800.
+3. **L'affichage** — le bloc de prix met en avant le tarif de la phase du véhicule, avec un encadré qui nomme le tarif du jour, la date de la frontière et sa source. Sans année de MEC saisie, rien ne change : c'est bien le tarif du jour qui s'affiche.
+
+**Le millésime à cheval** reçoit un traitement à part. Un véhicule de 2026 peut relever de l'une ou l'autre phase — la frontière tombe en cours d'année. L'application ne tranche pas : elle le signale, rappelle que la carte grise et le numéro de série font foi, et retient par prudence la phase **sortante**.
+
+**Pour les dix-neuf autres modèles, on avertit sans corriger.** Une réserve de l'indicateur de confiance se déclenche dès qu'un saut divergeant du marché de plus de 12 points sépare le millésime du véhicule de l'année d'évaluation : « saut de tarif de 25 % en 2026, sans rapport avec le marché ». C'est honnête — ces séries mélangent bien deux choses différentes — et cela couvre les 739 modèles sans en coder aucun. L'indicateur y gagne : la séparation entre estimations solides et fragiles passe de 1,92 à **1,98 fois**, et l'écart médian des estimations dites « bonnes » descend de 13,8 % à **13,0 %**.
+
+#### Une piste écartée, et pourquoi
+
+La recherche a fait apparaître l'**article 47 de la loi de finances 2026** : depuis le 1ᵉʳ janvier 2026, les hybrides **non rechargeables de plus de 1 700 cm³** perdent l'abattement de 50 % sur le droit de consommation et repassent à la TVA de 19 %. BSB Toyota chiffrait publiquement l'impact sur la RAV 4 à plus de 30 000 DT. L'appliquer semblait s'imposer.
+
+**La base dit le contraire, et c'est elle qui tranche.** Sur les 17 hybrides non rechargeables présents en 2025 et en 2026 :
+
+| Cylindrée | Modèles | Variation médiane du tarif en 2026 |
+|---|---|---|
+| > 1 700 cm³ | 8 | **−3,3 %** |
+| ≤ 1 700 cm³ | 9 | −5,6 % |
+
+Aucune marche fiscale. Le seul modèle en hausse est la RAV 4 — et cette hausse est le changement de génération. Le Honda CR-V e:HEV est monté à 229 980 DT en janvier puis **redescendu à 184 990 DT**, sous son tarif de 2025. La mesure a été annoncée et contestée ; les tarifs finalement pratiqués ne la portent pas. Rien n'a donc été codé, et ce constat est écrit ici pour qu'on ne le redécouvre pas dans six mois en le prenant pour un oubli.
+
+#### Limite à connaître
+
+La détection ne voit que les changements de phase qui **déplacent le tarif**. Une génération qui arrive au même prix passe inaperçue — et ne fausse alors presque rien, ce qui est la raison de s'en accommoder. La table `PHASES` reste ouverte : une frontière s'y ajoute en trois lignes, date, motif et source.
+
+---
+
 ### 3.16  Régimes de faveur : quatre erreurs de conception corrigées
 
 Une capture d'écran de Yassine sur une Citroën C3 Populaire de 2016 a ouvert une série de corrections, dont trois de conception.
