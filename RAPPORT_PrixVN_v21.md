@@ -420,6 +420,84 @@ Un test parcourt désormais la séquence complète — ouverture, déplacement d
 
 ---
 
+### 3.22  Valeur de fin de série : le tarif de SON millésime
+
+Défaut signalé par Yassine, captures d'archive à l'appui : la fiche affichait le **dernier tarif de la finition**, quel que soit le millésime saisi. Une Renault Clio 1.0 SCe Life Plus de 2023 sortait à **64 950 DT** — le tarif du 06.05.2024 — alors que le tarif en vigueur en 2023 était de **60 900 DT**.
+
+Mesuré sur toute la base : le prix affiché relevait d'une autre année dans **19 % des couples finition × millésime**, écart médian **10,1 %**, et jusqu'à **+193 %** (VW Amarok de 2012 affichée au tarif de 2026, 59 980 contre 175 980).
+
+La valeur à neuf d'un véhicule, c'est le tarif catalogue en vigueur **son année**. C'est désormais ce qui s'affiche, avec la mention « fin de série 2023 » ; le tarif du jour reste nommé juste en dessous, avec son écart, parce que c'est lui qui borne la valeur vénale.
+
+**Quel tarif, quand l'année en compte plusieurs ?** La convention retenue est celle que Yassine nomme : le **dernier de l'année**. 2 736 années de la base comportent plusieurs relevés ; entre le premier et le dernier, l'écart médian est de **2,9 %** et dépasse 5 % dans 40 % des cas. Le choix n'est pas neutre, et la fiche l'écrit en toutes lettres plutôt que de le laisser implicite. Effet sur la validation marché : l'écart absolu médian passe de 12,1 % à **11,8 %**, le biais médian de +6,2 % à +9,8 % — l'estimation devient un peu plus généreuse, et un peu plus juste.
+
+#### Les sept valeurs vérifiées
+
+| modèle | millésime | capture | affiché avant | affiché après |
+|---|---|---|---|---|
+| Renault Clio 1.0 SCe Life Plus | 2023 | 24.04.2024 | 64 950 | **60 900** |
+| Skoda Kushaq 1.0 TSI Style BVA | 2026 | 17.04.2026 | 92 980 | 92 980 |
+| MG 5 1.5 L Confort | 2024 | 07.09.2024 | 63 950 | 63 950 |
+| MG 5 1.5 L Confort Plus | 2024 | 07.09.2024 | 68 950 | **67 450** |
+| MG 5 1.5 L Luxe BVA | 2024 | 07.09.2024 | 71 950 | 71 950 |
+| VW Polo Sedan 1.4 L Highline | 2022 | 26.10.2022 | 69 980 | **72 980** |
+| Skoda Kamiq 1.0 TSI Style DSG | 2023 | 18.07.2023 | 94 980 | **96 980** |
+
+Les deux derniers cas ne sont pas des défauts d'affichage mais de **vraies lacunes de la base** : elle s'arrête avant le dernier tarif de la finition. Ils sont comblés par une table `RELEVES_VERIFIES` tenue dans `app.html` — et non dans `data.js`, qui est régénéré et perdrait la correction à la mise à jour suivante. La date retenue est celle de la capture : le tarif était en vigueur ce jour-là, il a pu l'être avant.
+
+#### Les prix promotionnels ne sont pas des tarifs
+
+Le Kushaq a révélé l'autre moitié du problème. La capture du 17.04.2026 affiche **90 980 DT**, mais avec **92 980 DT barré** à côté : c'est une promotion. La base, elle, n'enregistre que le prix affiché.
+
+Signature retenue : **un creux isolé qui revient EXACTEMENT à sa valeur antérieure**. Un vrai mouvement de tarif ne retombe pas au dinar près sur son point de départ. **329 cas** dans la base — BMW Série 3 à 230 900 → 199 900 → 230 900, Mercedes EQS SUV à 549 900 → 489 900 → 549 900. Ils sont écartés de l'ancrage et de la détection de discontinuité, mais conservés dans l'historique affiché : ce sont de vraies observations, simplement pas des valeurs à neuf de référence.
+
+Cela confirme rétroactivement quatre des verdicts du § 3.20 (BMW Série 2, Série 3, X1, Mercedes) : la structure de la donnée dit la même chose que la recherche presse.
+
+#### Une inversion d'âge révélée au passage
+
+Le nouvel ancrage a fait surgir une inversion : **KIA Sportage 2 l Diesel GT-Line**, millésime 2018 à 89 300 DT contre 92 300 pour le 2017. Cause : la **gamme** était recalculée sur la valeur à neuf de *chaque* millésime. Le 2017 tombait en « haut de gamme » (6,98 %/an), le 2018 en « luxe » (8,33 %/an) — deux rythmes de dépréciation pour la même voiture.
+
+C'est un défaut de conception antérieur, que le nouvel ancrage a seulement rendu visible. **La gamme est une propriété de la finition, pas du millésime.** Elle se détermine désormais une fois, sur le millésime le plus récent de la série — celui dont le tarif est le mieux connu — et vaut pour tous les autres. Zéro inversion restante.
+
+---
+
+### 3.23  Contrôle du catalogue courant — 96 tarifs corrigés
+
+Demande de Yassine : vérifier les prix sur le web et mettre la base à jour. Les **345 modèles encore commercialisés** ont été confrontés à leur page marque sur automobile.tn le 13.09.2026, marque par marque, sur 56 marques.
+
+**190 conformes, 99 écarts.** Et un constat qui domine tout le reste :
+
+> **Les deux tiers des écarts viennent de prix promotionnels enregistrés comme des tarifs.**
+
+L'ampleur dépasse ce que la détection structurelle du § précédent pouvait voir — celle-ci ne repère qu'un aller-retour complet, pas une promotion encore en cours.
+
+| | base | catalogue réel | écart |
+|---|---|---|---|
+| Honda CR-V Hybride 2.0 e-HEV | 184 990 | **239 980** | +30 % |
+| BMW Série 5 520i Lounge | 249 900 | **334 900** | +34 % |
+| Chery Arrizo 8 1.6 T-GDi Luxury | 100 000 | **119 900** | +20 % |
+| Mercedes GLC 200 4Matic AMG | 284 900 | **328 900** | +15 % |
+
+Des campagnes entières — « Summer Days » chez BMW, « MINI Days », les remises Mercedes, Honda, Ssangyong — ont été absorbées par la base comme des baisses de tarif. La valeur à neuf de référence en était faussée d'autant, et avec elle toute la valeur vénale.
+
+**96 corrections appliquées** (67 issues d'une promotion, 29 vrais mouvements de tarif), écart médian **+6,3 %**. Trois modèles écartés faute de finition identifiable : deux finitions au même tarif d'entrée, impossible de savoir laquelle le « à partir de » désigne.
+
+Le relevé complet est livré à part — `CONTROLE_CATALOGUE_13092026.md` — avec les 36 modèles présents au catalogue et absents de la base, et les 38 modèles de la base absents de leur page marque.
+
+#### Ce que cela oblige à corriger dans ce rapport
+
+Le § 3.20 concluait que la mesure fiscale de la LF 2026 sur les hybrides de plus de 1 700 cm³ **n'avait pas été répercutée**, au motif que ces modèles avaient *baissé* de 3,3 % en médiane en 2026. **Cette mesure était faite sur des prix promotionnels.** Le Honda CR-V e:HEV, cité comme preuve d'un retour à 184 990 DT sous son tarif de 2025, est en réalité à **239 980 DT au catalogue**. La conclusion tombe : les tarifs 2026 des gros hybrides ne démentent rien, ils n'étaient simplement pas lus au bon endroit. La question reste ouverte, et rien n'est codé — mais pour une raison désormais honnête : faute de série catalogue propre, pas parce que la mesure serait restée lettre morte.
+
+**Une clé en double, et un test pour l'avenir.** En injectant les 96 relevés, la clé `'Skoda Kamiq'` s'est retrouvée deux fois dans la table : un objet littéral accepte le doublon sans broncher et la seconde écrase la première. Le relevé d'archive du Kamiq a disparu en silence. Un test contrôle désormais le **texte** du fichier, pas l'objet construit — c'est le seul endroit où le doublon est visible.
+
+#### Limites à connaître
+
+- Le relevé porte sur le **prix d'entrée** de chaque modèle, pas sur chaque finition. Les finitions supérieures n'ont pas été contrôlées.
+- Quatre marques n'ont pas pu l'être : IM Motors, Omoda & Jaecoo, GAC et GWM renvoient une page en erreur.
+- Un modèle absent de sa page marque n'a **pas** été retiré d'office : une page peut être filtrée sur le stock disponible.
+- Les 36 modèles manquants ne peuvent pas être ajoutés depuis l'application : il leur faut un historique de tarifs, qui relève de `data.js`.
+
+---
+
 ### 3.20  Changements de phase : une série tarifaire, deux véhicules différents
 
 Défaut signalé par Yassine sur la RAV 4 Hybride : *« le prix affiché est celui de la phase actuelle alors qu'elle est différente de la phase qui la précède »*. Il a raison, et le défaut est structurel.
