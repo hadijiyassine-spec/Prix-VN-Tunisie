@@ -715,7 +715,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   <div class="logo">
     <div class="logo-ico">🚗</div>
     <div>
-      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v45</span></div>
+      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v47</span></div>
       <div class="logo-sub" id="dbStats">Chargement…</div>
     </div>
   </div>
@@ -842,9 +842,9 @@ let sel = {b:null, m:null, v:null};
 let FY  = null;
 // ── Version de l'application ──
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
-const VERSION = 'v45';
-const VERSION_DATE = '13/09/2026';
-const VERSION_NOTES = 'valeur de fin de série : le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
+const VERSION = 'v47';
+const VERSION_DATE = '15/09/2026';
+const VERSION_NOTES = 'substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -1516,6 +1516,30 @@ function histPhase(v, modelName, anneeRef){
 // est de 2,9 % et dépasse 5 % dans 40 % des cas. Le choix n'est donc pas neutre, et la fiche
 // l'affiche en toutes lettres plutôt que de le laisser implicite.
 
+// ── SUBSTITUTIONS DE GAMME MAL ATTRIBUÉES ──
+//
+// Défaut signalé par Yassine sur la Renault Clio : « la valeur 64 950 est celle de la version
+// 1.0 TCe Evolution, et la valeur de fin de série de la 1.0 SCe Life Plus est de 60 900 DT ».
+//
+// Quand une finition quitte le catalogue et qu'une autre la remplace au même niveau de gamme,
+// le relevé attribue parfois le tarif de la NOUVELLE au nom de l'ANCIENNE, le jour de la
+// bascule. La finition sortante hérite d'un dernier tarif qui n'est pas le sien, et sa valeur
+// de fin de série est faussée d'autant.
+//
+// La signature est très particulière : le DERNIER point d'une finition porte EXACTEMENT le
+// même prix que le PREMIER point d'une autre finition du même modèle, à quelques jours
+// d'intervalle — alors que la première n'avait plus bougé depuis des mois ou des années.
+// Sur la Clio : Life Plus au 06.05.2024 à 64 950 DT, TCe 100 Evolution au 07.05.2024 à
+// 64 950 DT. Un jour d'écart, au dinar près, après 234 jours sans mouvement.
+//
+// `substitution.js` balaie les 2 522 finitions et en trouve 22. Six réunissent les deux
+// discriminants — bascule sous quinze jours ET finition dormante depuis plus de six mois — et
+// sont corrigées ici par un `retrait`. Deux d'entre elles étaient déjà établies par ailleurs :
+// la Seat Ibiza Style BVA remplacée par la Move BVA (recherche presse du § 3.20) et la Clio,
+// dont la capture d'archive du 24.04.2024 affiche bien 60 900 DT. Les seize autres sont
+// consignées dans le rapport sans être appliquées : la signature les désigne, elle ne les
+// prouve pas.
+
 // ── Relevés vérifiés sur archive, absents de la base ──
 //
 // La base ne relève pas le tarif en continu : entre deux relevés, un changement peut passer
@@ -1538,8 +1562,21 @@ const RELEVES_VERIFIES = {
   },
   // Un relevé qui CONFIRME un tarif inchangé vaut aussi : il prolonge la vie catalogue de la
   // finition et donne au millésime un ancrage exact au lieu d'un report de l'année d'avant.
+  // ══ Captures d'archive relevées finition par finition ══
+  // Une page marque archivée donne TOUTES les finitions à une date certaine, pas seulement le
+  // prix d'entrée. Chaque ligne est reportée sur sa propre finition.
+  // Quand la capture affiche une PROMOTION avec le tarif barré à côté, c'est le TARIF BARRÉ
+  // qui est retenu : le prix promotionnel est une condition commerciale d'un moment, pas la
+  // valeur à neuf du véhicule.
   'MG 5': {
-    '1.5 L Luxe BVA': [ { d:'07.09.2024', p:71950, source:'capture web.archive.org du 07.09.2024' } ]
+    '1.5 L Confort':      [ { d:'07.09.2024', p:63950, source:'capture web.archive.org du 07.09.2024' } ],
+    '1.5 L Confort Plus': [ { d:'07.09.2024', p:67450, source:'capture web.archive.org du 07.09.2024' } ],
+    '1.5 L Luxe BVA':     [ { d:'07.09.2024', p:71950, source:'capture web.archive.org du 07.09.2024' } ]
+  },
+  'Skoda Kushaq': {
+    '1.0 TSI Ambition':     [ { d:'17.04.2026', p:78980, source:'capture web.archive.org du 17.04.2026 — tarif barré ; 77 980 DT affichés en promotion' } ],
+    '1.0 TSI Ambition BVA': [ { d:'17.04.2026', p:85980, source:'capture web.archive.org du 17.04.2026 — tarif barré ; 84 980 DT affichés en promotion' } ],
+    '1.0 TSI Style BVA':    [ { d:'17.04.2026', p:92980, source:'capture web.archive.org du 17.04.2026 — tarif barré ; 90 980 DT affichés en promotion' } ]
   },
 
   // ══ Contrôle du catalogue courant, automobile.tn, 13.09.2026 ══
@@ -1797,6 +1834,51 @@ const RELEVES_VERIFIES = {
   'Skoda Fabia': {
     '1.0 L MPI Essence': [ { d:'13.09.2026', p:68980, source:'automobile.tn, relevé du 13.09.2026 — tarif catalogue (prix barré d\'une promotion en cours)' } ],
   },
+  // ── Modèles que la base avait cessé de suivre ──
+  // Le contrôle des fins de série a fait apparaître 14 modèles dont TOUTES les finitions
+  // s'arrêtent le même jour — signature d'un suivi interrompu plutôt que d'un retrait du
+  // marché. Douze sont de vraies fins de série (absents du catalogue au 13.09.2026). Deux ne
+  // le sont pas : ils figuraient déjà parmi les « modèles manquants » du contrôle catalogue,
+  // les deux listes se recoupant. Leur tarif d'entrée est donc rétabli à la date du contrôle.
+  // ══ Tarifs retirés : ils appartiennent à la finition qui a remplacé celle-ci ══
+  'Renault Clio': {
+    '1.0 L SCe Life Plus': [ { d:'06.05.2024', retrait:true,
+      motif:'tarif de la 1.0 L TCe 100 Evolution, relevée le lendemain au même montant',
+      source:'signalé par Yassine Hadiji ; capture web.archive.org du 24.04.2024 affichant 60 900 DT' } ]
+  },
+  'Renault Clio Populaire': {
+    '1.2 L': [ { d:'02.09.2020', retrait:true,
+      motif:'tarif de la 0.9 L TCe Life Plus, relevée deux jours plus tard au même montant',
+      source:'détection automatique, substitution.js' } ]
+  },
+  'Seat Ibiza': {
+    '1.0 L TSI Style BVA': [ { d:'16.01.2026', retrait:true,
+      motif:'tarif de la 1.0 L TSI Move BVA qui l\'a remplacée au catalogue',
+      source:'détection automatique confirmée par la recherche presse (§ 3.20)' } ]
+  },
+  'Jaguar E-Pace': {
+    '2.0 T 200 ch S': [ { d:'23.01.2024', retrait:true,
+      motif:'tarif de la 2.0 D 163 R-Dynamic S, relevée le lendemain au même montant',
+      source:'détection automatique, substitution.js' } ]
+  },
+  'Jaguar F-Pace': {
+    '2.0 T 250 R-Sport': [ { d:'23.01.2024', retrait:true,
+      motif:'tarif de la 2.0 T 250 R-Dynamic S, relevée le lendemain au même montant',
+      source:'détection automatique, substitution.js' } ]
+  },
+  'Volkswagen Caddy Cargo': {
+    '2.0 L TDI Business': [ { d:'27.02.2026', retrait:true,
+      motif:'tarif de la 2.0 L TDI qui l\'a remplacée, relevée trois jours plus tôt',
+      source:'détection automatique, substitution.js' } ]
+  },
+
+  'Renault Master': {
+    '2.3 L 8m3': [ { d:'13.09.2026', p:84900, source:'automobile.tn, relevé du 13.09.2026 — modèle toujours au catalogue, suivi interrompu depuis le 09.10.2023' } ]
+  },
+  'Bako B-Van': {
+    'Start': [ { d:'13.09.2026', p:22586, source:'automobile.tn, relevé du 13.09.2026 — modèle toujours au catalogue, suivi interrompu depuis le 21.06.2024' } ]
+  },
+
   'Skoda Kamiq': {
     '1.0 L TSI Style DSG': [ { d:'18.07.2023', p:96980, source:'capture web.archive.org du 18.07.2023' } ],
     '1.0 L TSI Essence DSG': [ { d:'13.09.2026', p:94980, source:'automobile.tn, relevé du 13.09.2026 — tarif catalogue (prix barré d\'une promotion en cours)' } ],
@@ -1873,8 +1955,14 @@ function tarifsCatalogue(v){
   let H=v.hist;
   const sup=relevesDe(v);
   if(sup && sup.length){
-    H=v.hist.concat(sup.filter(r=>!v.hist.some(h=>h.d===r.d)).map(r=>({d:r.d,p:r.p,__v:true})))
+    // Un relevé vérifié AJOUTE un tarif manquant, ou RETIRE un tarif qui n'appartient pas à
+    // cette finition (`retrait: true`) — voir SUBSTITUTIONS ci-dessus.
+    const aRetirer=new Set(sup.filter(r=>r.retrait).map(r=>r.d));
+    const aAjouter=sup.filter(r=>!r.retrait && !v.hist.some(h=>h.d===r.d));
+    H=v.hist.filter(h=>!aRetirer.has(h.d))
+            .concat(aAjouter.map(r=>({d:r.d,p:r.p,__v:true})))
             .sort((a,b)=>cle(a.d)<cle(b.d)?-1:1);
+    if(!H.length) H=v.hist;
   }
   const net=H.filter((h,i)=> !(i>0 && i<H.length-1 && h.p<H[i-1].p && H[i+1].p===H[i-1].p));
   return (v.__tc = net.length ? net : H);
@@ -1888,7 +1976,10 @@ function derniereDateTarif(v){
 // Dernier tarif catalogue en vigueur pendant l'année `annee`. À défaut, le dernier antérieur ;
 // à défaut encore, le premier postérieur (véhicule plus ancien que la base).
 function tarifMillesime(v, annee){
-  const H=tarifsCatalogue(v);
+  // Le tarif d'un millésime se cherche DANS SA PHASE : sur un modèle qui a changé de
+  // génération, le tarif de la nouvelle ne dit rien de ce que valait l'ancienne — et sur une
+  // année à cheval, c'est la phase sortante qui est retenue, comme dans le calcul.
+  const H=histPhase(v, modeleDe(v), annee);
   let dans=null, avant=null, apres=null;
   for(const h of H){
     const y=yOf(h.d);
@@ -1897,6 +1988,22 @@ function tarifMillesime(v, annee){
     else if(apres===null) apres=h;
   }
   return dans||avant||apres||null;
+}
+
+// Fin de série du MODÈLE : le tarif catalogue le plus récent, toutes finitions confondues.
+// Distinct de la fin de série d'une finition, qui peut être bien antérieure.
+function finSerieModele(modelName){
+  let best=null;
+  const cle = d => d.slice(6)+d.slice(3,5)+d.slice(0,2);
+  for(const b of Object.keys(DB)){
+    if(!DB[b][modelName]) continue;
+    for(const f of DB[b][modelName]){
+      const H=tarifsCatalogue(f);
+      const dn=H[H.length-1];
+      if(dn && (!best || cle(dn.d)>cle(best.d))) best={d:dn.d, p:dn.p, v:f.v};
+    }
+  }
+  return best;
 }
 
 // Le modèle auquel appartient une finition, mémorisé une fois pour toutes : PHASES et GENS
@@ -3297,58 +3404,96 @@ function clearRes(){
 // d'une PHASE ANTÉRIEURE, c'est le dernier tarif de CETTE phase qui est mis en avant : afficher
 // le prix de la génération suivante sous le nom d'un véhicule de 2022 était le défaut signalé.
 function blocPrix(v, modelName, mecAnnee){
-  const fr=PHASES[modelName];
   let h='<div class="price-block">';
+  // L'avertissement de phase se compose à part : le MONTANT, lui, obéit à la même règle pour
+  // tous les véhicules — c'est le tarif catalogue du millésime. Le faire dépendre de la phase
+  // créait deux régimes d'affichage ; une RAV 4 Hybride de 2022 sortait au dernier tarif de
+  // la XA50 (184 800 DT) au lieu de son tarif de 2022 (152 000 DT).
+  let avis='';
+  const fr=PHASES[modelName];
   if(fr && fr.length && mecAnnee){
     const ph=phaseDeAnnee(modelName, mecAnnee);
     const rNow=rangPhase(modelName, v.d);
-    // Une année qui CONTIENT la frontière est ambiguë, pas antérieure : ce cas se traite en
-    // premier, sinon le véhicule serait rattaché d'office à la phase sortante sans le dire.
+    // Une année qui CONTIENT la frontière est ambiguë, pas antérieure.
     if(ph.aCheval){
-      h+='<span class="price-val">'+v.p.toLocaleString('fr-TN')+'</span>'+
-         '<span class="price-unit">DT</span><span class="price-lbl">TTC</span></div>'+
-         '<div class="notice warn" style="margin:-6px 0 12px">🔀 <b>Millésime à cheval</b> — '+
-         'la génération a changé le '+fr[ph.rang].date+'. Un véhicule de '+mecAnnee+
-         ' peut relever de l\'une ou l\'autre phase ; la carte grise et le numéro de série '+
-         'tranchent. Par prudence, le calcul retient la phase <b>sortante</b>.</div>';
-      return h;
+      avis='<div class="notice warn" style="margin:-6px 0 12px">🔀 <b>Millésime à cheval</b> — '+
+           'la génération a changé le '+fr[ph.rang].date+'. Un véhicule de '+mecAnnee+
+           ' peut relever de l\'une ou l\'autre phase ; la carte grise et le numéro de série '+
+           'tranchent. Par prudence, le calcul retient la phase <b>sortante</b>.</div>';
     }
-    if(ph.rang < rNow){
+    else if(ph.rang < rNow){
       const pts=histPhase(v, modelName, mecAnnee);
       const dernier=pts[pts.length-1];
       const f=fr[ph.rang];
-      h+='<span class="price-val">'+dernier.p.toLocaleString('fr-TN')+'</span>'+
-         '<span class="price-unit">DT</span><span class="price-lbl">TTC · tarif de sa phase</span></div>'+
-         '<div class="notice warn" style="margin:-6px 0 12px">🔀 <b>Changement de génération</b> — '+
-         'le tarif du jour de ce modèle ('+fmt(v.p)+') est celui de la '+
-         (f.gen?'<b>'+f.gen+'</b>, ':'')+'phase lancée le '+f.date+'. Un véhicule de '+mecAnnee+
-         ' appartient à la phase précédente : c\'est son dernier tarif, <b>'+fmt(dernier.p)+
-         '</b> ('+dernier.d+'), qui sert de référence — au prix du jour comme au plafond de la '+
-         'valeur vénale. <span style="opacity:.75">'+f.motif+' Source : '+f.source+'.</span></div>';
-      return h;
+      avis='<div class="notice warn" style="margin:-6px 0 12px">🔀 <b>Changement de génération</b> — '+
+           'le tarif du jour de ce modèle ('+fmt(v.p)+') est celui de la '+
+           (f.gen?'<b>'+f.gen+'</b>, ':'')+'phase lancée le '+f.date+'. Un véhicule de '+mecAnnee+
+           ' appartient à la phase précédente, dont la valeur à neuf de fin de série est '+
+           '<b>'+fmt(dernier.p)+'</b> ('+dernier.d+') : c\'est elle qui borne la valeur vénale, '+
+           'et non le tarif de la génération suivante. '+
+           '<span style="opacity:.75">'+f.motif+' Source : '+f.source+'.</span></div>';
     }
   }
   // Cas ordinaire : le tarif catalogue en vigueur l'année du véhicule — pas le dernier tarif
   // de la finition, qui peut relever d'une tout autre année.
+  //
+  // DEUX LIBELLÉS À NE PAS CONFONDRE, défaut signalé par Yassine sur une Renault Symbol 1.2
+  // Confort de 2017 :
+  //   · le montant mis en avant est le TARIF CATALOGUE DU MILLÉSIME — 34 100 DT pour 2017 ;
+  //     l'appeler « fin de série 2017 » était faux, la série ne s'est pas arrêtée en 2017 ;
+  //   · la FIN DE SÉRIE de cette finition, c'est son DERNIER tarif catalogue : 41 900 DT au
+  //     12.02.2019. L'appeler « tarif du jour » était faux aussi — la finition n'est plus
+  //     vendue depuis sept ans, elle n'a plus de tarif du jour.
+  // Mesuré sur la base : 76 % des 2 522 finitions sont retirées du catalogue, et le libellé
+  // « fin de série <millésime> » était abusif dans 53 % des couples finition × millésime.
   const t = mecAnnee ? tarifMillesime(v, mecAnnee) : null;
   if(t){
+    // Le repère de fin de série reste lui aussi dans la phase du véhicule.
+    const H=histPhase(v, modelName, mecAnnee);
     const mmAnnee = yOf(t.d);
-    const courant = tarifsCatalogue(v)[tarifsCatalogue(v).length-1];
+    const dernier = H[H.length-1];
+    const anFin = yOf(dernier.d);
+    // « Au catalogue » suppose DEUX choses : un tarif récent, et que la phase du véhicule soit
+    // encore celle qui se vend. Une RAV 4 Hybride XA50 a bien un tarif de 2026 — mais la XA60
+    // l'a remplacée en juin : son dernier tarif est une fin de série, pas un tarif du jour.
+    const phaseCourante = !PHASES[modelName] || !mecAnnee ||
+      phaseDeAnnee(modelName, mecAnnee).rang === rangPhase(modelName, v.d);
+    const auCatalogue = anFin >= CY-1 && phaseCourante;
+    const estLaFin = mmAnnee === anFin;
     h+='<span class="price-val">'+t.p.toLocaleString('fr-TN')+'</span>'+
        '<span class="price-unit">DT</span>'+
-       '<span class="price-lbl">TTC · '+(mmAnnee===mecAnnee
-         ? 'fin de série '+mecAnnee
-         : 'dernier tarif connu, '+mmAnnee)+'</span></div>';
-    // Le tarif du jour reste nommé, avec l'écart : c'est lui qui borne la valeur vénale.
-    if(courant && courant.p!==t.p)
-      h+='<div class="prix-ecart">Tarif du jour de cette finition : <b>'+fmt(courant.p)+
-         '</b> ('+courant.d+') — '+(courant.p>t.p?'+':'\u2212')+
-         Math.round(Math.abs(courant.p/t.p-1)*100)+' %</div>';
-    return h;
+       '<span class="price-lbl">TTC · '+(
+         mmAnnee!==mecAnnee ? 'dernier tarif connu, '+mmAnnee
+         : (estLaFin && !auCatalogue) ? 'fin de série '+mmAnnee
+         : 'tarif catalogue '+mmAnnee)+'</span></div>';
+    // La seconde ligne nomme l'autre référence : le tarif du jour tant que la finition est
+    // vendue, sa VALEUR DE FIN DE SÉRIE dès qu'elle ne l'est plus. C'est cette valeur que
+    // l'expert cite pour un modèle retiré du marché ; elle doit être exacte et datée.
+    if(dernier && dernier.p!==t.p)
+      h+='<div class="prix-ecart">'+(auCatalogue
+           ? 'Tarif du jour de cette finition : '
+           : 'Valeur à neuf de fin de série de cette finition : ')+
+         '<b>'+fmt(dernier.p)+'</b> ('+dernier.d+') — '+(dernier.p>t.p?'+':'\u2212')+
+         Math.round(Math.abs(dernier.p/t.p-1)*100)+' %'+
+         (auCatalogue?'':' · cette finition n\'est plus commercialisée')+'</div>';
+    else if(dernier && !auCatalogue)
+      h+='<div class="prix-ecart">Ce tarif est aussi la <b>valeur à neuf de fin de série</b> '+
+         'de cette finition ('+dernier.d+') : elle n\'est plus commercialisée.</div>';
+    // Une finition s'arrête souvent AVANT le modèle : la Symbol 1.2 Confort finit en février
+    // 2019, mais la Symbol a continué jusqu'en novembre 2020 avec les finitions 1.0 SCe.
+    // L'expert qui retient une « valeur à neuf de fin de série » doit savoir laquelle des deux
+    // il cite. On nomme donc la fin de série du MODÈLE quand elle est postérieure.
+    if(!auCatalogue){
+      const fm=finSerieModele(modelName);
+      if(fm && yOf(fm.d)>anFin)
+        h+='<div class="prix-ecart">Le modèle, lui, est resté au catalogue jusqu\'au <b>'+
+           fm.d+'</b> ('+fm.v+', '+fmt(fm.p)+').</div>';
+    }
+    return h+avis;
   }
   h+='<span class="price-val">'+v.p.toLocaleString('fr-TN')+'</span>'+
      '<span class="price-unit">DT</span><span class="price-lbl">TTC</span></div>';
-  return h;
+  return h+avis;
 }
 
 function rResult(){

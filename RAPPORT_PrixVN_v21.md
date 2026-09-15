@@ -420,6 +420,165 @@ Un test parcourt désormais la séquence complète — ouverture, déplacement d
 
 ---
 
+### 3.26  Les captures d'archive, relevées finition par finition
+
+Jusqu'ici, une capture d'archive n'était exploitée que pour le prix qu'elle mettait en avant. Or une page marque archivée donne **toutes les finitions à une date certaine** — c'est une pièce bien plus riche qu'un simple prix d'entrée.
+
+Les quatre captures fournies par Yassine sont désormais reportées ligne à ligne, chacune sur sa propre finition :
+
+| capture | finition | tarif retenu | promotion affichée |
+|---|---|---|---|
+| 26.10.2022 | VW Polo Sedan · 1.4 L Highline | 72 980 | — |
+| 18.07.2023 | Skoda Kamiq · 1.0 L TSI Style DSG | 96 980 | — |
+| 17.04.2026 | Skoda Kushaq · 1.0 TSI Ambition | **78 980** | 77 980 |
+| 17.04.2026 | Skoda Kushaq · 1.0 TSI Ambition BVA | **85 980** | 84 980 |
+| 17.04.2026 | Skoda Kushaq · 1.0 TSI Style BVA | **92 980** | 90 980 |
+| 07.09.2024 | MG 5 · 1.5 L Confort | 63 950 | — |
+| 07.09.2024 | MG 5 · 1.5 L Confort Plus | 67 450 | — |
+| 07.09.2024 | MG 5 · 1.5 L Luxe BVA | 71 950 | — |
+
+**La règle appliquée sur le Kushaq mérite d'être écrite.** La capture du 17.04.2026 affiche trois prix promotionnels, chacun avec son tarif catalogue **barré** à côté. C'est le tarif barré qui est retenu : un prix promotionnel est une condition commerciale d'un moment, pas la valeur à neuf d'un véhicule. C'est exactement la leçon du § 3.23, où les deux tiers des 99 écarts du contrôle catalogue venaient de promotions enregistrées comme des tarifs.
+
+Huit relevés, huit assertions de contrôle : la date, le montant, le refus du prix promotionnel, et l'ancrage du millésime correspondant.
+
+---
+
+### 3.25  Substitutions de gamme : un tarif attribué à la mauvaise finition
+
+Défaut signalé par Yassine sur la Renault Clio : *« la valeur 64 950 est celle de la version 1.0 TCe Evolution, et la valeur de fin de série de la 1.0 SCe Life Plus est de 60 900 DT »*. C'est exact, et la démonstration est dans les dates.
+
+| finition | dernier relevé | montant |
+|---|---|---|
+| 1.0 L SCe Life Plus | 15.09.2023 | 60 900 DT |
+| 1.0 L SCe Life Plus | **06.05.2024** | **64 950 DT** |
+| 1.0 L TCe 100 Evolution | **07.05.2024** | **64 950 DT** |
+
+**Un jour d'écart, au dinar près**, après 234 jours sans mouvement sur la Life Plus. Le relevé a vu le nouveau prix d'entrée de gamme et l'a attribué au nom de la finition sortante, le jour de la bascule. La Life Plus n'a jamais valu 64 950 DT : sa valeur à neuf de fin de série est bien **60 900 DT au 15.09.2023** — ce que confirme la capture d'archive du 24.04.2024, douze jours avant le point litigieux.
+
+#### La signature, et sa recherche sur toute la base
+
+Le repère n'est pas la hausse : c'est la **coïncidence exacte de prix entre le dernier point d'une finition et le premier point d'une autre du même modèle**, à quelques jours. Un vrai mouvement tarifaire ne tombe pas au dinar près sur le prix de lancement de sa remplaçante.
+
+`substitution.js` balaie les 2 522 finitions et en trouve **22**. Deux discriminants les départagent :
+
+- **la bascule** — moins de quinze jours entre les deux points ;
+- **la dormance** — la finition sortante n'avait plus bougé depuis des mois, voire des années.
+
+**Six cas réunissent les deux.** Ils sont corrigés par un `retrait` : le tarif est écarté de la série, sans toucher à `data.js`.
+
+| modèle · finition | vraie fin de série | tarif retiré | repris de |
+|---|---|---|---|
+| Seat Ibiza · 1.0 L TSI Style BVA | 69 980 (07.08.2022) | 86 980 (16.01.2026) | 1.0 L TSI Move BVA |
+| Jaguar E-Pace · 2.0 T 200 ch S | 289 000 (22.02.2021) | 350 000 (23.01.2024) | 2.0 D 163 R-Dynamic S |
+| Jaguar F-Pace · 2.0 T 250 R-Sport | 390 000 (22.02.2021) | 399 000 (23.01.2024) | 2.0 T 250 R-Dynamic S |
+| VW Caddy Cargo · 2.0 L TDI Business | 76 980 (01.07.2025) | 84 980 (27.02.2026) | 2.0 L TDI |
+| Renault Clio · 1.0 L SCe Life Plus | **60 900 (15.09.2023)** | 64 950 (06.05.2024) | 1.0 L TCe 100 Evolution |
+| Renault Clio Populaire · 1.2 L | 26 935 (15.11.2019) | 28 492 (02.09.2020) | 0.9 L TCe Life Plus |
+
+**Deux d'entre eux étaient déjà établis par ailleurs**, ce qui vaut confirmation : la Clio par la capture d'archive, et la Seat Ibiza par la recherche presse du § 3.20, où un agent avait relevé que *« la finition Style BVA a disparu du catalogue et a été remplacée par Move BVA à 86 980 DT »*. Le cas Jaguar est frappant : **E-Pace et F-Pace prennent leur dernier point le même jour**, chacun au prix de la finition « R-Dynamic » qui le remplace, après trois ans de dormance. C'est une gamme entière renommée, lue comme deux hausses de tarif.
+
+#### Une conséquence qui valide la méthode
+
+La Seat Ibiza figurait parmi les **20 séries tarifaires discontinues** signalées au § 3.20 avec un saut de +25 %. Ce saut a disparu : il n'était pas une discontinuité du marché, mais un tarif mal attribué. L'avertissement de l'indicateur de confiance ne se déclenche plus sur elle — non parce qu'on l'a masqué, mais parce que la cause a été identifiée et corrigée.
+
+#### Les seize autres, consignées et non appliquées
+
+La signature les désigne ; elle ne les prouve pas. Bascule trop lointaine, dormance trop courte, ou les deux : un mouvement tarifaire ordinaire peut produire la même coïncidence par hasard.
+
+| modèle · finition | tarif précédent | tarif suspect | repris de | écart |
+|---|---|---|---|---|
+| BMW X2 · 18i Pack M | 181 300 (04.07.2018) | 192 200 (10.10.2018) | 18i Pack M Sport X | +6 % |
+| Volkswagen Passat · 1.4 l TSI Smartline | 69 980 (09.02.2014) | 73 980 (20.04.2014) | 1.4 l TSI Design | +6 % |
+| Volkswagen Caddy · 2.0 L TDI Edition limitée | 56 980 (15.09.2020) | 59 980 (24.11.2020) | 2.0 L TDI Maxi Edition limitée | +5 % |
+| Fiat 500 · 1.2 L BVA | 67 500 (29.04.2024) | 70 500 (03.09.2024) | 1.2 L Cult Club BVA | +4 % |
+| Audi Q2 · 35 TFSI Urban Line BVA | 149 990 (22.10.2025) | 145 000 (10.01.2026) | 35 TFSI Black Limited BVA | -3 % |
+| Peugeot 2008 · 1.2 L 110 ch Allure Toit Cielo | 74 990 (13.05.2019) | 69 990 (25.11.2019) | 1.2 L 110 ch Active | -7 % |
+| Dongfeng Rich 6 · 2.5 Turbo Diesel 4X2 | 98 900 (28.08.2024) | 93 900 (12.08.2025) | 2.5 Turbo Diesel 4X2 Thunder | -5 % |
+| Mercedes-Benz EQE Berline · 350+ AMG | 349 000 (29.09.2025) | 309 000 (07.01.2026) | 300 AMG | -11 % |
+| Peugeot 2008 · 1.2 L 110 ch Allure Toit Cielo BVA | 80 890 (29.10.2019) | 74 990 (25.11.2019) | 1.2 L 110 ch Active BVA | -7 % |
+| Mini Aceman Electric · 49.2 kWh SE Classic | 149 900 (30.01.2026) | 139 900 (09.04.2026) | 38.5 kWh Classic | -7 % |
+| Opel Astra · 1.2 L Edition Plus | 78 990 (14.06.2021) | 73 990 (29.09.2021) | 1.2 L Edition | -6 % |
+| Peugeot Partner · 1.6 L HDI 90ch 650 Kg | 64 900 (01.02.2024) | 67 490 (02.05.2024) | 1.6 L HDI 650 Kg | +4 % |
+| Peugeot Partner · 1.6 L HDI 90ch 1000 Kg | 65 900 (01.02.2024) | 68 490 (02.05.2024) | 1.6 L HDI 1000 Kg | +4 % |
+| BMW Série 3 · 320i Access BVA | 91 400 (07.03.2013) | 94 900 (19.05.2013) | 318d Access Plus Luxury Line | +4 % |
+| BMW Série 1 · 118i Business Line Plus | 141 700 (19.03.2021) | 142 900 (29.06.2021) | 116i Sport Line Collection | +1 % |
+| Suzuki Swift · 1.2 L GLX | 60 900 (04.05.2026) | 61 400 (10.07.2026) | 1.2 L CVT GL+ | +1 % |
+
+Deux d'entre elles méritent l'œil : le **Mercedes EQE Berline** (−11 %) et la **Mini Aceman Electric** (−7 %, même jour) sont les plus fortes. Les autres sont sous 8 %.
+
+#### Le mécanisme
+
+`RELEVES_VERIFIES` accepte désormais deux formes d'entrée : un **ajout**, qui comble un tarif manquant, et un **retrait**, qui écarte un tarif n'appartenant pas à la finition. Les deux portent une date et une source — sans quoi la correction ne serait pas opposable dans un rapport d'expertise. Un test le vérifie.
+
+---
+
+### 3.24  « Fin de série » n'est pas « tarif du millésime »
+
+Défaut signalé par Yassine sur une **Renault Symbol 1.2 Confort de 2017** : la fiche annonçait **« 34 100 DT — fin de série 2017 »**, puis, en dessous, **« Tarif du jour de cette finition : 41 900 DT (12.02.2019) »**.
+
+Deux libellés faux dans la même fiche.
+
+- **34 100 DT est le tarif catalogue de 2017**, pas une fin de série. La Symbol 1.2 Confort a continué d'être vendue jusqu'en **février 2019**, à 41 900 DT. Rien ne s'est arrêté en 2017.
+- **41 900 DT n'est pas un « tarif du jour »** : cette finition n'est plus commercialisée depuis sept ans. Ces 41 900 DT sont précisément **sa valeur à neuf de fin de série** — celle qu'un expert cite pour un modèle retiré du marché.
+
+Le montant, lui, était juste : c'est bien le tarif de 2017, conformément à la règle validée sur la Clio (§ 3.22). **Le défaut était entièrement dans les mots** — et dans un rapport d'expertise, une valeur à neuf mal qualifiée est une valeur contestable.
+
+#### L'ampleur
+
+| | |
+|---|---|
+| finitions de la base | 2 522 |
+| **retirées du catalogue** | **1 911 — soit 76 %** |
+| couples finition × millésime avec tarif propre | 6 562 |
+| « fin de série \<millésime\> » employé à tort | **3 480 — 53 %** |
+| « tarif du jour » sur une finition retirée | **4 560 — 69 %** |
+
+#### Ce qui s'affiche désormais
+
+Trois libellés, exclusifs :
+
+- **« tarif catalogue 2017 »** — le millésime a son propre tarif et la série continue après lui ;
+- **« fin de série 2019 »** — le millésime *est* la dernière année de la finition ;
+- **« dernier tarif connu, 2016 »** — aucun relevé l'année du véhicule.
+
+Et la seconde ligne dit l'autre référence, correctement nommée : **« Tarif du jour de cette finition »** tant qu'elle se vend, **« Valeur à neuf de fin de série de cette finition »** dès qu'elle ne se vend plus, avec sa date et l'écart.
+
+**La distinction que Yassine a posée est reprise telle quelle.** Il écrit : « fin de série mondiale en 2021 et en Tunisie en 2019 ». Une finition s'arrête souvent avant son modèle — la Symbol 1.2 Confort finit en février 2019, mais la Symbol a continué jusqu'en **novembre 2020** avec les finitions 1.0 SCe. L'expert qui retient une valeur à neuf de fin de série doit savoir laquelle des deux il cite : la fiche nomme désormais la fin de série du **modèle** quand elle est postérieure à celle de la finition.
+
+#### Une incohérence révélée sur les phases
+
+Le contrôle a fait tomber 7 écarts, tous sur la RAV 4 Hybride : le cas « changement de génération » affichait le dernier tarif de la **phase** (184 800 DT) au lieu du tarif du millésime. Une RAV 4 de 2022 sortait donc à 184 800 au lieu de 152 000.
+
+Le montant obéit maintenant à **une seule règle pour tous les véhicules** — le tarif catalogue de son millésime, cherché dans sa propre phase — et l'avertissement de génération se compose à part. Deux conséquences :
+
+- un millésime à cheval (2026) retient le tarif de la phase **sortante**, comme le calcul, au lieu d'afficher celui de la nouvelle génération ;
+- une phase sortante a **sa propre fin de série** : la XA50 a un tarif de mars 2026, mais ce n'est pas un tarif du jour — la XA60 l'a remplacée en juin.
+
+#### Le contrôle, sur toute la base
+
+`finserie_audit.js` parcourt les **2 522 finitions** et les **20 879 couples finition × millésime**, et vérifie trois invariants — le montant affiché est le tarif du millésime, « fin de série » n'apparaît que sur la dernière année d'une finition retirée, « tarif du jour » n'apparaît que sur une finition encore vendue. **Zéro écart.**
+
+Il repère en outre les **fins de série douteuses** : les modèles dont *toutes* les finitions s'arrêtent le même jour. C'est la signature d'un suivi interrompu plutôt que d'un retrait du marché — une gamme entière ne disparaît pas en un jour.
+
+| modèle | finitions | dernier tarif |
+|---|---|---|
+| Peugeot Bipper | 6 | 16.05.2018 |
+| Citroën C4 Cactus | 3 | 06.03.2018 |
+| Ford Mustang | 3 | 23.12.2016 |
+| Hyundai Kona Hybride | 3 | 16.08.2022 |
+| Mercedes-Benz Sprinter Van | 3 | 04.08.2020 |
+| Opel Insignia | 3 | 23.12.2016 |
+| Renault Fluence | 3 | 04.08.2016 |
+| Seat Tarraco | 3 | 23.08.2023 |
+| Suzuki S-Presso | 3 | 04.05.2022 |
+| Toyota Corolla | 3 | 11.07.2022 |
+| Volkswagen Golf 6 | 3 | 20.09.2012 |
+| Volvo S90 | 3 | 02.02.2024 |
+
+Quatorze modèles au départ. **Douze sont de vraies fins de série** — tous absents du catalogue au contrôle du 13.09.2026. **Deux ne l'étaient pas** : Renault Master et Bako B-Van figuraient déjà parmi les « modèles manquants » du § 3.23. Les deux listes, construites par des chemins indépendants, se recoupent exactement — ce qui valide la méthode autant que le résultat. Leur tarif d'entrée est rétabli au 13.09.2026.
+
+---
+
 ### 3.22  Valeur de fin de série : le tarif de SON millésime
 
 Défaut signalé par Yassine, captures d'archive à l'appui : la fiche affichait le **dernier tarif de la finition**, quel que soit le millésime saisi. Une Renault Clio 1.0 SCe Life Plus de 2023 sortait à **64 950 DT** — le tarif du 06.05.2024 — alors que le tarif en vigueur en 2023 était de **60 900 DT**.
