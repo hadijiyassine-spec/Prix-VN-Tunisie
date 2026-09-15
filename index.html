@@ -715,7 +715,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   <div class="logo">
     <div class="logo-ico">🚗</div>
     <div>
-      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v47</span></div>
+      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v48</span></div>
       <div class="logo-sub" id="dbStats">Chargement…</div>
     </div>
   </div>
@@ -842,9 +842,9 @@ let sel = {b:null, m:null, v:null};
 let FY  = null;
 // ── Version de l'application ──
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
-const VERSION = 'v47';
+const VERSION = 'v48';
 const VERSION_DATE = '15/09/2026';
-const VERSION_NOTES = 'substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
+const VERSION_NOTES = 'corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -1316,7 +1316,12 @@ function calculerIndice(){
   const series=[]; let derniere=0, premiere=9999;
   for(const b of Object.keys(DB)) for(const m of Object.keys(DB[b])) for(const f of DB[b][m]){
     const parAn={};
-    for(const h of f.hist){ const y=yOf(h.d); parAn[y]=h.p; if(y>derniere)derniere=y; if(y<premiere)premiere=y; }
+    // L'indice se calcule sur les TARIFS CATALOGUE, pas sur l'historique brut : sans cela les
+    // prix promotionnels et les tarifs mal attribués entrent dans la mesure. Défaut resté
+    // invisible jusqu'au report des corrections dans la base — l'indice 2026 annonçait un
+    // marché en baisse de 4,3 %, alors que la baisse venait pour l'essentiel des promotions
+    // enregistrées comme des tarifs.
+    for(const h of tarifsCatalogue(f)){ const y=yOf(h.d); parAn[y]=h.p; if(y>derniere)derniere=y; if(y<premiere)premiere=y; }
     series.push({parAn, fc:fuelClass((f.eg&&f.eg.fuel)||(f.sp&&f.sp.carburant))});
   }
   if(!derniere || derniere<=premiere) return null;
@@ -2039,7 +2044,9 @@ function prixNeufCourant(v, anneeEval, anneeRef){
       return Math.round(dernier.p * indexMultiplier(yOf(dernier.d), anneeEval, fc).m);
     }
   }
-  if(yOf(v.d) < anneeEval) return null;          // finition retirée du catalogue : pas de prix du jour
+  // La fraîcheur se juge sur le DERNIER TARIF CATALOGUE, pas sur `v.d` : un relevé vérifié
+  // postérieur prolonge la vie commerciale de la finition, un tarif retiré la raccourcit.
+  if(yOf(derniereDateTarif(v)) < anneeEval) return null;   // retirée du catalogue : pas de prix du jour
   let dernier=null;
   for(const h of tarifsCatalogue(v)) if(yOf(h.d)<=anneeEval) dernier=h;   // hist trié, hors promos
   return dernier ? dernier.p : null;
@@ -2051,7 +2058,8 @@ function prixNeufCourant(v, anneeEval, anneeRef){
 function venSerie(v, AE, fc){
   const cle=AE+'|'+fc;
   if(v.__vs && v.__vs[cle]) return v.__vs[cle];
-  const y0=yOf(v.hist[0].d), y1=Math.max(yOf(v.hist[v.hist.length-1].d), AE);
+  const HC=tarifsCatalogue(v);
+  const y0=yOf(HC[0].d), y1=Math.max(yOf(HC[HC.length-1].d), AE);
   const mod=modeleDe(v);
   const par={};
   for(let y=y0; y<=y1; y++){

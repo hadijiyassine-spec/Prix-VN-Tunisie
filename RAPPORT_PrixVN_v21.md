@@ -420,6 +420,78 @@ Un test parcourt désormais la séquence complète — ouverture, déplacement d
 
 ---
 
+### 3.27  Les corrections portées dans `data.js` — et ce que cela a révélé
+
+Jusqu'ici, toutes les corrections vivaient dans `RELEVES_VERIFIES`, à l'intérieur de l'application, pour survivre à une régénération de la base. Yassine demande qu'elles soient portées **dans la base elle-même**.
+
+#### Le correctif
+
+`patch_data.js` lit la table de corrections dans l'application, l'applique à `data.js` et réécrit le fichier. Un aller-retour JSON sur la base non modifiée est **identique à l'octet près** : tout écart dans le fichier produit est donc exactement le correctif, et rien d'autre.
+
+| | |
+|---|---|
+| finitions modifiées | **112** |
+| tarifs ajoutés | **106** |
+| tarifs retirés | **6** |
+| finitions dont le dernier tarif change | 107 |
+
+Les champs dérivés — `p`, `d`, `d0`, `n` — sont recalculés depuis l'historique corrigé. Les deux bases passent le contrôle d'intégrité sans une anomalie : 739 modèles, 2 522 finitions, dates bien formées, historiques triés, dernier point cohérent avec `p` et `d`.
+
+**`RELEVES_VERIFIES` reste en place**, et c'est délibéré : un ajout dont la date existe déjà est ignoré, un retrait dont la date est déjà absente aussi. La double application est donc sans effet, et la table redevient le **filet de sécurité** si la base est un jour régénérée depuis la source brute. Deux tests le vérifient.
+
+**La preuve de fidélité** est un A/B sur les **2 522 finitions** : l'application doit rendre exactement les mêmes valeurs avec la base corrigée qu'avec l'ancienne base corrigée à l'exécution. **Zéro écart.**
+
+#### Ce que l'A/B a révélé : l'indice ne voyait pas les corrections
+
+Le premier passage de l'A/B a donné **2 295 écarts**. Pas une erreur du correctif — un défaut de l'application, invisible tant que les corrections vivaient à l'extérieur de la base.
+
+`calculerIndice()` lisait **`f.hist` brut**. Ni le filtre des promotions, ni les relevés vérifiés, ni les retraits ne l'atteignaient. L'indice de prix automobile — celui qui actualise toute valeur à neuf — était donc calculé sur des prix promotionnels.
+
+| 2026 | avant | après |
+|---|---|---|
+| général | **−4,31 %** | **−0,65 %** |
+| essence | −3,33 % | 0,00 % |
+| diesel | −0,80 % | 0,00 % |
+| hybride simple | −4,45 % | −0,01 % |
+| **rechargeable** | −24,75 % | **−24,35 %** |
+| électrique | −8,31 % | −1,67 % |
+
+**Le marché thermique tunisien n'a pas baissé de 4,3 % en 2026 : il est resté stable.** La baisse mesurée venait des campagnes promotionnelles enregistrées comme des tarifs. Seule la refonte fiscale des rechargeables tient : −24 %, et elle résiste à la correction.
+
+Deux corrections de moindre portée sont tombées dans la foulée : `prixNeufCourant()` jugeait la fraîcheur d'une finition sur `v.d` et non sur son dernier tarif catalogue, et `venSerie()` bornait sa série sur l'historique brut.
+
+**Une conséquence pour un chiffre déjà communiqué.** La décote des véhicules électriques (§ 3.13) repose sur un paramètre `baisseNeufAnnuelle` de **1,3 %/an**, posé d'après les données européennes de Transport & Environment. La mesure tunisienne propre donne **1,7 %** — le paramètre est corroboré. En revanche, le chiffre de « −8,3 % sur les électriques en 2026 », cité dans l'analyse du marché électrique, était pollué : la vraie baisse est de 1,7 %.
+
+#### Le point ouvert : le niveau des estimations
+
+La correction de l'indice rend les valeurs à neuf plus hautes — l'actualisation ne déflate plus à tort. Les estimations montent d'autant, et s'écartent des annonces d'occasion.
+
+| étape | biais médian | écart absolu médian |
+|---|---|---|
+| avant les corrections de cette session | +6,2 % | 12,1 % |
+| après la convention « fin de série » | +10,1 % | 12,3 % |
+| **après l'indice corrigé** | **+13,4 %** | **15,5 %** |
+
+Les deux corrections sont justes prises une à une ; ensemble elles déplacent le niveau, et le niveau avait été calé quand l'indice était faux.
+
+**La forme de la courbe, elle, n'est pas en cause.** Recalibrée sur la base corrigée, elle donne des taux presque inchangés :
+
+| gamme | en vigueur | recalibré |
+|---|---|---|
+| Grand public | 4,27 %/an | 4,20 %/an |
+| Haut de gamme | 6,98 %/an | 6,70 %/an |
+| Luxe / premium | 8,33 %/an | 8,18 %/an |
+
+C'est donc bien un **écart de niveau**, pas de pente. Rappel de méthode (§ 4.1) : les prix d'annonce sont des prix **demandés**, majorés par le vendeur, et la calibration ne retient volontairement que la pente — la constante libre, ici de ×0,79 à ×0,94 selon la gamme, absorbe cette majoration et n'est pas reportée.
+
+**La question est donc un arbitrage d'expertise, pas un calcul** : de combien un prix demandé en Tunisie dépasse-t-il le prix de transaction ? Si l'écart usuel est de l'ordre de 13 %, le modèle est à sa place. S'il est moindre, il faut ré-ancrer le niveau. Rien n'a été modifié : c'est à Yassine de trancher.
+
+#### Nom du fichier
+
+Le fichier applicatif s'appelle désormais **`index.html`** et non plus `app.html` : c'est le nom qu'un hébergeur sert à la racine d'un domaine. `data.js` est inchangé de nom, et la référence interne l'est aussi.
+
+---
+
 ### 3.26  Les captures d'archive, relevées finition par finition
 
 Jusqu'ici, une capture d'archive n'était exploitée que pour le prix qu'elle mettait en avant. Or une page marque archivée donne **toutes les finitions à une date certaine** — c'est une pièce bien plus riche qu'un simple prix d'entrée.
