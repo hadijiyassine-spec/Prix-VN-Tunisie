@@ -12,7 +12,7 @@
 // pour que la majoration vendeur n'entre pas dans la pente.
 const { JSDOM } = require('jsdom');
 const fs = require('fs');
-const app = fs.readFileSync(fs.existsSync('app.html') ? 'app.html' : 'index.html', 'utf8');
+const app = fs.readFileSync('app.html', 'utf8');
 const data = fs.readFileSync('data.js', 'utf8');
 const dom = new JSDOM(app.replace('<script src="data.js"></script>', '<script>\n' + data + '\n</script>'),
   { runScripts: 'dangerously', url: 'https://e.com/a.html', pretendToBeVisual: true });

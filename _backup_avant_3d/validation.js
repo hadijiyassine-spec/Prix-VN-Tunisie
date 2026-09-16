@@ -2,7 +2,7 @@
 // observés sur le marché tunisien de l'occasion, modèle par modèle.
 const { JSDOM } = require('jsdom');
 const fs = require('fs');
-const app = fs.readFileSync(fs.existsSync('app.html') ? 'app.html' : 'index.html', 'utf8');
+const app = fs.readFileSync('app.html', 'utf8');
 const data = fs.readFileSync('data.js', 'utf8');
 const html = app.replace('<script src="data.js"></script>', '<script>\n' + data + '\n</script>');
 const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://example.com/app.html', pretendToBeVisual: true });
@@ -49,13 +49,11 @@ setTimeout(() => {
   }
 
 
-  const lines = fs.readFileSync('marche_occasion.csv', 'utf8').trim().split(/\r?\n/).slice(1);
+  const lines = fs.readFileSync('marche_occasion.csv', 'utf8').trim().split('\n').slice(1);
   const rows = [];
   for (const l of lines) {
     const [modele, aS, pS, kS] = l.split(';');
-    // kS peut valoir '\r' (fin de ligne CRLF) : +'\r' vaut 0, un kilométrage absent passait pour 0 km.
-    const kT = kS == null ? '' : kS.trim();
-    const annee = +aS, prix = +pS, km = kT === '' ? null : +kT;
+    const annee = +aS, prix = +pS, km = kS === '' || kS == null ? null : +kS;
     const k = cle(modele, annee);
     if (!k || !existe[k]) continue;
     if (!(annee >= 2005 && annee <= CY) || !(prix >= 8000 && prix <= 400000)) continue;

@@ -14,7 +14,7 @@
 // obligeait la pente à absorber la majoration et faussait donc le taux.
 const { JSDOM } = require('jsdom');
 const fs = require('fs');
-const app = fs.readFileSync(fs.existsSync('app.html') ? 'app.html' : 'index.html', 'utf8');
+const app = fs.readFileSync('app.html', 'utf8');
 const data = fs.readFileSync('data.js', 'utf8');
 const html = app.replace('<script src="data.js"></script>', '<script>\n' + data + '\n</script>');
 const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://example.com/app.html', pretendToBeVisual: true });

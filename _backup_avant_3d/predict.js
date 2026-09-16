@@ -2,7 +2,7 @@
 // confronter aux prix réels du marché de l'occasion.
 const { JSDOM } = require('jsdom');
 const fs = require('fs');
-const app = fs.readFileSync(fs.existsSync('app.html') ? 'app.html' : 'index.html', 'utf8');
+const app = fs.readFileSync('app.html', 'utf8');
 const data = fs.readFileSync('data.js', 'utf8');
 const html = app.replace('<script src="data.js"></script>', '<script>\n' + data + '\n</script>');
 const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://example.com/app.html', pretendToBeVisual: true });
@@ -42,7 +42,7 @@ setTimeout(() => {
     console.log(
       x.m.padEnd(22) + '| ' + x.f.v.slice(0, 26).padEnd(27) + '| ' +
       (x.f.p.toLocaleString('fr-FR') + ' (' + win.yOf(x.f.d) + ')').padStart(18) + ' | ' +
-      (Math.round(ven.VEN / 100) * 100).toLocaleString('fr-FR').padStart(9)
+      Math.round(ven.VEN / 100 * 100).toLocaleString('fr-FR').padStart(9)
     );
   }
 

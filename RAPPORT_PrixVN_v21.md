@@ -1261,3 +1261,37 @@ Reste non vérifié : le rendu visuel dans un navigateur. La liaison entre cette
 - Prix de l'occasion : [autoprix.tn](https://www.autoprix.tn) (relevé du 28/08/2026)
 - Inflation générale (comparaison) : [macrotrends](https://www.macrotrends.net/countries/TUN/tunisia/inflation-rate-cpi) · [managers.tn 06/01/2024](https://managers.tn/2024/01/06/le-taux-dinflation-en-2023-grimpe-a-93-contre-83-en-2022/) · [kapitalis.com 07/01/2025](https://kapitalis.com/tunisie/2025/01/07/tunisie-un-taux-dinflation-de-7-pour-lannee-2024/) · [irbe7.com 06/01/2026](https://irbe7.com/actualites/articles/inflation-en-tunisie-5-3-en-2025-contre-7-en-2024/695d0c60bd06938ad4c0e018)
 - Réforme fiscale 2026 : [automobile.tn 26/10/2025](https://www.automobile.tn/fr/magazine/actu/2025-10-26-projet-de-loi-de-finances-2026-la-tunisie-accelere-la-transition-vers-les-vehicules-hybrides-rechargeables.html) · [managers.tn](https://managers.tn/2026/03/17/voitures-hybrides-et-electriques-ce-que-vous-paierez-moins-cette-2026-en-tunisie/) · [africanmanager.com](https://africanmanager.com/le-gouvernement-deploie-un-arsenal-dincitations-pour-atteindre-50-mille-vehicules-en-2030/) · [webmanagercenter.com 17/12/2025](https://www.webmanagercenter.com/2025/12/17/558022/la-tribune-de-lia-fiscalite-verte-quand-la-loi-de-finances-2026-penalise-la-transition-quelle-pretend-accelerer/)
+
+
+---
+
+## Version 50 (16/09/2026) — vérification du code, corrections et relief 3D
+
+### Défauts trouvés et leur cause
+
+| # | Défaut | Cause | Correction |
+|---|---|---|---|
+| 1 | Tous les scripts jsdom (`test_vv`, `predict`, `validation`, `calibrate4`, `calibrate5`) plantaient | Ils lisaient `app.html`, alors que le fichier livré et déployé s'appelle `index.html` (`app.html` est dans `.gitignore`) | Lecture de `app.html` s'il existe, sinon `index.html` |
+| 2 | `validation.js` : kilométrage absent compté comme 0 km | Le CSV est en CRLF : le dernier champ vaut un retour chariot seul, que `+` convertit en 0 | Découpe des lignes sur CRLF et `trim()` du champ. Sur l'échantillon actuel, aucun effet sur les médianes (+13,4 %, 15,5 %), mais le défaut aurait faussé tout groupe riche en annonces sans kilométrage |
+| 3 | `predict.js` : VEN non arrondie | `Math.round(x / 100 * 100)` n'arrondit à rien | `(Math.round(x / 100) * 100)` |
+| 4 | Thème sombre : module valeur vénale illisible | `#vvSect` en dégradé partant de `#FFFFFF` codé en dur | Jeton `--sf` |
+| 5 | Thème sombre : pastilles, bandeaux, frise, graphique restés en couleurs claires | Une trentaine de couleurs littérales (`#FFEBEE`, `#E8F5E9`, `#FF6F00`…) hors jetons ; `--txt-orange` absent des blocs sombres | Jetons ajoutés, à l'identique dans les deux blocs sombres ; graphique lisant les jetons du thème actif et repeint au changement |
+| 6 | Marges de sécurité iPhone ignorées (barre du haut, tiroir) | `calc(env(...)+14px)` sans espaces autour du `+` : déclaration invalide | Espaces ajoutés |
+| 7 | Recherche globale : la fiche du véhicule précédent restait affichée sous le nouveau modèle ; barre marque du téléphone figée sur « Choisir une marque » | Le clic ne vidait pas le résultat et posait une classe `visible` qui n'existe pas | Passage par `selectBrand()`, puis sélection du modèle |
+| 8 | Téléphone : la liste de résultats recouvrait le champ de recherche | `.gs-results` fixé à `top:0` | Position calculée sous la barre du haut |
+| 9 | Bouton « Retour à la sélection » affiché en bouton natif brut, y compris sur ordinateur | Aucune règle CSS pour `.back-to-sel` | Stylé, et masqué au-delà de 1100 px |
+| 10 | Frise des années (barres de période) | Étendue figée à 15 ans (2011-2026) : débordement dès 2027 | Étendue 2011 → année courante |
+| 11 | Détail du calcul : « vs 0 km normaux » sur un véhicule neuf | `Math.round(null)` | Mention « véhicule neuf, sans effet » |
+| 12 | Jetons de thème présents mais inaccessibles | Aucun sélecteur dans l'interface | Bouton système → clair → sombre, mémorisé, appliqué avant le premier rendu |
+
+### Relief 3D
+
+Scène en perspective (sol quadrillé défilant, halos) derrière des panneaux de verre ; trois niveaux de profondeur par jetons (`--depth-1` à `--depth-3`) et un biseau (`--bevel`) ; montants extrudés ; boutons à course ; curseur et batterie en volume ; cube tournant sur l'écran d'accueil ; inclinaison au pointeur de l'en-tête de fiche et du montant — souris uniquement, jamais sur un élément interactif.
+
+Garde-fous : animations coupées sous « réduire les animations » ; sous 1100 px décor immobile ; sur téléphone pas de flou d'arrière-plan (le recalcul du flou au-dessus d'un décor animé faisait expirer le rendu lors du contrôle visuel). Barre du haut sur téléphone réorganisée : le bouton de thème réduisait la recherche à une quarantaine de pixels.
+
+### Contrôles
+
+- `test_vv.js` : 82 assertions au vert, dont une section 14 nouvelle (parité des jetons sombres, présence en thème clair, absence de fond blanc codé en dur et de `calc` invalide, cycle du thème, recherche globale).
+- Contrôle visuel dans un navigateur réel : bureau 1440 px en thème clair et sombre (fiche, module valeur vénale, graphique), téléphone 375 px (barre du haut, recherche, barre marque). Console sans erreur.
+- `audit3.js`, `check_pop.js`, `check_neuf.js`, `css_audit*.js`, `mob_check.js` ne figurent pas dans le dossier et n'ont donc pas pu être relancés. Aucune formule de calcul n'a été modifiée.

@@ -2,7 +2,7 @@ const { JSDOM } = require('jsdom');
 const fs = require('fs');
 
 // app.html + data.js fusionnés pour le test
-const app = fs.readFileSync(fs.existsSync('app.html') ? 'app.html' : 'index.html', 'utf8');
+const app = fs.readFileSync('app.html', 'utf8');
 const data = fs.readFileSync('data.js', 'utf8');
 const html = app.replace('<script src="data.js"></script>', '<script>\n' + data + '\n</script>');
 
@@ -361,54 +361,6 @@ setTimeout(() => {
     // Le montant et sa mention doivent être des blocs distincts, sinon ils se collent.
     check('le montant et sa mention sont sur des lignes séparées',
       /\.vv-prix-val\{display:block/.test(css) && /\.vv-prix-note\{display:block/.test(css));
-
-    // ── 14. Thème, relief 3D et corrections v50 ──
-    console.log('\n14. Thème et relief 3D :');
-    // Parité des jetons : les deux blocs sombres doivent définir exactement la même liste,
-    // sinon une couleur ne s'applique que dans l'un des deux états (système / choix explicite).
-    const blocMedia = (css.match(/:root:not\(\[data-theme="light"\]\)\{([\s\S]*?)\}/) || [])[1] || '';
-    const blocExplicite = (css.match(/:root\[data-theme="dark"\]\{([\s\S]*?)\}/) || [])[1] || '';
-    const noms = b => [...b.matchAll(/(--[\w-]+)\s*:/g)].map(m => m[1]).sort().join(',');
-    check('mêmes jetons dans les deux blocs du thème sombre',
-      blocMedia.length > 0 && noms(blocMedia) === noms(blocExplicite),
-      noms(blocMedia).split(',').length + ' jetons');
-    const blocClair = (css.match(/:root\{([\s\S]*?)\n\}/) || [])[1] || '';
-    const manquants = noms(blocMedia).split(',').filter(n => !new RegExp(n.replace(/-/g, '\\-') + '\\s*:').test(blocClair));
-    check('chaque jeton sombre existe aussi en thème clair', manquants.length === 0, manquants.join(' '));
-    check('module valeur vénale sans fond blanc codé en dur', !/#vvSect\{[^}]*#FFFFFF/i.test(css));
-    check('aucun calc() sans espaces autour du +', !/calc\([^)]*\)\+\d/.test(css));
-    check('bouton « Retour à la sélection » stylé', css.includes('.back-to-sel{'));
-    check('scène 3D présente et décorative', !!doc.querySelector('.scene3d[aria-hidden="true"]'));
-
-    const themeBtn = doc.getElementById('themeBtn');
-    check('sélecteur de thème présent', !!themeBtn);
-    const racine = doc.documentElement;
-    const themes = [];
-    for (let i = 0; i < 3; i++) { win.basculerTheme(); themes.push(racine.getAttribute('data-theme')); }
-    check('le thème tourne système → clair → sombre → système',
-      themes[0] === 'light' && themes[1] === 'dark' && themes[2] === null, JSON.stringify(themes));
-
-    check('frise des années bornée à l\'année courante', win.pctY(CYnow) <= 97 && win.pctY(2011) === 0);
-
-    // Recherche globale : l'ancienne fiche ne doit pas survivre au changement de modèle.
-    const listeB = doc.getElementById('listB');
-    listeB.children[0].dispatchEvent(new win.Event('click', { bubbles: true }));
-    doc.getElementById('listM').children[0].dispatchEvent(new win.Event('click', { bubbles: true }));
-    doc.getElementById('listV').children[0].dispatchEvent(new win.Event('click', { bubbles: true }));
-    check('une fiche est affichée avant la recherche', doc.getElementById('resContent').style.display === 'block');
-    const gs = doc.getElementById('gsInput');
-    gs.value = 'clio'; gs.dispatchEvent(new win.Event('input', { bubbles: true }));
-    const premier = doc.querySelector('#gsResults .gs-result-item');
-    check('la recherche est insensible à la casse et trouve un modèle', !!premier);
-    premier.dispatchEvent(new win.Event('click', { bubbles: true }));
-    const selApres = win.eval('sel');
-    check('recherche : modèle sélectionné, finition remise à zéro', !!selApres.m && selApres.v === null, selApres.m);
-    check('recherche : l\'ancienne fiche n\'est plus affichée',
-      doc.getElementById('resContent').style.display === 'none' &&
-      !doc.querySelector('.main').classList.contains('with-result'));
-    check('recherche : la barre marque du téléphone suit la marque choisie',
-      doc.getElementById('mobChipName').textContent === selApres.b &&
-      !doc.getElementById('mobBrandChip').classList.contains('vide'));
 
     console.log('\n' + (fails === 0 ? '=== TOUS LES TESTS PASSENT ===' : '=== ' + fails + ' ÉCHEC(S) ==='));
   } catch (e) {
