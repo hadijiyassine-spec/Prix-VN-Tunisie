@@ -1295,3 +1295,25 @@ Garde-fous : animations coupées sous « réduire les animations » ; sous 1100 
 - `test_vv.js` : 82 assertions au vert, dont une section 14 nouvelle (parité des jetons sombres, présence en thème clair, absence de fond blanc codé en dur et de `calc` invalide, cycle du thème, recherche globale).
 - Contrôle visuel dans un navigateur réel : bureau 1440 px en thème clair et sombre (fiche, module valeur vénale, graphique), téléphone 375 px (barre du haut, recherche, barre marque). Console sans erreur.
 - `audit3.js`, `check_pop.js`, `check_neuf.js`, `css_audit*.js`, `mob_check.js` ne figurent pas dans le dossier et n'ont donc pas pu être relancés. Aucune formule de calcul n'a été modifiée.
+### Correctif de performance (signalé : « l'affichage est lent »)
+
+Mesuré dans un navigateur réel, onglet au premier plan, fenêtre 1440 × 900 (images/seconde au repos ; délai jusqu'à l'affichage) :
+
+| | v49 | v50 initiale | v50 corrigée |
+|---|---|---|---|
+| Au repos | 53-62 i/s | **1-2 i/s** | 61 i/s |
+| Choix d'une marque | 281 ms | 540-1 750 ms | 253 ms |
+| Choix d'un modèle | 187 ms | ~1 300 ms | 169 ms |
+| Choix d'une finition | 401 ms | 1 280-3 600 ms | 535 ms (graphique inclus) |
+
+Le JavaScript ne pesait que 10 à 35 ms dans chaque cas : toute la lenteur venait du rendu.
+
+Causes, isolées en neutralisant les effets un à un :
+1. **Sol quadrillé animé** (`background-position` sur une surface pivotée en 3D, masquée et plus large que l'écran) : repeinte complète à chaque image. Seul, il faisait tomber l'affichage à 1 i/s.
+2. **Flou des panneaux** (`backdrop-filter`) : recalculé sur toute la hauteur des colonnes à chaque rafraîchissement de liste, et à chaque image tant que le décor dessous bougeait.
+3. **Halos flous animés, logo et cube en rotation perpétuelle** : maintenaient le rendu actif en permanence.
+4. Le sol pivoté, même immobile, doublait encore le coût d'un rafraîchissement de liste.
+
+Corrections : plus aucune animation continue ; halos peints en dégradés radiaux dans le fond (sans `filter`) ; quadrillage plat fondu ; panneaux sans flou, fond plus opaque (0,88 clair, 0,90 sombre) ; logo et cube animés au survol seulement. Le relief (ombres graduées, biseaux, montants extrudés, boutons à course, inclinaison au pointeur) est conservé.
+
+Piège de mesure à connaître : un onglet qui n'est pas au premier plan voit ses images ralenties par le navigateur. Les premières mesures en ont été faussées ; seules celles du tableau, onglet au premier plan, font foi.
