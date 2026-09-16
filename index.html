@@ -63,15 +63,6 @@ try{var t=localStorage.getItem('pvn-theme');
   --cream:#FFF8E1;--cream-bd:#E8B84B;--orange-l:#FFF3E0;
   --hev-l:#F1F8E9;--hev-t:#33691E;--gpl-l:#F3E5F5;--gpl-t:#4A148C;--ess-l:#FCE4EC;--ess-t:#880E4F;
   --bar-avant:#FFCC80;--bar-apres:#EF9A9A;
-  /* Relief 3D : verre, biseau et trois niveaux de profondeur. */
-  --glass:rgba(255,255,255,.88);--glass-bd:rgba(255,255,255,.9);
-  --bevel:inset 0 1px 0 rgba(255,255,255,.85),inset 0 -1px 0 rgba(12,24,38,.05);
-  --depth-1:0 1px 1px rgba(12,24,38,.05),0 2px 4px rgba(12,24,38,.05),0 6px 14px rgba(12,24,38,.06);
-  --depth-2:0 2px 3px rgba(12,24,38,.06),0 8px 16px rgba(12,24,38,.08),0 22px 44px -8px rgba(11,95,165,.18);
-  --depth-3:0 4px 6px rgba(12,24,38,.08),0 18px 36px rgba(12,24,38,.12),0 40px 80px -20px rgba(11,95,165,.30);
-  --scene-a:#9CC9F2;--scene-b:#A7E3C4;--scene-c:#F5C99A;--grid-line:rgba(11,95,165,.20);
-  --sky-top:#D6E6F6;--sky-bot:#F2F6FB;
-  --ext1:#0A5596;--ext2:#094A84;--ext3:#083F71;
 }
 /* Thème sombre. Les composants ne lisent QUE des jetons : on ne redéfinit ici que les
    jetons, jamais une couleur de composant — sinon elle ne s'appliquerait pas dans l'état
@@ -103,14 +94,6 @@ try{var t=localStorage.getItem('pvn-theme');
     --cream:#33240F;--cream-bd:#5A431C;--orange-l:#33240F;
     --hev-l:#17261A;--hev-t:#A5D6A7;--gpl-l:#2A1A2E;--gpl-t:#D6A8E8;--ess-l:#33161F;--ess-t:#F4A3C3;
     --bar-avant:#8A6420;--bar-apres:#8A3A36;
-    --glass:rgba(17,26,40,.90);--glass-bd:rgba(138,198,255,.12);
-    --bevel:inset 0 1px 0 rgba(255,255,255,.06),inset 0 -1px 0 rgba(0,0,0,.35);
-    --depth-1:0 1px 2px rgba(0,0,0,.45),0 6px 14px rgba(0,0,0,.35);
-    --depth-2:0 2px 4px rgba(0,0,0,.5),0 12px 26px rgba(0,0,0,.45),0 24px 48px -12px rgba(92,168,238,.14);
-    --depth-3:0 4px 8px rgba(0,0,0,.55),0 22px 44px rgba(0,0,0,.5),0 40px 90px -20px rgba(92,168,238,.22);
-    --scene-a:#1B4E86;--scene-b:#0E5A4A;--scene-c:#5A3A12;--grid-line:rgba(92,168,238,.22);
-    --sky-top:#0B1830;--sky-bot:#060A12;
-    --ext1:#3D86CC;--ext2:#2F6DAA;--ext3:#235588;
   }
 }
 :root[data-theme="dark"]{
@@ -138,14 +121,6 @@ try{var t=localStorage.getItem('pvn-theme');
     --cream:#33240F;--cream-bd:#5A431C;--orange-l:#33240F;
     --hev-l:#17261A;--hev-t:#A5D6A7;--gpl-l:#2A1A2E;--gpl-t:#D6A8E8;--ess-l:#33161F;--ess-t:#F4A3C3;
     --bar-avant:#8A6420;--bar-apres:#8A3A36;
-    --glass:rgba(17,26,40,.90);--glass-bd:rgba(138,198,255,.12);
-    --bevel:inset 0 1px 0 rgba(255,255,255,.06),inset 0 -1px 0 rgba(0,0,0,.35);
-    --depth-1:0 1px 2px rgba(0,0,0,.45),0 6px 14px rgba(0,0,0,.35);
-    --depth-2:0 2px 4px rgba(0,0,0,.5),0 12px 26px rgba(0,0,0,.45),0 24px 48px -12px rgba(92,168,238,.14);
-    --depth-3:0 4px 8px rgba(0,0,0,.55),0 22px 44px rgba(0,0,0,.5),0 40px 90px -20px rgba(92,168,238,.22);
-    --scene-a:#1B4E86;--scene-b:#0E5A4A;--scene-c:#5A3A12;--grid-line:rgba(92,168,238,.22);
-    --sky-top:#0B1830;--sky-bot:#060A12;
-    --ext1:#3D86CC;--ext2:#2F6DAA;--ext3:#235588;
 }
 /* Les chiffres alignés en colonnes doivent l'être vraiment. */
 .price-val,.vi-price,.or-price,.vv-prix-val,.mc-v,.cote-ecart{font-variant-numeric:tabular-nums}
@@ -201,7 +176,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .col-list::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
 
 /* List items */
-.item{padding:8px 11px;border-radius:var(--rs);cursor:pointer;transition:all .1s;display:flex;align-items:flex-start;justify-content:space-between;border:1px solid transparent;margin-bottom:2px;user-select:none}
+.item{padding:8px 11px;border-radius:var(--rs);cursor:pointer;transition:background-color .1s,border-color .1s;display:flex;align-items:flex-start;justify-content:space-between;border:1px solid transparent;margin-bottom:2px;user-select:none}
 .item:hover{background:var(--sf3);border-color:var(--bd)}
 .item.sel{background:var(--prl);border-color:var(--pr3)}
 .item.dimmed{opacity:.35}
@@ -218,7 +193,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .itag.avant{background:var(--aml);color:var(--am)}
 
 /* Version items */
-.vi{padding:8px 11px;border-radius:var(--rs);cursor:pointer;transition:all .1s;border:1px solid transparent;margin-bottom:2px;user-select:none}
+.vi{padding:8px 11px;border-radius:var(--rs);cursor:pointer;transition:background-color .1s,border-color .1s;border:1px solid transparent;margin-bottom:2px;user-select:none}
 .vi:hover{background:var(--sf3);border-color:var(--bd)}
 .vi.sel{background:var(--gnl);border-color:var(--gn2)}
 .vi.dimmed{opacity:.35}
@@ -286,7 +261,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .notice.ok{background:var(--gnl);color:var(--txt-vert);border-color:var(--gn2)}
 .notice.warn{background:var(--aml);color:var(--am);border-color:var(--warn-bd)}
 .oh{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;margin:4px 0 7px}
-.or{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:var(--rs);border:1px solid var(--bd);background:var(--sf);margin-bottom:3px;cursor:pointer;transition:all .1s}
+.or{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:var(--rs);border:1px solid var(--bd);background:var(--sf);margin-bottom:3px;cursor:pointer;transition:background-color .1s,border-color .1s}
 .or:hover{border-color:var(--pr3);background:var(--prl)}
 .or.dimmed{opacity:.35}
 .or-top{display:flex;justify-content:space-between;align-items:flex-start}
@@ -756,160 +731,31 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 :focus-visible{outline:2px solid var(--pr3);outline-offset:2px;border-radius:3px}
 
 /* ══════════════════════════════════════
-   RELIEF 3D (v50)
-   Une scène en perspective derrière l'application, des panneaux de verre posés dessus et
-   trois niveaux de profondeur (--depth-1 à 3) : plus un élément compte, plus il « sort ».
-   Tout passe par des jetons, pour que les deux thèmes gardent exactement le même relief.
-   AUCUNE ANIMATION CONTINUE. Mesuré en v50 : le sol défilant et les halos flous animés
-   faisaient tomber l'affichage de 62 à 1-2 images/seconde au repos — chaque image obligeait
-   à repeindre une surface pivotée plus large que l'écran, puis à re-flouter les panneaux
-   posés dessus. Le relief est donc STATIQUE : le mouvement ne vient que d'une interaction
-   (survol, clic, pointeur), bref et limité à un petit élément.
+   Ajouts v50, sans relief
+   L'effet 3D a été retiré (lenteur d'affichage signalée) : il ne reste ici que les correctifs
+   fonctionnels — bouton de thème, colonne centrale, barre du haut sur téléphone, bouton
+   « Retour à la sélection ».
 ══════════════════════════════════════ */
-html,body{background:var(--sky-bot)}
-/* Halos peints en dégradés radiaux dans le fond lui-même : pas de filter:blur, pas de calque. */
-.scene3d{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;perspective:600px;contain:strict;
-  background:
-    radial-gradient(420px 420px at 8% 4%,var(--scene-a),transparent 70%),
-    radial-gradient(380px 380px at 96% 45%,var(--scene-b),transparent 70%),
-    radial-gradient(340px 300px at 50% 105%,var(--scene-c),transparent 70%),
-    radial-gradient(120% 80% at 50% 0%,var(--sky-top) 0%,var(--sky-bot) 72%)}
-/* Quadrillage PLAT, sans rotation 3D ni masque : le sol pivoté en perspective, même immobile,
-   doublait le temps de chaque rafraîchissement de liste (repeint sous les panneaux). */
-.scene-floor{position:absolute;left:0;right:0;bottom:0;height:45%;
-  background-image:linear-gradient(to top,transparent,var(--sky-bot)),
-    linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
-  background-size:100% 100%,48px 48px,48px 48px}
-.app{position:relative;z-index:1}
-
-/* Barre du haut : un bandeau bombé, lumière par le haut */
-.topbar{background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,0) 48%),
-    linear-gradient(105deg,var(--sur-bleu) 0%,var(--sur-bleu2) 60%,var(--sur-bleu2) 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 0 rgba(0,0,0,.25),0 10px 30px -8px rgba(4,24,43,.55)}
-.logo-ico{background:linear-gradient(145deg,rgba(255,255,255,.38),rgba(255,255,255,.08));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 4px 10px rgba(0,0,0,.28);
-  transform:perspective(200px) rotateY(-16deg) rotateX(8deg);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
-.logo:hover .logo-ico{transform:perspective(200px) rotateY(16deg) rotateX(-4deg)}
-.logo-txt{text-shadow:0 1px 0 rgba(0,0,0,.25),0 2px 6px rgba(0,0,0,.25)}
-.global-search,.mec-filter{box-shadow:inset 0 2px 4px rgba(0,0,0,.2),0 1px 0 rgba(255,255,255,.12)}
-.theme-btn{flex-shrink:0;width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.28);
-  background:linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.08));color:#fff;font-size:16px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 rgba(0,0,0,.3),0 6px 12px rgba(0,0,0,.2);
-  transition:transform .12s,box-shadow .12s}
-.theme-btn:hover{transform:translateY(-1px)}
-.theme-btn:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 1px 0 rgba(0,0,0,.3)}
-
-/* Colonne centrale (modèles + finitions) : ex-style en ligne */
+.theme-btn{flex-shrink:0;width:34px;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.13);color:#fff;font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center}
+.theme-btn:hover{background:rgba(255,255,255,.22)}
 .col-mid{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--bd);min-height:0}
-
-/* Panneaux de verre flottants, sur grand écran */
-@media (min-width:769px){
-  .main{gap:12px;padding:12px;min-height:0}
-  .main>.col,.main>.col-mid,.main>.res-col{border:1px solid var(--glass-bd);border-radius:18px;
-    /* Pas de backdrop-filter : le flou était recalculé sur toute la hauteur des colonnes à
-       chaque rafraîchissement de liste. Un fond presque opaque garde l'effet de verre. */
-    background:var(--glass);
-    box-shadow:var(--bevel),var(--depth-2);min-height:0}
-  .col-head{background:transparent}
-}
 @media (max-width:768px){
-  /* Pas de flou d'arrière-plan sur téléphone : la page entière y passerait, recalculée à chaque
-     image au-dessus d'un décor animé — les captures de rendu expiraient. Fond simplement voilé. */
-  .main{background:var(--glass)}
   .col-mid{overflow:visible;border-right:none}
-  /* Barre du haut sur 375 px : le bouton de thème réduisait la recherche à une quarantaine de
-     pixels. Logo et thème sur la première ligne, recherche puis MEC en pleine largeur. */
-  .theme-btn{width:34px;height:34px;margin-left:auto;order:2}
+  /* Sur 375 px le bouton de thème réduisait la recherche à une quarantaine de pixels :
+     logo et thème sur la première ligne, recherche puis MEC en pleine largeur. */
+  .theme-btn{margin-left:auto;order:2}
   .global-search{order:3;flex:1 1 100%;max-width:none}
   .mec-filter{order:4}
 }
-
-/* Listes : l'élément survolé se soulève, l'élément choisi reste en relief */
-.item,.vi,.or,.drawer-item{transition:transform .16s cubic-bezier(.2,.8,.2,1),box-shadow .16s,background .12s,border-color .12s}
-@media (hover:hover){
-  .item:hover,.vi:hover,.or:hover,.gs-result-item:hover{transform:translateY(-1px);box-shadow:var(--depth-1)}
-}
-.item.sel,.vi.sel{position:relative;box-shadow:var(--bevel),var(--depth-1)}
-.item.sel::before,.vi.sel::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:3px;
-  border-radius:0 3px 3px 0;background:linear-gradient(180deg,var(--pr3),var(--pr))}
-.vi.sel::before{background:linear-gradient(180deg,var(--gn2),var(--gn))}
-.col-srch,.vv-input{box-shadow:inset 0 1px 2px rgba(12,24,38,.12)}
-
-/* Inclinaison au pointeur (piloté par le script, souris uniquement) */
-[data-tilt]{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
-  transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
-[data-tilt].tilting{transition:transform .08s linear}
-
-/* Fiche résultat : la carte la plus haute de la pile */
-.rcard{border:1px solid var(--gn2);border-radius:18px;box-shadow:var(--bevel),var(--depth-3)}
-.rcard-head{position:relative;isolation:isolate;padding:16px 18px 18px;
-  background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,0) 50%),
-    linear-gradient(135deg,var(--sur-vert) 0%,var(--sur-vert2) 100%);
-  box-shadow:inset 0 -1px 0 rgba(0,0,0,.2)}
-.rcard-head::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(circle at var(--mx,85%) var(--my,0%),rgba(255,255,255,.28),transparent 55%)}
-.rcard-head::after{content:"";position:absolute;right:-34px;bottom:-46px;width:150px;height:150px;border-radius:32px;
-  z-index:-1;pointer-events:none;transform:rotate(22deg);
-  background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,0))}
-.rcard-badge,.rcard-brand{transform:translateZ(10px)}
-.rcard-model{transform:translateZ(24px);text-shadow:0 1px 0 rgba(0,0,0,.25),0 3px 8px rgba(0,0,0,.3)}
-.rcard-ver{transform:translateZ(14px)}
-.price-val{text-shadow:0 1px 0 rgba(20,83,45,.30),0 2px 0 rgba(20,83,45,.22),0 3px 0 rgba(20,83,45,.15),0 10px 18px rgba(20,83,45,.20)}
-.sect,.specs-block{border-radius:12px;box-shadow:var(--bevel),var(--depth-1)}
-.mc,.spec-item,.notice,.compat-banner,.conf,.bat{box-shadow:var(--bevel)}
-
-/* Module valeur vénale : le montant est extrudé, le bloc résultat flotte */
-#vvSect.sect{box-shadow:var(--bevel),var(--depth-2)}
-.vv-resultat{border-radius:16px;background:linear-gradient(180deg,var(--sf),var(--sf2));box-shadow:var(--bevel),var(--depth-2)}
-.vv-prix-val{text-shadow:0 1px 0 var(--ext1),0 2px 0 var(--ext2),0 3px 0 var(--ext3),0 10px 16px rgba(11,95,165,.28)}
-.vv-chip{box-shadow:var(--bevel),0 1px 2px rgba(12,24,38,.08)}
-.cote-fill{box-shadow:inset 0 2px 3px rgba(0,0,0,.28),inset 0 -1px 0 rgba(255,255,255,.35)}
-.cote-range::-webkit-slider-thumb{background:radial-gradient(circle at 35% 30%,#fff 0%,#EAF2FB 45%,#B9C9DC 100%);
-  box-shadow:0 2px 0 rgba(12,24,38,.25),0 6px 12px rgba(12,24,38,.35)}
-.cote-range::-moz-range-thumb{background:radial-gradient(circle at 35% 30%,#fff 0%,#EAF2FB 45%,#B9C9DC 100%);
-  box-shadow:0 2px 0 rgba(12,24,38,.25),0 6px 12px rgba(12,24,38,.35)}
-.bat-bar{box-shadow:inset 0 2px 3px rgba(0,0,0,.2)}
-.bat-fill::after{content:"";position:absolute;inset:0;border-radius:inherit;
-  background:linear-gradient(180deg,rgba(255,255,255,.45) 0%,rgba(255,255,255,0) 50%,rgba(0,0,0,.15) 100%)}
-
-/* Boutons à course : ils s'enfoncent au clic */
-.vv-cta,.cote-reset,.back-to-sel{box-shadow:var(--bevel),0 3px 0 var(--bd2),0 6px 12px rgba(12,24,38,.10);
-  transition:transform .12s,box-shadow .12s,background .12s,color .12s}
-.vv-cta:active,.cote-reset:active,.back-to-sel:active{transform:translateY(2px);box-shadow:var(--bevel),0 1px 0 var(--bd2)}
-/* « Retour à la sélection » : utile seulement quand le résultat passe SOUS les colonnes.
-   Ce bouton n'avait aucune règle : il s'affichait en bouton natif brut, y compris sur ordinateur. */
+/* « Retour à la sélection » : utile seulement quand le résultat passe SOUS les colonnes. */
 .back-to-sel{display:none}
 @media (max-width:1100px){
   .back-to-sel{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin:0 0 12px;
-    padding:9px 12px;border-radius:10px;border:1px solid var(--bd2);background:var(--sf);color:var(--pr);
+    padding:9px 12px;border-radius:8px;border:1px solid var(--bd2);background:var(--sf);color:var(--pr);
     font:600 12px 'Inter','Segoe UI',system-ui,sans-serif;cursor:pointer}
 }
-
-/* Recherche globale et tiroir */
-.gs-results{border-radius:0 0 16px 16px;box-shadow:var(--depth-3)}
-.drawer{box-shadow:var(--depth-3)}
-.drawer-initials{box-shadow:var(--bevel),0 2px 0 var(--bd)}
-
-/* Écran d'accueil du résultat : un cube qui tourne sur lui-même */
-.cube-stage{width:104px;height:104px;perspective:520px;margin-bottom:4px;position:relative}
-.cube-stage::after{content:"";position:absolute;left:18px;right:18px;bottom:-4px;height:12px;border-radius:50%;
-  background:radial-gradient(closest-side,rgba(12,24,38,.28),transparent)}
-.cube{position:relative;width:64px;height:64px;margin:18px auto;transform-style:preserve-3d;
-  transform:rotateX(-18deg) rotateY(-32deg);transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
-/* Le cube pose de trois quarts et ne pivote qu'au survol : une rotation perpétuelle maintenait
-   le rendu actif en permanence. */
-.res-empty:hover .cube{transform:rotateX(-18deg) rotateY(328deg)}
-.cf{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:12px;
-  font:800 22px 'Syne','Inter',system-ui,sans-serif;color:#fff;backface-visibility:hidden;
-  background:linear-gradient(145deg,var(--sur-bleu2),var(--sur-bleu));
-  border:1px solid rgba(255,255,255,.25);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
-.cf.f1{transform:translateZ(32px)}
-.cf.f2{transform:rotateY(90deg) translateZ(32px);background:linear-gradient(145deg,var(--sur-vert2),var(--sur-vert))}
-.cf.f3{transform:rotateY(180deg) translateZ(32px)}
-.cf.f4{transform:rotateY(-90deg) translateZ(32px);background:linear-gradient(145deg,var(--sur-vert2),var(--sur-vert))}
-.cf.f5{transform:rotateX(90deg) translateZ(32px)}
-.cf.f6{transform:rotateX(-90deg) translateZ(32px)}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;
     transition-duration:.01ms !important;scroll-behavior:auto !important}
@@ -917,10 +763,6 @@ html,body{background:var(--sky-bot)}
 </style>
 </head>
 <body>
-<!-- Scène 3D d'arrière-plan : purement décorative, jamais interactive. -->
-<div class="scene3d" aria-hidden="true">
-  <div class="scene-floor"></div>
-</div>
 <div class="app">
 
 <!-- ── TOP BAR ── -->
@@ -1023,12 +865,7 @@ html,body{background:var(--sky-bot)}
   <!-- COL 3: Result -->
   <div class="res-col" id="resCol">
     <div id="resEmpty" class="res-empty">
-      <div class="cube-stage" aria-hidden="true" data-tilt="12">
-        <div class="cube">
-          <span class="cf f1">🚗</span><span class="cf f2">DT</span><span class="cf f3">📈</span>
-          <span class="cf f4">🏷️</span><span class="cf f5"></span><span class="cf f6"></span>
-        </div>
-      </div>
+      <div class="res-empty-ico">🏷️</div>
       <div style="font-size:13px;font-weight:600">Résultat du prix</div>
       <div style="font-size:11.5px;line-height:1.7;opacity:.8;margin-top:4px">
         Cherchez un modèle ou sélectionnez<br>une marque → modèle → finition.<br>
@@ -1068,7 +905,7 @@ let FY  = null;
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
 const VERSION = 'v50';
 const VERSION_DATE = '16/09/2026';
-const VERSION_NOTES = 'relief 3D : scène en perspective, panneaux de verre, profondeur graduée, cube d\'accueil et inclinaison au pointeur · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
+const VERSION_NOTES = 'effet 3D retiré · affichage accéléré : saisie de l\'année sans recalcul à chaque chiffre, graphique construit à son entrée à l\'écran, listes sans animation ni reconstruction inutile, tiroir mobile construit à l\'ouverture · tri des listes réparé : les modèles actifs à la MEC remontent enfin en tête · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -2920,7 +2757,7 @@ function renderVVOutput(v){
   // à la demande. Ce qui reste visible est réduit à des pastilles.
   el.innerHTML =
     '<div class="vv-resultat">'+
-      '<div class="vv-prix" data-tilt="3">'+
+      '<div class="vv-prix">'+
         '<span class="vv-prix-lbl">Valeur vénale estimée</span>'+
         '<span class="vv-prix-val" id="vvPrix"></span>'+
         '<span class="vv-prix-note">estimation — hors barème compagnie</span></div>'+
@@ -2940,12 +2777,24 @@ function renderVVOutput(v){
     slider.addEventListener('input',()=>{ vvInputs.cote=parseFloat(slider.value); refreshVVValues(v); });
   }
   const reset=document.getElementById('vvCoteReset');
-  if(reset) reset.addEventListener('click',()=>{
-    vvInputs.cote=null;
-    const s=document.getElementById('vvCote');
-    if(s) s.value=base.relatif;
-    refreshVVValues(v);
-  });
+  // Le conseil se relit au clic : les saisies ont pu changer depuis la construction du bloc.
+  if(reset) reset.addEventListener('click',()=>recalerCurseur(v));
+  refreshVVValues(v);
+}
+
+// Remet le curseur sur le conseil du calcul et met les valeurs à jour, SANS reconstruire le
+// bloc. Reconstruire le bloc entier à chaque chiffre du kilométrage coûtait 80 à 120 ms par
+// frappe ; seuls la position du curseur, son repère et les valeurs changent réellement.
+function recalerCurseur(v){
+  vvInputs.cote=null;
+  const s=document.getElementById('vvCote'), ref=document.getElementById('vvCoteRef');
+  if(!s || !ref || vvInputs.coteCle!==cleCote(v)){ renderVVOutput(v); return; }
+  const kmF=document.getElementById('vvKm');
+  const km=kmF&&kmF.value!==''?parseFloat(kmF.value):null;
+  const base=computeVV(v, km, vvInputs.etat, vvInputs.usage, null, vvInputs.anneeEval, sohSaisi(), regimeDe(v));
+  if(!base){ renderVVOutput(v); return; }
+  s.value=base.relatif;
+  ref.style.left=cotePct(base.relatif)+'%';
   refreshVVValues(v);
 }
 
@@ -3187,7 +3036,7 @@ function wireVVInputs(v){
   renderVVOutput(v);
   // Modifier l'état, le kilométrage ou l'usage change la valeur CONSEILLÉE : un ajustement
   // manuel antérieur deviendrait trompeur, on le remet donc sur le nouveau conseil.
-  const relance=()=>{ vvInputs.cote=null; renderVVOutput(v); };
+  const relance=()=>recalerCurseur(v);
   // Cocher « privilège douanier » fait apparaître le sélecteur de régime : le bloc doit être
   // reconstruit, pas seulement recalculé.
   const relance2=(veh)=>{
@@ -3267,18 +3116,31 @@ function pctFY(){ return FY ? pctY(FY) : null; }
 function norm(s){ return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
 function filt(arr,q){ if(!q)return arr; const ql=norm(q); return arr.filter(x=>norm(x).includes(ql)); }
 
+// ── Performance des listes ──
+// vCompat et modelCompat sont appelés des milliers de fois (tri des listes à chaque frappe de
+// l'année de MEC). Les années de commercialisation sont donc lues une fois par finition, et la
+// compatibilité d'un ensemble de finitions est mémorisée pour l'année de MEC courante.
+const cacheNE=(o,k,val)=>{ Object.defineProperty(o,k,{value:val,writable:true,configurable:true,enumerable:false}); return val; };
 function vCompat(v){
   if(!FY) return 'all';
-  const y0=yOf(v.d0), y1=yOf(v.d);
-  if(FY>=y0 && FY<=y1+1) return 'ok';
-  return FY<y0 ? 'avant' : 'apres';
+  if(v.__y0===undefined){ cacheNE(v,'__y0',yOf(v.d0)); cacheNE(v,'__y1',yOf(v.d)); }
+  if(FY>=v.__y0 && FY<=v.__y1+1) return 'ok';
+  return FY<v.__y0 ? 'avant' : 'apres';
 }
 function modelCompat(vers){
   if(!FY) return 'all';
-  if(vers.some(v=>vCompat(v)==='ok')) return 'ok';
-  if(vers.every(v=>vCompat(v)==='apres')) return 'apres';
-  return 'avant';
+  if(vers.__cmpFY===FY) return vers.__cmp;
+  const c = vers.some(v=>vCompat(v)==='ok') ? 'ok' : vers.every(v=>vCompat(v)==='apres') ? 'apres' : 'avant';
+  cacheNE(vers,'__cmpFY',FY); cacheNE(vers,'__cmp',c);
+  return c;
 }
+// Rang de tri. Les tris écrivaient `r[c]||2` : le rang 0 (« actif à la MEC ») étant faux en
+// JavaScript, il devenait 2 — les modèles actifs n'étaient jamais remontés en tête.
+const RANG_COMPAT={ok:0,all:1,avant:2,apres:3};
+const rangCompat=c=>RANG_COMPAT[c]!==undefined ? RANG_COMPAT[c] : 2;
+// Toutes les finitions d'une marque, aplaties une fois pour toutes (la base ne change pas).
+const FINITIONS_MARQUE={};
+function finitionsMarque(b){ return FINITIONS_MARQUE[b] || (FINITIONS_MARQUE[b]=Object.values(DB[b]).flat()); }
 function tagHtml(c,y0,y1){
   if(c==='all') return '';
   if(c==='ok') return '<span class="itag ok">✓ actif en '+FY+' ('+y0+'–'+(y1===CY?'présent':y1)+')</span>';
@@ -3395,7 +3257,7 @@ function buildChart(v, FY, canvasId){
   canvas._chart=new Chart(canvas,{
     type:'line',
     data:{labels,datasets:[{data:prices,borderColor:cPr,borderWidth:2.5,backgroundColor:remplissage,fill:true,tension:.3,pointBackgroundColor:ptColors,pointBorderColor:cSf,pointBorderWidth:1.5,pointRadius:hist.length<=8?5:hist.length<=16?4:3,pointHoverRadius:6}]},
-    options:{responsive:true,maintainAspectRatio:false,animation:{duration:250},plugins:{legend:{display:false},tooltip:{callbacks:{title:ctx=>ctx[0].label,label:ctx=>' '+ctx.parsed.y.toLocaleString('fr-TN')+'\u00a0DT'},backgroundColor:'rgba(13,27,42,.9)',titleColor:'#9AA5B4',bodyColor:'#fff',titleFont:{size:10},bodyFont:{size:12,weight:'700'},padding:8,cornerRadius:6},annotation:Object.keys(annotations).length?{annotations}:undefined},scales:{x:{ticks:{maxTicksLimit:6,maxRotation:35,font:{size:9},color:cT3,callback:(v,i)=>{const d=labels[i];if(!d)return'';const yr=d.split('.')[2];const prev=i>0?labels[i-1].split('.')[2]:null;return yr!==prev?yr:'';}},grid:{color:hexA(cT3,.15)}},y:{min:minP-pad,max:maxP+pad,ticks:{maxTicksLimit:5,font:{size:9},color:cT3,callback:v=>(v/1000).toFixed(0)+'\u00a0k'},grid:{color:hexA(cT3,.15)}}}}
+    options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:ctx=>ctx[0].label,label:ctx=>' '+ctx.parsed.y.toLocaleString('fr-TN')+'\u00a0DT'},backgroundColor:'rgba(13,27,42,.9)',titleColor:'#9AA5B4',bodyColor:'#fff',titleFont:{size:10},bodyFont:{size:12,weight:'700'},padding:8,cornerRadius:6},annotation:Object.keys(annotations).length?{annotations}:undefined},scales:{x:{ticks:{maxTicksLimit:6,maxRotation:35,font:{size:9},color:cT3,callback:(v,i)=>{const d=labels[i];if(!d)return'';const yr=d.split('.')[2];const prev=i>0?labels[i-1].split('.')[2]:null;return yr!==prev?yr:'';}},grid:{color:hexA(cT3,.15)}},y:{min:minP-pad,max:maxP+pad,ticks:{maxTicksLimit:5,font:{size:9},color:cT3,callback:v=>(v/1000).toFixed(0)+'\u00a0k'},grid:{color:hexA(cT3,.15)}}}}
   });
 }
 // Valeur d'un jeton CSS du th\u00e8me actif (hexad\u00e9cimal), avec repli.
@@ -3413,9 +3275,15 @@ function hexA(h, a){
 
 // ── MEC filter ──
 document.getElementById('mecIn').addEventListener('input',function(){
-  const y=parseInt(this.value);
+  // Année en cours de frappe (« 2 », « 20 », « 201 ») : rien à recalculer. Chaque chiffre
+  // reconstruisait auparavant marques, modèles, finitions, fiche et tiroir — ~270 ms par frappe.
+  // Une année incomplète vaut « pas d'année » ; le test FY===avant plus bas évite alors de
+  // redessiner à chaque chiffre.
+  const y = this.value.length<4 ? NaN : parseInt(this.value);
+  const avant=FY;
   if(y>=MIN_MEC&&y<=CY){FY=y;document.getElementById('mecClr').style.display='block';document.getElementById('mecBadge').style.display='inline-flex';document.getElementById('mecBadge').textContent=y;}
   else{FY=null;document.getElementById('mecClr').style.display='none';document.getElementById('mecBadge').style.display='none';}
+  if(FY===avant) return;   // même année qu'avant : l'affichage est déjà à jour
   rBrands(document.getElementById('srchB').value.trim());
   if(sel.b) rModels(document.getElementById('srchM').value.trim());
   if(sel.b&&sel.m) rVersions(document.getElementById('srchV').value.trim());
@@ -3513,11 +3381,12 @@ function rBrands(q){
   document.getElementById('bCnt').textContent=fl.length;
   const el=document.getElementById('listB'); el.innerHTML='';
   fl.forEach(b=>{
-    const allV=Object.values(DB[b]).flat();
-    const c=modelCompat(allV);
+    const c=modelCompat(finitionsMarque(b));
     const n=Object.keys(DB[b]).length;
     const d=document.createElement('div');
-    d.className='item ani'+(sel.b===b?' sel':'')+(FY&&c==='apres'?' dimmed':'');
+    // Plus d'animation d'apparition sur les éléments de liste : elle était rejouée sur chaque
+    // élément à chaque reconstruction de la liste.
+    d.className='item'+(sel.b===b?' sel':'')+(FY&&c==='apres'?' dimmed':'');
     d.innerHTML='<div class="item-main"><div class="item-name">'+b+'</div><div class="item-sub">'+n+' modèle'+(n>1?'s':'')+'</div></div><span class="item-arr">›</span>';
     d.addEventListener('click',()=>selectBrand(b));
     el.appendChild(d);
@@ -3583,7 +3452,7 @@ function rModels(q){
   const fl=filt(models,q);
   document.getElementById('mCnt').textContent=fl.length;
   const el=document.getElementById('listM'); el.innerHTML='';
-  const sorted=FY?[...fl].sort((a,b)=>{const r={ok:0,all:1,avant:2,apres:3};return (r[modelCompat(DB[sel.b][a])]||2)-(r[modelCompat(DB[sel.b][b])]||2);}):fl;
+  const sorted=FY?[...fl].sort((a,b)=>rangCompat(modelCompat(DB[sel.b][a]))-rangCompat(modelCompat(DB[sel.b][b]))):fl;
   sorted.forEach(m=>{
     const vs=DB[sel.b][m];
     const c=modelCompat(vs);
@@ -3593,7 +3462,7 @@ function rModels(q){
     const gc=(getAllGens(m)||[]).length;
     const curGen=FY?getGen(m,FY):null;
     const d=document.createElement('div');
-    d.className='item ani'+(sel.m===m?' sel':'')+(FY&&c==='apres'?' dimmed':'');
+    d.className='item'+(sel.m===m?' sel':'')+(FY&&c==='apres'?' dimmed':'');
     d.innerHTML='<div class="item-main">'+
       '<div class="item-name">'+(curGen?genBadge(curGen):'')+m+'</div>'+
       '<div class="item-sub">'+vs.length+' finition'+(vs.length>1?'s':'')+' · dès '+fmt(mp)+'</div>'+
@@ -3631,8 +3500,13 @@ function rVersions(q){
   const fl=q?vers.filter(v=>norm(v.v).includes(norm(q))):vers;
   document.getElementById('vCnt').textContent=fl.length;
   const el=document.getElementById('listV'); el.innerHTML='';
-  const sorted=FY?[...fl].sort((a,b)=>{const r={ok:0,all:1,avant:2,apres:3};return (r[vCompat(a)]||2)-(r[vCompat(b)]||2);}):fl;
-  sorted.forEach(v=>{ el.appendChild(makeVI(v,()=>{sel.v=v;majEtapes();rVersions(document.getElementById('srchV').value.trim());rResult();},(sel.v&&sel.v.v===v.v))); });
+  const sorted=FY?[...fl].sort((a,b)=>rangCompat(vCompat(a))-rangCompat(vCompat(b))):fl;
+  sorted.forEach(v=>{ el.appendChild(makeVI(v,()=>{sel.v=v;majEtapes();marquerFinition(v);rResult();},(sel.v&&sel.v.v===v.v))); });
+}
+// Changer de finition ne déplace que la surbrillance : la liste n'a pas à être reconstruite.
+function marquerFinition(v){
+  for(const el of document.getElementById('listV').children)
+    if(el.__v) el.classList.toggle('sel', el.__v.v===v.v);
 }
 function clearV(){document.getElementById('listV').innerHTML='<div class="le"><span class="le-dir"></span>Choisissez d’abord un modèle</div>';document.getElementById('vCnt').textContent='–';}
 
@@ -3656,6 +3530,7 @@ function makeVI(v,cb,isSel){
     '<div class="vi-dates"><span>'+v.d0+'</span><span>'+v.d+'</span></div>'+verBadgesHtml(v.eg)+
     '<div class="vi-prices"><span style="color:var(--t3)">Début\u00a0<b style="color:var(--pr)">'+fmt(pFirst)+'</b></span><span style="color:var(--t3)">Fin\u00a0<b style="color:var(--gn2)">'+fmt(pLast)+'</b></span></div>'+
     (FY&&c!=='all'?'<div style="margin-top:2px">'+tagHtml(c,y0,y1)+'</div>':'');
+  el.__v=v;
   el.addEventListener('click',cb);
   return el;
 }
@@ -3799,7 +3674,7 @@ function rResult(){
   const genSect=genTimeline(sel.m,v.hist,FY);
   const card=document.createElement('div'); card.className='rcard ani';
   card.innerHTML=
-    '<div class="rcard-head" data-tilt="4">'+
+    '<div class="rcard-head">'+
       '<div class="rcard-badge">Prix officiel TTC</div>'+
       '<div class="rcard-brand">'+sel.b+'</div>'+
       '<div class="rcard-model">'+sel.m+'</div>'+
@@ -3830,14 +3705,14 @@ function rResult(){
     '<div class="notice '+(isOk?'ok':'warn')+'">'+(isOk?'✅ Prix actualisé — màj en '+v.d.split('.')[2]:'⚠️ Dernier prix : '+v.d+' — vérifier auprès du concessionnaire')+'</div>'+
     '</div>';
   c2.appendChild(card);
-  if(v.hist.length>=2) requestAnimationFrame(()=>buildChart(v,FY,chartId));
+  if(v.hist.length>=2) graphiqueQuandVisible(v, chartId);
   wireVVInputs(v);
 
   // Other versions
   const others=DB[sel.b][sel.m].filter(x=>x.v!==v.v);
   if(others.length){
     const oh=document.createElement('div'); oh.className='oh'; oh.textContent='Autres finitions'; c2.appendChild(oh);
-    const sorted=FY?[...others].sort((a,b)=>{const r={ok:0,all:1,avant:2,apres:3};return (r[vCompat(a)]||2)-(r[vCompat(b)]||2);}):others;
+    const sorted=FY?[...others].sort((a,b)=>rangCompat(vCompat(a))-rangCompat(vCompat(b))):others;
     sorted.forEach(ov=>{
       const d=document.createElement('div'); d.className='or'+(FY&&vCompat(ov)!=='ok'&&vCompat(ov)!=='all'?' dimmed':'');
       const pp=ov.hist.map(h=>h.p); const pf=pp[0],pl=pp[pp.length-1],dd=pl-pf;
@@ -3850,7 +3725,7 @@ function rResult(){
         '</div></div>'+
         '<div class="or-bar"><div class="or-bar-fill '+fc+'" style="left:'+p0o+'%;right:'+(100-p1o-2)+'%"></div>'+(pfy!==null?'<div class="or-ym" style="left:'+pfy+'%"></div>':'')+' </div>'+
         '<div class="or-dates"><span>'+ov.d0+'\u00a0<b style="color:var(--pr)">'+fmt(pf)+'</b></span><span>'+ov.d+'\u00a0<b style="color:var(--gn2)">'+fmt(pl)+'</b></span></div>';
-      d.addEventListener('click',()=>{sel.v=ov;rVersions(document.getElementById('srchV').value.trim());rResult();});
+      d.addEventListener('click',()=>{sel.v=ov;marquerFinition(ov);rResult();});
       c2.appendChild(d);
     });
   }
@@ -3864,13 +3739,16 @@ function rResult(){
 // ── Drawer ──
 function renderDrawer(q){
   if(!window.DB) return;
+  // Tiroir fermé : il sera construit à l'ouverture. Il était reconstruit à chaque frappe de
+  // l'année et à chaque choix de marque, y compris sur ordinateur où il ne s'ouvre jamais.
+  const dr=document.getElementById('brandDrawer');
+  if(dr && !dr.classList.contains('open')) return;
   const brands=Object.keys(DB).sort();
   const fl=filt(brands,q);
   const el=document.getElementById('drawerList'); el.innerHTML='';
   fl.forEach(b=>{
     const n=Object.keys(DB[b]).length;
-    const allV=Object.values(DB[b]).flat();
-    const c=modelCompat(allV);
+    const c=modelCompat(finitionsMarque(b));
     const d=document.createElement('div');
     d.className='drawer-item'+(sel.b===b?' sel':'')+(FY&&c==='apres'?' dimmed':'');
     d.innerHTML=
@@ -4083,7 +3961,23 @@ function basculerTheme(){
 // Le graphique est peint sur un canvas : il faut le repeindre pour qu'il suive le thème.
 function redessinerGraphique(){
   const cv=document.querySelector('#resContent canvas');
-  if(cv && sel.v) buildChart(sel.v, FY, cv.id);
+  if(cv && cv._chart && sel.v) buildChart(sel.v, FY, cv.id);   // pas encore construit : il lira le thème à sa construction
+}
+// Le graphique (Chart.js, 270 à 380 ms mesurés) n'est construit qu'à son entrée à l'écran : il
+// est placé sous le module de valeur vénale, hors de vue au moment du clic la plupart du temps.
+let OBS_GRAPHIQUE=null;
+function graphiqueQuandVisible(v, id){
+  if(OBS_GRAPHIQUE){ OBS_GRAPHIQUE.disconnect(); OBS_GRAPHIQUE=null; }
+  const cv=document.getElementById(id);
+  if(!cv) return;
+  if(typeof IntersectionObserver==='undefined'){ requestAnimationFrame(()=>buildChart(v,FY,id)); return; }
+  const obs=new IntersectionObserver(ents=>{
+    if(!ents.some(e=>e.isIntersecting)) return;
+    obs.disconnect(); if(OBS_GRAPHIQUE===obs) OBS_GRAPHIQUE=null;
+    buildChart(v,FY,id);
+  },{rootMargin:'150px'});
+  OBS_GRAPHIQUE=obs;
+  obs.observe(cv);
 }
 appliquerTheme(themeCourant());
 if(window.matchMedia){
@@ -4092,34 +3986,6 @@ if(window.matchMedia){
   if(mqSombre.addEventListener) mqSombre.addEventListener('change', suivre);
 }
 
-// ── Relief 3D au pointeur ──
-// Réservé aux souris (pointer:fine) et coupé si l'utilisateur réduit les animations : sur un
-// écran tactile, incliner une fiche sous le doigt gênerait la saisie. Aucun élément
-// interactif n'est incliné — seulement l'en-tête de fiche, le montant et le cube d'accueil.
-(function(){
-  if(!window.matchMedia) return;
-  if(!window.matchMedia('(pointer:fine) and (prefers-reduced-motion: no-preference)').matches) return;
-  let cible=null, px=0, py=0, attente=0;
-  const relacher=el=>{ el.classList.remove('tilting'); el.style.removeProperty('--rx'); el.style.removeProperty('--ry'); };
-  document.addEventListener('pointermove',e=>{
-    const t=e.target && e.target.closest ? e.target.closest('[data-tilt]') : null;
-    if(cible && cible!==t) relacher(cible);
-    cible=t; px=e.clientX; py=e.clientY;
-    if(!t || attente) return;
-    attente=requestAnimationFrame(()=>{
-      attente=0; if(!cible) return;
-      const r=cible.getBoundingClientRect(); if(!r.width||!r.height) return;
-      const x=Math.max(0,Math.min(1,(px-r.left)/r.width)), y=Math.max(0,Math.min(1,(py-r.top)/r.height));
-      const max=parseFloat(cible.dataset.tilt)||4;
-      cible.style.setProperty('--ry', ((x-.5)*2*max).toFixed(2)+'deg');
-      cible.style.setProperty('--rx', ((.5-y)*2*max).toFixed(2)+'deg');
-      cible.style.setProperty('--mx', (x*100).toFixed(1)+'%');
-      cible.style.setProperty('--my', (y*100).toFixed(1)+'%');
-      cible.classList.add('tilting');
-    });
-  },{passive:true});
-  document.documentElement.addEventListener('pointerleave',()=>{ if(cible){ relacher(cible); cible=null; } });
-})();
 
 </script>
 </body>

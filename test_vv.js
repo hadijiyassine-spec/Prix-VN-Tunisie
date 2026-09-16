@@ -378,7 +378,35 @@ setTimeout(() => {
     check('module valeur vénale sans fond blanc codé en dur', !/#vvSect\{[^}]*#FFFFFF/i.test(css));
     check('aucun calc() sans espaces autour du +', !/calc\([^)]*\)\+\d/.test(css));
     check('bouton « Retour à la sélection » stylé', css.includes('.back-to-sel{'));
-    check('scène 3D présente et décorative', !!doc.querySelector('.scene3d[aria-hidden="true"]'));
+    // L'effet 3D a été retiré pour lenteur d'affichage : il ne doit pas revenir par accident.
+    check('effet 3D retiré (ni scène, ni inclinaison, ni perspective, ni flou, ni animation perpétuelle)',
+      !doc.querySelector('.scene3d, [data-tilt], .cube') && !/perspective\(|backdrop-filter:blur\(1\d|infinite/.test(css));
+
+    // Saisie de l'année : aucun rendu tant que l'année est incomplète.
+    doc.getElementById('mecClr').click();
+    const rBrandsOrig = win.rBrands; let rendus = 0;
+    win.rBrands = function () { rendus++; return rBrandsOrig.apply(this, arguments); };
+    const mecEl = doc.getElementById('mecIn');
+    for (const v of ['2', '20', '201']) { mecEl.value = v; mecEl.dispatchEvent(new win.Event('input')); }
+    const rendusPartiels = rendus;
+    mecEl.value = '2019'; mecEl.dispatchEvent(new win.Event('input'));
+    mecEl.dispatchEvent(new win.Event('input'));   // même année saisie deux fois
+    win.rBrands = rBrandsOrig;
+    check('saisie de l\'année : rien n\'est redessiné avant le 4e chiffre, ni pour une année inchangée',
+      rendusPartiels === 0 && rendus === 1, 'rendus=' + rendusPartiels + '/' + rendus);
+
+    // Tri : les modèles actifs à l'année de MEC en tête (le rang 0 était converti en 2 par `||2`).
+    let ordreOk = true, marqueMixte = null;
+    for (const b of Object.keys(win.DB)) {
+      win.selectBrand(b);
+      const tags = [...doc.querySelectorAll('#listM .item')].map(x => !!x.querySelector('.itag.ok'));
+      if (tags.includes(true) && tags.includes(false)) {
+        marqueMixte = b;
+        ordreOk = tags.indexOf(false) > tags.lastIndexOf(true);
+        break;
+      }
+    }
+    check('tri : les modèles actifs à la MEC sont listés en tête', !!marqueMixte && ordreOk, marqueMixte);
 
     const themeBtn = doc.getElementById('themeBtn');
     check('sélecteur de thème présent', !!themeBtn);

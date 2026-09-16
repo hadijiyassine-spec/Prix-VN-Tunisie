@@ -1317,3 +1317,33 @@ Causes, isolées en neutralisant les effets un à un :
 Corrections : plus aucune animation continue ; halos peints en dégradés radiaux dans le fond (sans `filter`) ; quadrillage plat fondu ; panneaux sans flou, fond plus opaque (0,88 clair, 0,90 sombre) ; logo et cube animés au survol seulement. Le relief (ombres graduées, biseaux, montants extrudés, boutons à course, inclinaison au pointeur) est conservé.
 
 Piège de mesure à connaître : un onglet qui n'est pas au premier plan voit ses images ralenties par le navigateur. Les premières mesures en ont été faussées ; seules celles du tableau, onglet au premier plan, font foi.
+### Retrait de l'effet 3D et accélération de l'affichage (signalé : « la lenteur est toujours là »)
+
+L'effet 3D est entièrement retiré à la demande : scène, quadrillage, verre, ombres profondes, montants extrudés, cube, inclinaison au pointeur, et leurs jetons. Restent les correctifs fonctionnels de la v50 (thème sombre, sélecteur de thème, recherche globale, barre mobile, bouton « Retour »). Un test garde contre leur retour.
+
+La lenteur ressentie ne venait pas seulement de la 3D : elle existait déjà en v49. Chronométrage fonction par fonction, puis corrections :
+
+| Défaut | Coût mesuré | Correction |
+|---|---|---|
+| Chaque chiffre de l'année de MEC (« 2 », « 20 », « 201 ») reconstruisait marques, modèles, finitions, fiche et tiroir | ~270 ms par frappe | Aucun rendu tant que l'année est incomplète ou inchangée |
+| Tiroir des marques (téléphone) reconstruit à chaque frappe et chaque choix de marque, même fermé et même sur ordinateur | 16-62 ms par appel | Construit à l'ouverture seulement |
+| Graphique Chart.js construit et animé dès le clic, alors qu'il est hors de l'écran | 270-380 ms | Construit à son entrée à l'écran, sans animation |
+| Liste des finitions reconstruite entièrement pour déplacer la surbrillance | 45-65 ms | Simple bascule de classe |
+| Compatibilité MEC recalculée à chaque comparaison des tris (dates redécoupées des milliers de fois) | 50-125 ms par liste | Années lues une fois par finition, compatibilité mémorisée par année de MEC |
+| Chaque chiffre du kilométrage reconstruisait tout le bloc résultat | 80-120 ms par frappe | Mise à jour des valeurs et du curseur seulement |
+| Animation d'apparition rejouée sur chaque élément de liste ; `transition:all` | rendu | Supprimées / limitées au fond et à la bordure |
+
+**Bug trouvé au passage** : les trois tris écrivaient `r[compat]||2`. Le rang 0 (« actif à l'année de MEC ») étant faux en JavaScript, il devenait 2 : les modèles et finitions actifs à la MEC n'étaient pas remontés en tête comme prévu.
+
+Mesures, même navigateur, onglet au premier plan, même parcours (deux passages, Clio puis 208) :
+
+| | v49 | v50 finale |
+|---|---|---|
+| Saisie de l'année (4 chiffres) | 526 / 1 650 ms | 160 / 349 ms |
+| Choix d'une marque | 238 / 263 ms | 59 / 156 ms |
+| Choix d'un modèle | 155 / 300 ms | 83 / 105 ms |
+| Choix d'une finition | 821 / 131 ms | 97 / 65 ms |
+| Changement de finition | 107 / 138 ms | 42 / 46 ms |
+| Kilométrage (6 chiffres) | 462 / 380 ms | 408 / 445 ms, dont ~200 ms d'attente imposée par la mesure |
+
+Aucune formule de calcul modifiée. `test_vv.js` : 84 assertions au vert.
