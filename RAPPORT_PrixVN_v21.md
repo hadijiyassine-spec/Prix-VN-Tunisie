@@ -420,6 +420,54 @@ Un test parcourt désormais la séquence complète — ouverture, déplacement d
 
 ---
 
+### 3.28  La valeur à neuf : tarif du jour, ou valeur de fin de série
+
+Règle posée par Yassine : *« la valeur à neuf à afficher est soit la valeur actuelle, soit la valeur de fin de série de la finition du modèle en question »*.
+
+La fiche mettait en avant le **tarif du millésime**. Sur une Renault Symbol 1.2 Confort de 2017, elle annonçait donc **34 100 DT** — ce que ce véhicule coûtait en 2017, en dinars de 2017. Pour une valeur vénale de 32 900 DT. À la lecture : 3 % de dévalorisation en neuf ans. Absurde.
+
+Le calcul, lui, n'a jamais travaillé sur ce chiffre : il part de la valeur **actualisée**, soit 48 700 DT en 2026. L'incohérence était donc entre la fiche et son propre calcul.
+
+#### Ce qui s'affiche maintenant
+
+Le montant mis en avant est la valeur à neuf proprement dite :
+
+- **le tarif du jour**, tant que la finition est commercialisée ;
+- **la valeur de fin de série**, dès qu'elle ne l'est plus — son dernier tarif catalogue, daté.
+
+Les deux autres repères restent lisibles en dessous, chacun sous son nom, parce qu'ils ne disent pas la même chose :
+
+| Symbol 1.2 Confort, MEC 2017 | |
+|---|---|
+| **valeur à neuf** | **41 900 DT** — fin de série du 12.02.2019 |
+| équivalent à neuf 2026 | 47 440 DT — le tarif de fin de série ramené au niveau des prix de 2026 |
+| tarif catalogue à la 1ère mise en circulation (2017) | 34 100 DT — le prix d'achat d'origine |
+| fin de série du modèle | 11.11.2020, finition 1.0 SCe Confort, 41 900 DT |
+
+**La phase du véhicule est respectée.** Une RAV 4 Hybride de 2022 prend la valeur de fin de série de sa propre phase — 184 800 DT au 04.03.2026, la XA50 — et non les 204 800 DT de la XA60 qui lui a succédé.
+
+#### Le contrôle
+
+`finserie_audit.js` a été réécrit sur la nouvelle règle et repasse les **20 879 couples finition × millésime** :
+
+| invariant | écarts |
+|---|---|
+| le montant affiché est la valeur à neuf | **0** |
+| « fin de série » sur une finition retirée, « tarif du jour » sur une finition vendue — jamais les deux, jamais aucun | **0** |
+| le tarif d'achat d'origine est donné dès qu'il diffère | **0** |
+
+Un détail de méthode a fait trébucher le contrôle au premier passage : l'avertissement de changement de génération cite légitimement « le tarif du jour de ce modèle » tout en affichant, lui, une fin de série. Le libellé se lit donc dans la pastille du montant, pas dans les notices.
+
+#### Ce qui n'a PAS été touché
+
+**Le calcul continue d'ancrer la valeur à neuf sur le millésime**, puis de l'actualiser. C'est une méthode plus fine que la formule classique — elle distingue un Symbol de 2012 d'un Symbol de 2018 — mais elle n'est pas celle que le libellé suggère.
+
+L'écart entre les deux est mesuré, et il est faible : sur les 2 522 finitions, l'écart médian entre la VEN du calcul et la valeur à neuf actualisée est de **0,0 %**, l'écart absolu médian de **1,5 %** (0,0 % sur les finitions encore vendues, où les deux coïncident exactement).
+
+Re-baser le calcul sur la valeur à neuf actualisée simplifierait le modèle — l'enveloppe de cohérence des millésimes deviendrait sans objet, puisque tous les millésimes d'une finition partageraient la même valeur à neuf et ne différeraient que par l'âge. C'est la formule de barème classique. Mais c'est un choix de méthode, il appartient à l'expert, et rien n'a été modifié sans son accord.
+
+---
+
 ### 3.27  Les corrections portées dans `data.js` — et ce que cela a révélé
 
 Jusqu'ici, toutes les corrections vivaient dans `RELEVES_VERIFIES`, à l'intérieur de l'application, pour survivre à une régénération de la base. Yassine demande qu'elles soient portées **dans la base elle-même**.
