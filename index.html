@@ -903,9 +903,9 @@ let sel = {b:null, m:null, v:null};
 let FY  = null;
 // ── Version de l'application ──
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
-const VERSION = 'v50';
-const VERSION_DATE = '16/09/2026';
-const VERSION_NOTES = 'effet 3D retiré · affichage accéléré : saisie de l\'année sans recalcul à chaque chiffre, graphique construit à son entrée à l\'écran, listes sans animation ni reconstruction inutile, tiroir mobile construit à l\'ouverture · tri des listes réparé : les modèles actifs à la MEC remontent enfin en tête · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
+const VERSION = 'v51';
+const VERSION_DATE = '17/09/2026';
+const VERSION_NOTES = 'méthode B : la valeur vénale part de la VALEUR À NEUF de la finition — tarif du jour, ou valeur de fin de série de sa génération — actualisée à la date d\'évaluation ; le millésime ne commande plus que la génération retenue et l\'âge · quatre changements de génération vérifiés ajoutés (Peugeot 208 en 2021, Hyundai i20 en 2016 et 2021, Opel Corsa en 2021, Suzuki Swift en 2025) · avertissement en tête de fiche sur les séries tarifaires discontinues, dont le calcul dépend désormais · effet 3D retiré · affichage accéléré : saisie de l\'année sans recalcul à chaque chiffre, graphique construit à son entrée à l\'écran, listes sans animation ni reconstruction inutile, tiroir mobile construit à l\'ouverture · tri des listes réparé : les modèles actifs à la MEC remontent enfin en tête · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -982,8 +982,8 @@ const VVPARAMS = {
       peuDeFinitions:      { pts:1, txt:'catalogue peu détaillé pour ce modèle' },
       tarifAncien:         { pts:2, txt:'tarif catalogue arrêté avant {an}' },
       tarifVieillissant:   { pts:1, txt:'dernier tarif connu : {an}' },
-      ancrageEnveloppe:    { pts:1, txt:'tarif du millésime corrigé pour rester cohérent' },
-      ancrageProche:       { pts:1, txt:'aucun tarif relevé l\'année de mise en circulation' },
+      ancrageEnveloppe:    { pts:1, txt:'valeur à neuf corrigée pour rester cohérente d\'une phase à l\'autre' },
+      ancrageLongue:       { pts:1, txt:'valeur de fin de série de {an}, actualisée sur {n} ans' },
       batterieForfait:     { pts:2, txt:'capacité batterie inconnue, part forfaitaire' },
       sohNonMesure:        { pts:2, txt:'état de santé de la batterie non mesuré' },
       kmAbsent:            { pts:2, txt:'kilométrage non renseigné' },
@@ -995,6 +995,7 @@ const VVPARAMS = {
     seuils: { bonne:1, moyenne:3 },   // ≤1 : bonne · ≤3 : moyenne · au-delà : faible
     seuilFinitions: 3,                // en deçà, catalogue jugé peu détaillé
     ecartTarif: 6,                    // années depuis le dernier tarif avant alerte forte
+    ecartAncrage: 5,                  // années d'actualisation de la fin de série avant réserve
     // Un saut de tarif qui dépasse de 12 points le mouvement du marché de la même énergie
     // n'est pas une hausse ordinaire. Trois causes possibles, toutes gênantes pour le
     // calcul : changement de génération non documenté, substitution de finition sous le
@@ -1483,14 +1484,12 @@ function indexMultiplier(anneePrix, anneeEval, fuelClassKey){
 
 // VEN = prix neuf actualisé (Valeur Équivalente à Neuf) pour une finition donnée.
 //
-// `anneeRef` (en pratique l'année de 1ère MEC) sert à choisir QUEL prix catalogue actualiser.
-// C'est déterminant : une finition vendue de 2012 à 2026 a un historique de prix, et le prix
-// pertinent est celui de l'époque du véhicule, pas le dernier connu. Partir systématiquement
-// du dernier prix revenait à comparer une Peugeot 208 de 2018 au tarif de la génération
-// actuelle — d'où une surestimation mesurée de 24 à 36 % sur ce modèle, et une sous-estimation
-// symétrique sur les modèles dont le tarif catalogue est resté figé à une année ancienne.
-// C'est aussi la définition du skill : L est le prix neuf daté d'une année de référence M,
-// que l'on actualise ensuite jusqu'à aujourd'hui.
+// `anneeRef` (en pratique l'année de 1ère MEC) ne choisit plus le prix à actualiser : depuis
+// la méthode B, la référence est la VALEUR À NEUF de la finition — son tarif du jour, ou sa
+// valeur de fin de série. `anneeRef` sert à désigner la PHASE du véhicule (c'est la valeur à
+// neuf de SA génération que l'on retient, pas celle de celle qui lui a succédé) et à compter
+// son ÂGE. L est donc le dernier prix catalogue de cette phase, daté de l'année M, que l'on
+// actualise jusqu'à l'année d'évaluation.
 // `anneeEval` : année à laquelle on se place pour évaluer (par défaut l'année courante).
 // En expertise, un sinistre doit être évalué à SA date — et une réforme fiscale postérieure
 // ne doit donc pas s'appliquer, ce que la borne de l'indice garantit.
@@ -1527,6 +1526,51 @@ const PHASES = {
             'La XA50 sortante était tarifée 184 800 DT et a quitté le catalogue. '+
             'Changement de groupe motopropulseur : 218 ch → 230 ch.',
       source:'automobile.tn, 14.06.2026' }
+  ],
+  // ── Frontières ajoutées avec la méthode B ──
+  // La méthode B ancre la valeur à neuf sur le DERNIER tarif de la phase : la couverture de
+  // cette table cesse d'être un détail d'affichage et devient déterminante pour le chiffre.
+  // Les quatre frontières ci-dessous sont celles que la recherche a pu établir avec une
+  // source tunisienne DATÉE, et chacune se lit aussi dans la série tarifaire de la base —
+  // le saut de prix tombe au bon endroit. Rien n'a été ajouté sur une date européenne ou sur
+  // une simple présomption : la liste reste incomplète, et c'est assumé (voir le rapport).
+  'Peugeot 208': [
+    { date:'03.02.2021', gen:'II (P21)',
+      motif:'Deuxième génération présentée par STAFIM le 3 février 2021, en quatre finitions '+
+            'de 49 990 DT (Active) à 79 900 DT (GT Line). La série de la base enchaîne '+
+            '49 990 DT en décembre 2020 et 50 990 DT en juin 2021 : la frontière tombe entre '+
+            'les deux. Les tarifs des 13 et 17 janvier 2021 anticipent le lancement de presse ; '+
+            'ils restent du côté sortant, ce qui est le choix prudent.',
+      source:'automobile.tn, 03.02.2021' }
+  ],
+  'Hyundai i20': [
+    { date:'15.07.2016', gen:'GB (2e génération)',
+      motif:'« Nouvelle Génération » annoncée par Alpha Hyundai Motor le 15 juillet 2016, '+
+            'haut de gamme à 37 500 DT TTC. La base passe de 31 400 DT (mars 2015) à '+
+            '37 500 DT le 19 juillet 2016, au dinar près.',
+      source:'automobile.tn, 15.07.2016 ; Kapitalis, 19.07.2016' },
+    { date:'05.04.2021', gen:'BC3 (3e génération)',
+      motif:'Troisième génération exposée par Alpha Hyundai Motors début avril 2021, '+
+            'à partir de 53 900 DT. La base passe de 46 500 DT (octobre 2020) à 53 950 DT '+
+            'le 5 avril 2021, et trois finitions nouvelles apparaissent le même jour.',
+      source:'automobile.tn, 06.04.2021' }
+  ],
+  'Opel Corsa': [
+    { date:'03.06.2021', gen:'F (6e génération)',
+      motif:'Retour de la marque Opel en Tunisie par STAFIM le 3 juin 2021, avec la Corsa de '+
+            'sixième génération à partir de 53 990 DT. La base s\'arrête à 33 904 DT en '+
+            'février 2017 et reprend à 53 990 DT le 14 juin 2021 : quatre ans de silence, '+
+            'puis un autre véhicule. Le restylage de mars 2024 (« Opel Vizor ») n\'est PAS '+
+            'une génération et n\'ouvre donc pas de phase.',
+      source:'automobile.tn, 03.06.2021 ; ilBoursa, 04.06.2021' }
+  ],
+  'Suzuki Swift': [
+    { date:'03.02.2025', gen:'4e génération (A2L)',
+      motif:'Nouvelle Swift en précommande chez Car Pro à partir de 55 900 DT, premier '+
+            'arrivage annoncé pour mars 2025. La base porte 55 900 DT au 3 février 2025 pour '+
+            'la GL, contre 53 400 DT en septembre 2024, et les finitions CVT — propres à cette '+
+            'génération — apparaissent à la même date, tandis que les BVA s\'arrêtent en 2024.',
+      source:'automobile.tn, essai du 17.02.2025' }
   ]
 };
 
@@ -2124,16 +2168,55 @@ function venSerie(v, AE, fc){
   const mod=modeleDe(v);
   const par={};
   for(let y=y0; y<=y1; y++){
-    // Le point d'ancrage se cherche DANS LA PHASE du millésime : le tarif de la génération
-    // suivante ne dit rien de ce que valait celle-ci. Et à l'intérieur d'une même année, c'est
-    // le DERNIER tarif qui fait foi — la valeur de fin de série du millésime.
+    // ══ MÉTHODE B — L'ANCRAGE EST LA VALEUR À NEUF, PAS LE TARIF DU MILLÉSIME ══
+    //
+    // Choix de Yassine, 16.09.2026 : « c'est la méthode B ». C'est la construction des
+    // barèmes classiques — valeur à neuf × coefficient de vétusté — et c'est la seule qui
+    // mette le calcul d'accord avec ce que la fiche annonce en tête.
+    //
+    // La valeur à neuf d'une finition, c'est :
+    //   · son TARIF DU JOUR tant qu'elle est commercialisée ;
+    //   · sa VALEUR DE FIN DE SÉRIE dès qu'elle ne l'est plus — le dernier tarif catalogue
+    //     qu'elle a connu, daté.
+    // Dans les deux cas c'est le DERNIER point de la série, actualisé jusqu'à l'année
+    // d'évaluation. Tous les millésimes d'une même phase partagent donc la même valeur à
+    // neuf : ce qui les sépare, c'est l'âge — et rien d'autre.
+    //
+    // LA PHASE RESTE LE PÉRIMÈTRE. « Dernier tarif » veut dire dernier tarif DE SA PHASE :
+    // sur un modèle dont la génération a changé, le tarif de la nouvelle n'est pas la valeur
+    // à neuf de l'ancienne. Une RAV 4 Hybride de 2022 s'ancre sur les 184 800 DT de la XA50,
+    // pas sur les 204 800 DT de la XA60.
+    //
+    // ET PAS AU-DELÀ DE LA DATE D'ÉVALUATION : une expertise datée de 2020 ne peut pas
+    // s'appuyer sur un tarif de 2026. On retient le dernier tarif connu à cette date.
     const cand=histPhase(v, mod, y);
-    let best=null, gap=Infinity;
-    for(const h of cand){ const g=Math.abs(yOf(h.d)-y); if(g<=gap){ gap=g; best=h; } }
-    const r=indexMultiplier(yOf(best.d), AE, fc);
-    par[y]={p:best.p, y:yOf(best.d), idx:r.m, predites:r.predites, gap, ven:best.p*r.m, env:false};
+    let best=null;
+    for(const h of cand) if(yOf(h.d)<=AE) best=h;   // hist trié
+    if(!best) best=cand[0];
+    const ya=yOf(best.d);
+    const r=indexMultiplier(ya, AE, fc);
+    // « Tarif du jour » suppose DEUX choses, exactement comme la fiche : un tarif récent, et
+    // que la phase du véhicule soit encore celle qui se vend. La RAV 4 Hybride XA50 est
+    // tarifée jusqu'en 2026 mais a quitté le catalogue : sa valeur à neuf est une fin de
+    // série, pas un prix du jour.
+    const phaseCourante = !PHASES[mod] || rangPhase(mod, best.d)===rangPhase(mod, v.d);
+    par[y]={p:best.p, y:ya, d:best.d, idx:r.m, predites:r.predites,
+            courant:ya>=AE-1 && phaseCourante, ven:best.p*r.m, env:false};
   }
   // Balayage à rebours : VEN(a) ne peut pas dépasser VEN(a+1) / (1 − taux le plus lent).
+  //
+  // EN MÉTHODE B, CETTE ENVELOPPE NE SERT PLUS QU'À DEUX CHOSES — à l'intérieur d'une phase
+  // tous les millésimes partagent la même valeur à neuf, et l'ordre y est acquis d'avance.
+  // Restent :
+  //   1. LES FRONTIÈRES DE PHASE. Deux phases ont deux valeurs à neuf différentes, et rien
+  //      ne garantit que celle de la sortante soit inférieure. Si la génération sortante
+  //      était plus chère que l'entrante, son dernier millésime ressortirait au-dessus du
+  //      premier millésime de la suivante — une inversion d'âge.
+  //   2. LE PLANCHER DE VALEUR RÉSIDUELLE. Passé l'âge où F_âge se bloque, l'âge ne fait
+  //      plus rien gagner, mais le bonus kilométrique, lui, continue de favoriser le
+  //      millésime le plus ancien (son kilométrage normal est plus élevé). À valeur à neuf
+  //      égale, l'ancien repasserait devant : la borne devient alors légèrement décroissante.
+  //
   // Marge autorisée par année : ce que l'âge fait GAGNER au millésime plus récent, moins ce
   // que le kilométrage lui fait PERDRE. À kilométrage égal, le repère normal d'un véhicule
   // plus récent est plus bas, donc son bonus kilométrique est plus faible — de
@@ -2169,31 +2252,40 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey){
   const fc=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
   const AE = (anneeEval!=null && isFinite(anneeEval)) ? anneeEval : CY;
 
-  // ── Choix du prix catalogue de référence ──
-  // On part du relevé le plus proche du millésime du véhicule (voir plus bas pourquoi), puis
-  // on impose que la série des valeurs à neuf soit COHÉRENTE d'un millésime au suivant.
+  // ── Choix du prix catalogue de référence : LA VALEUR À NEUF (méthode B) ──
   //
-  // Pourquoi. Le tarif d'une finition ne monte pas toujours : restylage dépouillé, changement
-  // de fiscalité, baisse commerciale. Sans précaution, un véhicule PLUS RÉCENT ressortait
-  // MOINS cher que son aîné — Renault Laguna Coupé 2.0 170 BVA, 79 900 DT au tarif 2012 contre
-  // 65 900 DT en 2013, d'où 56 300 DT pour un 2012 et 46 100 DT pour un 2013. Sur le marché de
-  // l'occasion, personne ne paie davantage un millésime plus ancien parce qu'il coûtait plus
-  // cher neuf : ce qui les sépare, c'est l'âge. 63 inversions de ce type existaient sur un
-  // échantillon de 211 finitions, jusqu'à −21 %.
+  // On part de la VALEUR À NEUF de la finition — tarif du jour si elle est encore au
+  // catalogue, valeur de fin de série sinon — et on l'actualise jusqu'à l'année d'évaluation.
+  // Le millésime ne sert plus qu'à deux choses : désigner la PHASE du véhicule (donc la
+  // génération dont on prend la valeur à neuf) et compter son ÂGE.
   //
-  // Ce qu'on corrige, ce n'est PAS que le tarif baisse — c'est que la valeur VÉNALE s'inverse.
-  // L'âge accorde déjà un écart : VV(a) < VV(a+1) tant que VEN(a) < VEN(a+1)/(1−taux). On
-  // balaie donc la série des millésimes à rebours en n'imposant que cette borne, avec le taux
-  // de la gamme qui se déprécie le PLUS LENTEMENT (contrainte la plus serrée, valable pour
-  // toutes les gammes) et une marge de sécurité de 0,5 % qui absorbe l'arrondi à la centaine.
-  // Les creux de tarif légitimes sont ainsi préservés : seules les vraies inversions cèdent.
-  let L=v.p, M=yOf(v.d), ancre='dernier', idx, predites, envAppliquee=false;
+  // C'est la forme des barèmes classiques : valeur à neuf × coefficient de vétusté. Et c'est
+  // ce que la fiche annonce en tête depuis la correction demandée par Yassine — il aurait été
+  // incohérent d'afficher un chiffre et d'en calculer un autre.
+  //
+  // CE QUE CE CHOIX COÛTE, ET QU'IL FAUT AVOIR EN TÊTE. La méthode précédente ancrait sur le
+  // tarif de l'année du véhicule. Elle protégeait mécaniquement d'un risque : quand une série
+  // tarifaire change de produit sans changer de nom, le dernier tarif n'est plus celui du même
+  // véhicule. Ici ce garde-fou repose entièrement sur PHASES — et PHASES ne contient que les
+  // frontières VÉRIFIÉES. Là où la frontière n'est pas documentée, la valeur à neuf retenue
+  // peut être celle du successeur. D'où, en contrepartie :
+  //   · l'avertissement « saut de tarif sans rapport avec le marché » de l'indicateur de
+  //     confiance, qui repère précisément ces séries (20 modèles au catalogue) ;
+  //   · l'enveloppe de cohérence ci-dessous, conservée aux frontières de phase.
+  //
+  // CE QUE LE MILLÉSIME NE COMMANDE PLUS. Le tarif d'une finition ne monte pas toujours :
+  // restylage dépouillé, changement de fiscalité, baisse commerciale. En ancrant sur le tarif
+  // du millésime, un véhicule PLUS RÉCENT pouvait ressortir MOINS cher que son aîné — Renault
+  // Laguna Coupé 2.0 170 BVA, 79 900 DT en 2012 contre 65 900 DT en 2013 : 56 300 DT pour un
+  // 2012 et 46 100 DT pour un 2013. En méthode B ces inversions disparaissent d'elles-mêmes :
+  // les deux millésimes partagent la même valeur à neuf, et seul l'âge les sépare.
+  let L=v.p, M=yOf(v.d), ancre='dernier', idx, predites, envAppliquee=false, dAncre=v.d;
   if(anneeRef && v.hist && v.hist.length){
     const serie=venSerie(v, AE, fc);
     const y=Math.max(serie.y0, Math.min(anneeRef, serie.y1));
     const e=serie.par[y];
-    L=e.p; M=e.y; idx=e.idx; predites=e.predites; envAppliquee=e.env;
-    ancre = e.gap===0 ? 'exact' : 'proche';
+    L=e.p; M=e.y; idx=e.idx; predites=e.predites; envAppliquee=e.env; dAncre=e.d;
+    ancre = e.courant ? 'jour' : 'finserie';
     if(envAppliquee) ancre='enveloppe';
     idx = e.ven/e.p;   // multiplicateur effectif, enveloppe comprise
   }
@@ -2306,7 +2398,7 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey){
   // la valeur abattue le faisait glisser d'une gamme à l'autre et changeait son taux — un
   // avantage fiscal ne transforme pas une berline premium en citadine.
   const venGamme = venJum!=null ? venJum : (abattement<1 ? VEN/abattement : VEN);
-  return {VEN, idx, L, M, fc, reforme, predites, ancre, anneeEval:AE, anneeRef, majPop, popStatut,
+  return {VEN, idx, L, M, dAncre, fc, reforme, predites, ancre, anneeEval:AE, anneeRef, majPop, popStatut,
           venJum, plafonne, venGamme, plafondNeuf, neufPlafonne, regime:RG, regimeKey, tvaSeule,
           abattement, abattementMotif};
 }
@@ -2400,9 +2492,12 @@ function evaluerConfiance(v, r){
   const dernier=yOf(derniereDateTarif(v));
   if(r.anneeEval-dernier>=C.ecartTarif) add('tarifAncien', {an:dernier+1});
   else if(r.anneeEval-dernier>=3) add('tarifVieillissant', {an:dernier});
-  // Qualité de l'ancrage
+  // Qualité de l'ancrage. En méthode B la valeur à neuf est celle de fin de série dès que la
+  // finition a quitté le catalogue : plus elle est ancienne, plus la part d'INDICE dans le
+  // chiffre final est grande — et l'indice est une moyenne, pas une observation.
   if(r.ven.ancre==='enveloppe') add('ancrageEnveloppe');
-  else if(r.ven.ancre==='proche') add('ancrageProche');
+  else if(r.ven.ancre==='finserie' && r.ven.M!=null && (r.anneeEval-r.ven.M)>=C.ecartAncrage)
+    add('ancrageLongue', {an:r.ven.M, n:r.anneeEval-r.ven.M});
   // Indice extrapolé
   if(r.ven.predites>0) add('anneesPredites', {n:r.ven.predites});
   // Discontinuité de la série tarifaire entre le millésime et le tarif du jour
@@ -2929,7 +3024,10 @@ function refreshVVValues(v){
     const idxPct=((r.ven.idx-1)*100).toFixed(1);
     det.innerHTML=
       '<div><b>Valeur à neuf actualisée</b> : '+fmt(Math.round(r.ven.VEN/100)*100)+
-        ' <span style="opacity:.75">(prix catalogue '+fmt(r.ven.L)+' de '+r.ven.M+(r.ven.ancre==='dernier'?' — dernier connu':'')+' × indice prix auto '+(idxPct>=0?'+':'')+idxPct+'%'+
+        ' <span style="opacity:.75">('+(r.ven.ancre==='jour'
+            ? 'tarif du jour '+fmt(r.ven.L)
+            : 'valeur de fin de série '+fmt(r.ven.L)+(r.ven.dAncre?' du '+r.ven.dAncre:' de '+r.ven.M))+
+        ' × indice prix auto '+(idxPct>=0?'+':'')+idxPct+'%'+
         (r.ven.majPop>1?' × taxe douanière réintégrée +'+Math.round((r.ven.majPop-1)*100)+'%':'')+')</span>'+
         (r.ven.neufPlafonne?' <span style="opacity:.75">— ramenée au prix neuf du jour ('+fmt(r.ven.plafondNeuf)+', tarif '+r.anneeEval+')</span>':'')+
         (r.ven.plafonne?' <span style="opacity:.75">— plafonnée à la valeur à neuf de la version normale ('+fmt(Math.round(r.ven.venJum/100)*100)+')</span>':'')+'</div>'+
@@ -3583,6 +3681,24 @@ function blocPrix(v, modelName, mecAnnee){
            ' appartient à la phase précédente : la valeur à neuf retenue est celle de SA phase. '+
            '<span style="opacity:.75">'+f.motif+' Source : '+f.source+'.</span></div>';
     }
+  }
+
+  // ── SÉRIE TARIFAIRE DISCONTINUE : l'avertir, puisque le calcul en dépend ──
+  // Depuis la méthode B, la valeur à neuf d'un véhicule ancien est le DERNIER tarif de sa
+  // phase. Si la série a changé de véhicule sans que la frontière soit documentée dans
+  // PHASES, ce dernier tarif n'est pas le sien. Le détecteur de saut divergent voit ces
+  // séries ; il ne peut pas trancher leur cause, mais il peut prévenir — et sous cette
+  // méthode, se taire reviendrait à laisser passer l'erreur en silence.
+  if(!avis && mecAnnee){
+    const dc=discontinuite(v, mecAnnee, vvInputs.anneeEval || CY);
+    if(dc)
+      avis='<div class="notice warn" style="margin:-6px 0 12px">⚠️ <b>Série tarifaire discontinue</b> — '+
+           'le tarif de cette finition a bondi de <b>+'+Math.round(dc.ecart*100)+' %</b> le '+dc.d1+
+           ' ('+fmt(dc.p0)+' → '+fmt(dc.p1)+'), sans rapport avec le mouvement du marché. '+
+           'Trois causes possibles : changement de génération non documenté, substitution de '+
+           'finition sous le même nom, ou fin de promotion. Si c\'est la première, la valeur à '+
+           'neuf ci-dessus n\'est pas celle de ce véhicule — <b>vérifier la génération sur la '+
+           'carte grise</b> avant de retenir le chiffre.</div>';
   }
 
   // La série de référence reste celle de la phase du véhicule.

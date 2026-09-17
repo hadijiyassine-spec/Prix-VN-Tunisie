@@ -1347,3 +1347,104 @@ Mesures, même navigateur, onglet au premier plan, même parcours (deux passages
 | Kilométrage (6 chiffres) | 462 / 380 ms | 408 / 445 ms, dont ~200 ms d'attente imposée par la mesure |
 
 Aucune formule de calcul modifiée. `test_vv.js` : 84 assertions au vert.
+---
+
+## Version 51 (17/09/2026) — méthode B : la valeur vénale part de la valeur à neuf
+
+> Décision de Yassine, 16.09.2026 : **« c'est la méthode B »**.
+
+### Ce qui change, en une phrase
+
+La valeur vénale ne part plus du tarif catalogue de l'année de mise en circulation, mais de la **valeur à neuf de la finition** — son tarif du jour si elle est encore vendue, sa **valeur de fin de série** sinon — actualisée jusqu'à la date d'évaluation. C'est la construction des barèmes classiques : *valeur à neuf × coefficient de vétusté*.
+
+|  | Méthode A (jusqu'à la v50) | **Méthode B (v51)** |
+|---|---|---|
+| Point de départ | tarif en vigueur l'année du véhicule | **valeur à neuf de la finition** |
+| Exemple — Symbol 1.2 Confort de 2017 | 34 100 DT (tarif 2017), actualisés | **41 900 DT** (fin de série, 02.2019), actualisés |
+| Rôle du millésime | choisit le prix | choisit la **génération** et compte l'**âge** |
+| Deux millésimes d'une même génération | valeurs à neuf différentes | **même valeur à neuf**, seul l'âge les sépare |
+
+Le premier bénéfice est de cohérence : la fiche **annonçait déjà** la valeur à neuf en tête (correction demandée le 15.09) alors que le calcul, lui, partait d'un autre chiffre. Les deux disent maintenant la même chose, et la ligne de détail du calcul le nomme : *« tarif du jour 68 900 »* ou *« valeur de fin de série 41 900 du 15.02.2019 »*.
+
+### Effet mesuré sur toute la base
+
+6 581 couples finition × millésime recalculés, avant et après, à kilométrage normal et état normal.
+
+| | |
+|---|---|
+| Écart médian | **0,0 %** |
+| Écart absolu médian | 0,1 % |
+| Inchangés (< 0,5 %) | 52 % |
+| Bougent de plus de 5 % | 19 % |
+| Bougent de plus de 10 % | 7 % |
+| Sens | 27 % à la hausse, 21 % à la baisse |
+
+L'effet est donc **nul sur la moitié de la base et concentré sur les véhicules anciens** :
+
+| âge du véhicule | couples | écart absolu médian | au-delà de 10 % |
+|---|---|---|---|
+| 0-2 ans | 1 396 | 0,0 % | 2 % |
+| 3-5 ans | 1 368 | 0,6 % | 6 % |
+| 6-9 ans | 1 911 | 1,4 % | 9 % |
+| 10-14 ans | 1 881 | 1,7 % | 10 % |
+| 15 ans et + | 25 | 0,7 % | 28 % |
+
+Face aux annonces d'occasion, la surévaluation du modèle passe de **+13,4 % à +14,5 %** en écart médian (écart absolu médian 15,5 % → 16,2 %). C'est le prix de la méthode : ancrer sur la valeur à neuf d'aujourd'hui relève mécaniquement le repère des véhicules anciens. La question du **niveau** reste ouverte (§ 5), la méthode ne la tranche pas.
+
+### 🔴 Ce que la méthode B coûte, et qu'il faut avoir en tête
+
+La méthode A protégeait d'un risque sans le dire. Quand une série tarifaire **change de véhicule sans changer de nom** — la génération suivante reprend l'intitulé de la précédente — le dernier tarif de la série n'est plus celui du même véhicule. En ancrant sur l'année du véhicule, on ne pouvait pas se tromper de génération ; en ancrant sur le dernier tarif, on le peut.
+
+Ce garde-fou repose désormais entièrement sur `PHASES`, la table des frontières de génération **vérifiées**. Mesure de l'exposition :
+
+- **156 modèles** ont au moins un millésime qui bouge de plus de 10 % ;
+- **92** d'entre eux portent un **saut de tarif divergeant du marché**, signature possible d'un changement de produit ;
+- **5 modèles seulement** ont aujourd'hui une frontière documentée.
+
+Les cas les plus lourds sont éloquents : Range Rover 5.0 SC Vogue de 2014, 219 300 → 322 600 DT ; VW Amarok de 2012, 33 500 → 52 800 DT ; Ford Ranger de 2011, 28 400 → 44 300 DT. Dans ces trois cas la série traverse un changement de génération qui n'est pas documenté, et la valeur à neuf retenue est celle du successeur.
+
+**Deux mesures prises en conséquence.**
+
+1. **Quatre frontières de génération ajoutées**, chacune avec une source tunisienne datée et un saut de tarif qui tombe au bon endroit dans la base :
+
+| modèle | génération entrante | frontière | vérification dans la base | source |
+|---|---|---|---|---|
+| Peugeot 208 | II (P21) | 03.02.2021 | 49 990 DT (12.2020) → 50 990 DT (06.2021) | automobile.tn, 03.02.2021 |
+| Hyundai i20 | GB | 15.07.2016 | 31 400 DT (03.2015) → 37 500 DT (19.07.2016) | automobile.tn, 15.07.2016 ; Kapitalis, 19.07.2016 |
+| Hyundai i20 | BC3 | 05.04.2021 | 46 500 DT (10.2020) → 53 950 DT (05.04.2021), 3 finitions nouvelles le même jour | automobile.tn, 06.04.2021 |
+| Opel Corsa | F | 03.06.2021 | 33 904 DT (02.2017) → 53 990 DT (14.06.2021), après quatre ans d'absence de la marque | automobile.tn, 03.06.2021 ; ilBoursa, 04.06.2021 |
+| Suzuki Swift | 4e (A2L) | 03.02.2025 | 53 400 DT (09.2024) → 55 900 DT (03.02.2025), apparition des finitions CVT, disparition des BVA | automobile.tn, essai du 17.02.2025 |
+
+Ces cinq frontières ramènent la surévaluation de +15,2 % à **+14,5 %**.
+
+Deux pistes ont été écartées faute de source datée : la Suzuki Swift de 2017-2018 (seule trace : une annonce de calendrier prévisionnel d'avril 2018) et la VW Polo Sedan remplacée par la Virtus (aucun article tunisien de lancement retrouvé). La règle reste celle posée pour la RAV 4 : **on n'inscrit qu'un changement de produit établi**, jamais une présomption ni une date européenne transposée.
+
+2. **Un avertissement en tête de fiche.** Quand le détecteur de saut divergent repère une discontinuité entre le millésime du véhicule et la valeur à neuf retenue, la fiche l'affiche désormais en clair, au lieu de le laisser dans la liste des réserves de l'indicateur de confiance :
+
+> ⚠️ **Série tarifaire discontinue** — le tarif de cette finition a bondi de +44 % le 10.10.2018 (453 000 → 664 000), sans rapport avec le mouvement du marché. Trois causes possibles : changement de génération non documenté, substitution de finition sous le même nom, ou fin de promotion. Si c'est la première, la valeur à neuf ci-dessus n'est pas celle de ce véhicule — **vérifier la génération sur la carte grise** avant de retenir le chiffre.
+
+C'est une alerte, pas une correction. Compléter `PHASES` modèle par modèle reste le chantier ouvert, et le seul qui referme vraiment le risque.
+
+### Ce que la méthode B règle d'elle-même
+
+L'**enveloppe de cohérence des millésimes**, introduite en v46 pour empêcher qu'un véhicule plus récent ressorte moins cher que son aîné (63 inversions mesurées, jusqu'à −21 %), n'a plus grand-chose à corriger : à l'intérieur d'une génération tous les millésimes partagent la même valeur à neuf, et l'ordre est acquis par construction. Elle reste en place pour deux cas seulement :
+
+1. **les frontières de génération** — deux générations ont deux valeurs à neuf, et rien ne garantit que la sortante soit la moins chère ;
+2. **le plancher de vétusté** — passé l'âge où le coefficient d'âge se bloque, le bonus kilométrique continue de favoriser le millésime le plus ancien ; la borne devient alors légèrement décroissante.
+
+### Contrôles
+
+| contrôle | résultat |
+|---|---|
+| `test_vv.js` | **324 assertions au vert** (deux lignées de tests réunies : les 14 sections de la révision Claude Code + les sections phases, fin de série, captures, indice, clés dupliquées) |
+| Section 15 ajoutée : méthode B | ancrage = dernier tarif de la phase sur 149 finitions ; valeur à neuf identique pour tous les millésimes d'une génération ; RAV 4 2022 ancrée sur la XA50 ; 208 de 2018 ancrée avant 2021 ; évaluation datée de 2019 sans tarif postérieur ; libellé de la fiche = libellé du calcul |
+| Inversions d'âge | **0** (+ 4 dues à la bascule d'incessibilité des populaires, voulues) |
+| Valeur vénale > prix neuf du jour | **0** sur 5 915 cas |
+| Populaire > jumelle normale | **0** sur 391 couples |
+| Validation marché | +14,5 % médian, 35 groupes sur 56 à moins de 20 % |
+
+### Fichiers de contrôle ajoutés
+
+- `snapshot.js` — instantané de la valeur vénale sur toute la base, pour comparer deux versions ;
+- `ab_methode.js` — comparaison de deux instantanés, par tranche d'âge ;
+- `risque_phase.js` — croise le mouvement mesuré et le détecteur de discontinuité, pour lister les modèles où la valeur à neuf retenue pourrait être celle d'un successeur.
