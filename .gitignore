@@ -1,1 +1,14 @@
 app.html
+
+# Dépendances des scripts de contrôle (jsdom). Installées localement par
+#   npm install jsdom --no-save
+# Elles n'ont rien à faire dans le dépôt : ~1 850 fichiers, et le déploiement n'en a pas besoin.
+node_modules/
+package-lock.json
+package.json
+
+# Instantanés de non-régression produits par snapshot.js : volumineux et régénérables.
+avant.json
+apres.json
+snapshot.json
+predictions.json

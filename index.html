@@ -155,7 +155,19 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .mec-filter label{font-size:11px;opacity:.8;white-space:nowrap}
 .mec-filter input{background:none;border:none;outline:none;color:#fff;font-size:12.5px;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;width:52px}
 .mec-filter input::placeholder{color:rgba(255,255,255,.4)}
+/* Sélecteur de mois : il lit les jetons du thème, jamais du blanc codé en dur — sinon il
+   ressort en blanc sur fond sombre. Il reste discret et inactif tant que l'année n'est pas
+   complète. Largeur bornée pour ne pas faire déborder le bandeau sur un téléphone de 390 px. */
+.mec-mois{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:6px;
+  color:#fff;font-size:11.5px;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;
+  padding:2px 4px;max-width:104px;cursor:pointer;outline:none}
+.mec-mois:disabled{opacity:.42;cursor:not-allowed}
+.mec-mois option{background:var(--sf);color:var(--t1)}
 .mec-clr{background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:13px;display:none}
+/* Mention bêta : discrète mais jamais masquée, y compris sur téléphone. */
+.beta{font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:8.5px;font-weight:800;letter-spacing:.6px;
+  vertical-align:middle;margin-left:4px;padding:1px 5px;border-radius:5px;background:var(--sur-orange);
+  color:#fff;border:1px solid rgba(255,255,255,.35);cursor:help}
 .mec-badge{background:var(--sur-orange);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:7px;white-space:nowrap}
 .top-pills{display:flex;gap:8px;flex-shrink:0}
 .pill{background:rgba(255,255,255,.1);border-radius:14px;padding:3px 9px;font-size:10.5px;font-weight:500;white-space:nowrap}
@@ -773,7 +785,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   <div class="logo">
     <div class="logo-ico">🚗</div>
     <div>
-      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v50</span></div>
+      <div class="logo-txt">Prix VN Tunisie <span class="ver" id="verBadge">v52</span><span class="beta" id="betaBadge" title="Version bêta : en cours de mise au point, les chiffres restent à vérifier par l'expert.">BÊTA</span></div>
       <div class="logo-sub" id="dbStats">Chargement…</div>
     </div>
   </div>
@@ -787,6 +799,13 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   <div class="mec-filter">
     <label>📅 1ère MEC :</label>
     <input type="number" id="mecIn" placeholder="Année" min="1990" max="2026" inputmode="numeric">
+    <select id="mecMois" class="mec-mois" aria-label="Mois de 1ère mise en circulation (facultatif)" disabled>
+      <option value="">Mois</option>
+      <option value="1">janvier</option><option value="2">février</option><option value="3">mars</option>
+      <option value="4">avril</option><option value="5">mai</option><option value="6">juin</option>
+      <option value="7">juillet</option><option value="8">août</option><option value="9">septembre</option>
+      <option value="10">octobre</option><option value="11">novembre</option><option value="12">décembre</option>
+    </select>
     <button class="mec-clr" id="mecClr" onclick="clearMEC()">✕</button>
     <span id="mecBadge" class="mec-badge" style="display:none"></span>
   </div>
@@ -901,11 +920,14 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 // ── Globals ──
 let sel = {b:null, m:null, v:null};
 let FY  = null;
+// Mois de 1ère mise en circulation (1 à 12), FACULTATIF. `null` = non saisi, et dans ce cas
+// tout le calcul se comporte exactement comme avant son introduction.
+let FM  = null;
 // ── Version de l'application ──
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
-const VERSION = 'v51';
-const VERSION_DATE = '17/09/2026';
-const VERSION_NOTES = 'méthode B : la valeur vénale part de la VALEUR À NEUF de la finition — tarif du jour, ou valeur de fin de série de sa génération — actualisée à la date d\'évaluation ; le millésime ne commande plus que la génération retenue et l\'âge · quatre changements de génération vérifiés ajoutés (Peugeot 208 en 2021, Hyundai i20 en 2016 et 2021, Opel Corsa en 2021, Suzuki Swift en 2025) · avertissement en tête de fiche sur les séries tarifaires discontinues, dont le calcul dépend désormais · effet 3D retiré · affichage accéléré : saisie de l\'année sans recalcul à chaque chiffre, graphique construit à son entrée à l\'écran, listes sans animation ni reconstruction inutile, tiroir mobile construit à l\'ouverture · tri des listes réparé : les modèles actifs à la MEC remontent enfin en tête · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
+const VERSION = 'v52';
+const VERSION_DATE = '24/09/2026';
+const VERSION_NOTES = 'mois de 1ère mise en circulation, facultatif : il lève l\'ambiguïté des millésimes à cheval sur un changement de génération et affine le tri des finitions ; sans mois, le calcul rend exactement le même chiffre qu\'avant · version signalée BÊTA dans le bandeau · méthode B : la valeur vénale part de la VALEUR À NEUF de la finition — tarif du jour, ou valeur de fin de série de sa génération — actualisée à la date d\'évaluation ; le millésime ne commande plus que la génération retenue et l\'âge · quatre changements de génération vérifiés ajoutés (Peugeot 208 en 2021, Hyundai i20 en 2016 et 2021, Opel Corsa en 2021, Suzuki Swift en 2025) · avertissement en tête de fiche sur les séries tarifaires discontinues, dont le calcul dépend désormais · effet 3D retiré · affichage accéléré : saisie de l\'année sans recalcul à chaque chiffre, graphique construit à son entrée à l\'écran, listes sans animation ni reconstruction inutile, tiroir mobile construit à l\'ouverture · tri des listes réparé : les modèles actifs à la MEC remontent enfin en tête · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -1438,7 +1460,7 @@ let POP_JUMELEES=0;
 // On retient la finition la MOINS CHÈRE disponible à l'année de référence : une populaire est
 // par construction une entrée de gamme, la comparer à une finition haute la surévaluerait.
 // Pas de récursion possible : les finitions retenues ici ne sont jamais populaires.
-function venJumelle(v, anneeRef, anneeEval){
+function venJumelle(v, anneeRef, anneeEval, mois){
   const j=v.popJum;
   if(!j||!j.length) return null;
   let pool=j;
@@ -1448,7 +1470,7 @@ function venJumelle(v, anneeRef, anneeEval){
   }
   let best=null;
   for(const x of pool){
-    const r=computeVEN(x, anneeRef, anneeEval, 'aucun');
+    const r=computeVEN(x, anneeRef, anneeEval, 'aucun', mois);
     if(r && isFinite(r.VEN) && (best===null || r.VEN<best)) best=r.VEN;
   }
   return best;
@@ -1587,25 +1609,39 @@ function rangPhase(modelName, dateStr){
 // Rang de phase d'une ANNÉE de mise en circulation. Une année qui contient une frontière est
 // AMBIGUË : le véhicule peut relever de l'une ou l'autre phase. On retient alors la phase
 // SORTANTE — c'est la plus prudente, et l'année est signalée comme à cheval.
-function phaseDeAnnee(modelName, annee){
+// Avec un MOIS, l'ambiguïté tombe : on compare des clés AAAAMM à la date de frontière.
+// `aCheval` ne reste vrai que si le véhicule a été mis en circulation LE MOIS MÊME de la
+// frontière — là, seul le jour trancherait, et la carte grise ne le donne pas toujours.
+// `tranche` dit que le mois a levé une ambiguïté que l'année seule laissait ouverte : la fiche
+// s'en sert pour nommer la phase retenue au lieu d'invoquer la prudence.
+function phaseDeAnnee(modelName, annee, mois){
   const fr=PHASES[modelName];
-  if(!fr || !fr.length || !annee) return {rang:0, aCheval:false};
-  let rang=0, aCheval=false;
+  if(!fr || !fr.length || !annee) return {rang:0, aCheval:false, tranche:false, frontiere:null};
+  let rang=0, aCheval=false, tranche=false, frontiere=null;
   for(const f of fr){
     const yf=parseInt(f.date.slice(6));
-    if(annee > yf) rang++;
-    else if(annee === yf) aCheval=true;
+    const memeAnnee = (annee === yf);
+    if(memeAnnee) frontiere=f;                       // la frontière qui concerne ce millésime
+    if(mois){
+      const kv=kAnMois(annee, mois), kf=kOf(f.date);
+      if(kv > kf) rang++;
+      else if(kv === kf) aCheval=true;               // même mois : le jour seul trancherait
+      if(memeAnnee && kv !== kf) tranche=true;        // le mois a levé l'ambiguïté de l'année
+    } else {
+      if(annee > yf) rang++;
+      else if(memeAnnee) aCheval=true;
+    }
   }
-  return {rang, aCheval};
+  return {rang, aCheval, tranche, frontiere};
 }
 // Les points de tarif appartenant à la même phase qu'un millésime donné. C'est le seul
 // matériau légitime pour ancrer sa valeur à neuf et pour plafonner sa valeur vénale.
-function histPhase(v, modelName, anneeRef){
+function histPhase(v, modelName, anneeRef, mois){
   // On travaille sur les TARIFS CATALOGUE : relevés vérifiés compris, prix promotionnels exclus.
   const H=tarifsCatalogue(v);
   if(!H || !H.length) return H||[];
   if(!PHASES[modelName] || !anneeRef) return H;
-  const r=phaseDeAnnee(modelName, anneeRef).rang;
+  const r=phaseDeAnnee(modelName, anneeRef, mois).rang;
   const sel=H.filter(h=>rangPhase(modelName, h.d)===r);
   return sel.length ? sel : H;
 }
@@ -2085,11 +2121,11 @@ function derniereDateTarif(v){
 }
 // Dernier tarif catalogue en vigueur pendant l'année `annee`. À défaut, le dernier antérieur ;
 // à défaut encore, le premier postérieur (véhicule plus ancien que la base).
-function tarifMillesime(v, annee){
+function tarifMillesime(v, annee, mois){
   // Le tarif d'un millésime se cherche DANS SA PHASE : sur un modèle qui a changé de
   // génération, le tarif de la nouvelle ne dit rien de ce que valait l'ancienne — et sur une
   // année à cheval, c'est la phase sortante qui est retenue, comme dans le calcul.
-  const H=histPhase(v, modeleDe(v), annee);
+  const H=histPhase(v, modeleDe(v), annee, mois);
   let dans=null, avant=null, apres=null;
   for(const h of H){
     const y=yOf(h.d);
@@ -2133,16 +2169,16 @@ function modeleDe(v){
 // le prix du jour retenu est le DERNIER TARIF DE SA PROPRE PHASE, actualisé — et non celui
 // du modèle qui lui a succédé. Sans quoi le plafond d'une RAV 4 de 2022 valait 204 800 DT,
 // le prix d'une voiture qui n'existait pas encore.
-function prixNeufCourant(v, anneeEval, anneeRef){
+function prixNeufCourant(v, anneeEval, anneeRef, mois){
   if(!v.hist || !v.hist.length) return null;
   const mod=modeleDe(v);
   if(anneeRef && PHASES[mod]){
-    const rRef=phaseDeAnnee(mod, anneeRef).rang;
+    const rRef=phaseDeAnnee(mod, anneeRef, mois).rang;
     const rNow=rangPhase(mod, v.d);
     if(rRef < rNow){
       // La phase du véhicule n'est plus commercialisée : son prix de remplacement à neuf est
       // le dernier tarif qu'elle a connu, actualisé jusqu'à l'année d'évaluation.
-      const pts=histPhase(v, mod, anneeRef);
+      const pts=histPhase(v, mod, anneeRef, mois);
       const dernier=pts[pts.length-1];
       if(!dernier) return null;
       const fc=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
@@ -2160,8 +2196,12 @@ function prixNeufCourant(v, anneeEval, anneeRef){
 // Série des valeurs à neuf d'une finition, millésime par millésime, rendue cohérente.
 // Mise en cache : la série ne dépend que de la finition, de l'année d'évaluation et de la
 // classe d'énergie, alors que computeVEN est appelé des milliers de fois par les contrôles.
-function venSerie(v, AE, fc){
-  const cle=AE+'|'+fc;
+// `anneeRef`/`mois` : le mois de mise en circulation ne vaut QUE pour le millésime du véhicule.
+// Les autres millésimes de la série n'ont aucun mois connu — ils restent traités à l'année.
+// Le mois change la phase retenue, donc la valeur à neuf : il entre dans la clé du cache,
+// sinon une consultation au mois polluerait la suivante (et inversement).
+function venSerie(v, AE, fc, anneeRef, mois){
+  const cle=AE+'|'+fc+((mois&&anneeRef)?('|'+anneeRef+'.'+mois):'');
   if(v.__vs && v.__vs[cle]) return v.__vs[cle];
   const HC=tarifsCatalogue(v);
   const y0=yOf(HC[0].d), y1=Math.max(yOf(HC[HC.length-1].d), AE);
@@ -2189,7 +2229,7 @@ function venSerie(v, AE, fc){
     //
     // ET PAS AU-DELÀ DE LA DATE D'ÉVALUATION : une expertise datée de 2020 ne peut pas
     // s'appuyer sur un tarif de 2026. On retient le dernier tarif connu à cette date.
-    const cand=histPhase(v, mod, y);
+    const cand=histPhase(v, mod, y, (mois && y===anneeRef) ? mois : null);
     let best=null;
     for(const h of cand) if(yOf(h.d)<=AE) best=h;   // hist trié
     if(!best) best=cand[0];
@@ -2248,7 +2288,10 @@ function venSerie(v, AE, fc){
   return out;
 }
 
-function computeVEN(v, anneeRef, anneeEval, regimeKey){
+// `mois` (facultatif) : mois de 1ère mise en circulation. Il ne sert qu'à désigner la PHASE du
+// véhicule quand l'année est à cheval sur un changement de génération — l'âge, lui, reste
+// compté en années pleines.
+function computeVEN(v, anneeRef, anneeEval, regimeKey, mois){
   const fc=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
   const AE = (anneeEval!=null && isFinite(anneeEval)) ? anneeEval : CY;
 
@@ -2281,7 +2324,7 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey){
   // les deux millésimes partagent la même valeur à neuf, et seul l'âge les sépare.
   let L=v.p, M=yOf(v.d), ancre='dernier', idx, predites, envAppliquee=false, dAncre=v.d;
   if(anneeRef && v.hist && v.hist.length){
-    const serie=venSerie(v, AE, fc);
+    const serie=venSerie(v, AE, fc, anneeRef, mois);
     const y=Math.max(serie.y0, Math.min(anneeRef, serie.y1));
     const e=serie.par[y];
     L=e.p; M=e.y; idx=e.idx; predites=e.predites; envAppliquee=e.env; dAncre=e.d;
@@ -2365,7 +2408,7 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey){
     const cd=chargeDouaniere(fc, VVPARAMS.regimes.populaire.majorationDouane);
     majPop = 1+cd.taux;
     tvaSeule = cd.tva;
-    if(VVPARAMS.populaire.plafondJumelle) venJum=venJumelle(v, anneeRef, AE);
+    if(VVPARAMS.populaire.plafondJumelle) venJum=venJumelle(v, anneeRef, AE, mois);
   }
   // ── Plafond « prix neuf du jour » ──
   // La valeur à neuf de référence ne peut pas dépasser ce que coûte réellement le véhicule
@@ -2379,7 +2422,7 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey){
   // catalogue d'une populaire est le prix subventionné, la taxe se réintègre par-dessus.
   // Le plafond du prix neuf suit la même base : un diplomate remplace son véhicule en
   // franchise, pas au tarif concession.
-  const plafondNeuf=(function(){ const x=prixNeufCourant(v, AE, anneeRef); return x==null?null:x*abattement; })();
+  const plafondNeuf=(function(){ const x=prixNeufCourant(v, AE, anneeRef, mois); return x==null?null:x*abattement; })();
   let VEN=L*idx*abattement, neufPlafonne=false;
   if(plafondNeuf!=null && VEN>plafondNeuf){ VEN=plafondNeuf; neufPlafonne=true; }
   VEN*=majPop;
@@ -2398,7 +2441,7 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey){
   // la valeur abattue le faisait glisser d'une gamme à l'autre et changeait son taux — un
   // avantage fiscal ne transforme pas une berline premium en citadine.
   const venGamme = venJum!=null ? venJum : (abattement<1 ? VEN/abattement : VEN);
-  return {VEN, idx, L, M, dAncre, fc, reforme, predites, ancre, anneeEval:AE, anneeRef, majPop, popStatut,
+  return {VEN, idx, L, M, dAncre, fc, reforme, predites, ancre, anneeEval:AE, anneeRef, mois:mois||null, majPop, popStatut,
           venJum, plafonne, venGamme, plafondNeuf, neufPlafonne, regime:RG, regimeKey, tvaSeule,
           abattement, abattementMotif};
 }
@@ -2506,7 +2549,9 @@ function evaluerConfiance(v, r){
   // Phase du modèle
   const mod=modeleDe(v);
   if(PHASES[mod] && r.ven.anneeRef){
-    const ph=phaseDeAnnee(mod, r.ven.anneeRef);
+    // Le mois lève l'ambiguïté du millésime à cheval : la pénalité de 2 points tombe alors,
+    // celle de « phase antérieure » reste — le véhicule appartient bien à l'ancienne génération.
+    const ph=phaseDeAnnee(mod, r.ven.anneeRef, r.ven.mois);
     if(ph.aCheval) add('phaseACheval');
     else if(ph.rang < rangPhase(mod, v.d)) add('phaseAnterieure');
   }
@@ -2550,12 +2595,16 @@ function classementGamme(v, ven, AE, regimeKey){
 // `coteAjustee` (facultatif) : position de cotation forcée par l'expert via le curseur.
 // Elle remplace le `relatif` calculé, sans effacer ce dernier — la fiche affiche les deux
 // pour que l'écart entre la recommandation et le jugement de l'expert reste visible.
-function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh, regimeKey){
+function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh, regimeKey, mois){
   if(!FY) return null;
   const AE = (anneeEval!=null && isFinite(anneeEval)) ? anneeEval : CY;
-  // L'âge se compte à la date d'évaluation, pas à aujourd'hui.
+  // Mois de 1ère MEC : celui passé en argument, sinon celui saisi dans la barre du haut.
+  const MM = (mois===undefined || mois===null) ? FM : mois;
+  // L'ÂGE RESTE EN ANNÉES PLEINES. La date d'évaluation n'est qu'une année : compter l'âge au
+  // mois près d'un côté et à l'année de l'autre fabriquerait une précision qui n'existe pas.
+  // Le mois ne sert donc qu'à désigner la phase du véhicule et à trier les finitions.
   const age=Math.max(0, AE-FY);
-  const ven=computeVEN(v, FY, AE, regimeKey); // prix ancré sur la MEC, actualisé à la date d'évaluation
+  const ven=computeVEN(v, FY, AE, regimeKey, MM); // prix ancré sur la MEC, actualisé à la date d'évaluation
 
   // F_âge : géométrique, au rythme propre à la gamme du véhicule (déterminée par sa valeur
   // à neuf), avec valeur résiduelle plancher.
@@ -2834,7 +2883,9 @@ function sohSaisi(){
 // rien ne le justifie. Le kilométrage, l'état et l'usage remettent déjà le curseur au conseil
 // (`relance`) ; il manquait le cas du CHANGEMENT DE VÉHICULE — et celui du changement d'année
 // de 1ère MEC, qui refait tout le calcul.
-function cleCote(v){ return (v && v.v ? v.v : '') + '|' + (modeleDe(v)||'') + '|' + FY; }
+// Le mois entre dans la clé : changer de mois change le conseil du calcul, l'ajustement manuel
+// porté sur l'ancien ne vaut donc plus.
+function cleCote(v){ return (v && v.v ? v.v : '') + '|' + (modeleDe(v)||'') + '|' + FY + '|' + (FM||''); }
 
 function renderVVOutput(v){
   const el=document.getElementById('vvOut');
@@ -3179,7 +3230,7 @@ function init(){
   const nb=Object.keys(DB).length;
   const nm=Object.values(DB).reduce((a,b)=>a+Object.keys(b).length,0);
   const nv=Object.values(DB).reduce((a,b)=>a+Object.values(b).reduce((c,d)=>c+d.length,0),0);
-  document.getElementById('dbStats').textContent = 'Prix neuf & valeur vénale · '+nb+' marques · '+nm+' modèles';
+  document.getElementById('dbStats').textContent = 'Prix neuf & valeur vénale · version bêta · '+nb+' marques · '+nm+' modèles';
   document.getElementById('pill1').textContent = nb+' marques';
   document.getElementById('pill2').textContent = nm+' modèles';
   document.getElementById('pill3').textContent = nv+' finitions';
@@ -3207,9 +3258,29 @@ window.addEventListener('load', init);
 
 // ── Helpers ──
 function yOf(d){ return parseInt((d||'').split('.')[2]||0); }
+// ══════════ MOIS DE 1ère MISE EN CIRCULATION ══════════
+// Le mois est FACULTATIF. Sans lui, tout le calcul doit rendre exactement le chiffre d'avant :
+// chaque fonction garde donc son comportement à l'année tant que `mois` vaut null.
+// Clé AAAAMM d'une date JJ.MM.AAAA — comparable par simple ordre numérique.
+function kOf(d){ return d ? parseInt(d.slice(6))*100 + parseInt(d.slice(3,5)) : 0; }
+function kAnMois(annee, mois){ return annee*100 + (mois||1); }
+function kPlusMois(k, n){
+  let y=Math.floor(k/100), m=k%100+n;
+  y += Math.floor((m-1)/12); m=((m-1)%12)+1;
+  return y*100+m;
+}
+const MOIS_NOMS=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const mm2=m=>(m<10?'0':'')+m;
+// Libellé de la MEC : « 2020 » sans mois, « 11/2020 » avec.
+function libMEC(annee, mois){
+  const a=annee!=null?annee:FY, m=mois!==undefined?mois:FM;
+  if(!a) return '';
+  return m ? mm2(m)+'/'+a : String(a);
+}
 // Frise 2011 → année courante. L'étendue était figée à 15 ans : dès 2027 les barres débordaient.
 function pctY(y){ return Math.max(0,Math.min(97,Math.round((y-2011)/Math.max(1,CY-2011)*100))); }
-function pctFY(){ return FY ? pctY(FY) : null; }
+// Avec un mois, le repère se place au milieu du mois plutôt qu'au 1er janvier.
+function pctFY(){ return FY ? pctY(FY + (FM ? (FM-0.5)/12 : 0)) : null; }
 // Accent-insensitive normalization so "citroen" also matches "Citroën", etc.
 function norm(s){ return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
 function filt(arr,q){ if(!q)return arr; const ql=norm(q); return arr.filter(x=>norm(x).includes(ql)); }
@@ -3221,15 +3292,28 @@ function filt(arr,q){ if(!q)return arr; const ql=norm(q); return arr.filter(x=>n
 const cacheNE=(o,k,val)=>{ Object.defineProperty(o,k,{value:val,writable:true,configurable:true,enumerable:false}); return val; };
 function vCompat(v){
   if(!FY) return 'all';
+  // ── Avec un mois : raisonnement en clés AAAAMM ──
+  // `d0` et `d` sont le PREMIER et le DERNIER tarif RELEVÉS, pas les vraies dates de début et
+  // de fin de commercialisation. La tolérance de 12 mois après le dernier relevé remplace le
+  // « +1 an » de la règle annuelle : à la maille de l'année, ce +1 valait de 12 à 24 mois
+  // selon le mois réel du véhicule ; en mois, il vaut 12 partout.
+  if(FM){
+    if(v.__k0===undefined){ cacheNE(v,'__k0',kOf(v.d0)); cacheNE(v,'__k1',kOf(v.d)); }
+    const kv=kAnMois(FY,FM);
+    if(kv>=v.__k0 && kv<=kPlusMois(v.__k1,12)) return 'ok';
+    return kv<v.__k0 ? 'avant' : 'apres';
+  }
+  // ── Sans mois : la règle annuelle, inchangée au caractère près ──
   if(v.__y0===undefined){ cacheNE(v,'__y0',yOf(v.d0)); cacheNE(v,'__y1',yOf(v.d)); }
   if(FY>=v.__y0 && FY<=v.__y1+1) return 'ok';
   return FY<v.__y0 ? 'avant' : 'apres';
 }
 function modelCompat(vers){
   if(!FY) return 'all';
-  if(vers.__cmpFY===FY) return vers.__cmp;
+  // Le cache se mémorise sur le COUPLE année + mois : changer de mois change la compatibilité.
+  if(vers.__cmpFY===FY && vers.__cmpFM===FM) return vers.__cmp;
   const c = vers.some(v=>vCompat(v)==='ok') ? 'ok' : vers.every(v=>vCompat(v)==='apres') ? 'apres' : 'avant';
-  cacheNE(vers,'__cmpFY',FY); cacheNE(vers,'__cmp',c);
+  cacheNE(vers,'__cmpFY',FY); cacheNE(vers,'__cmpFM',FM); cacheNE(vers,'__cmp',c);
   return c;
 }
 // Rang de tri. Les tris écrivaient `r[c]||2` : le rang 0 (« actif à la MEC ») étant faux en
@@ -3241,7 +3325,8 @@ const FINITIONS_MARQUE={};
 function finitionsMarque(b){ return FINITIONS_MARQUE[b] || (FINITIONS_MARQUE[b]=Object.values(DB[b]).flat()); }
 function tagHtml(c,y0,y1){
   if(c==='all') return '';
-  if(c==='ok') return '<span class="itag ok">✓ actif en '+FY+' ('+y0+'–'+(y1===CY?'présent':y1)+')</span>';
+  // « actif en 11/2020 » : le libellé reste prudent — d0 et d sont des dates de RELEVÉ de tarif.
+  if(c==='ok') return '<span class="itag ok">✓ actif en '+libMEC()+' ('+y0+'–'+(y1===CY?'présent':y1)+')</span>';
   if(c==='apres') return '<span class="itag apres">✗ fin réf. '+y1+'</span>';
   return '<span class="itag avant">⏳ lancé en '+y0+'</span>';
 }
@@ -3378,17 +3463,49 @@ document.getElementById('mecIn').addEventListener('input',function(){
   // Une année incomplète vaut « pas d'année » ; le test FY===avant plus bas évite alors de
   // redessiner à chaque chiffre.
   const y = this.value.length<4 ? NaN : parseInt(this.value);
-  const avant=FY;
-  if(y>=MIN_MEC&&y<=CY){FY=y;document.getElementById('mecClr').style.display='block';document.getElementById('mecBadge').style.display='inline-flex';document.getElementById('mecBadge').textContent=y;}
-  else{FY=null;document.getElementById('mecClr').style.display='none';document.getElementById('mecBadge').style.display='none';}
-  if(FY===avant) return;   // même année qu'avant : l'affichage est déjà à jour
+  const avant=FY, avantMois=FM;
+  if(y>=MIN_MEC&&y<=CY){FY=y;document.getElementById('mecClr').style.display='block';}
+  else{FY=null;document.getElementById('mecClr').style.display='none';}
+  // Un mois sans année n'a pas de sens : effacer l'année efface le mois.
+  if(!FY) FM=null;
+  majSelecteurMois();
+  if(FY===avant && FM===avantMois) return;   // rien n'a changé : l'affichage est déjà à jour
+  redessinerMEC();
+});
+// Le mois est FACULTATIF : il ne s'active qu'une fois l'année complète, et ne prend jamais le
+// focus — l'expert qui ne saisit que l'année doit pouvoir passer à la suite sans le voir.
+document.getElementById('mecMois').addEventListener('change',function(){
+  const m=parseInt(this.value)||null;
+  if(m===FM) return;          // même mois choisi deux fois : aucun redessin
+  FM=m;
+  majBadgeMEC();
+  redessinerMEC();
+});
+// État du sélecteur de mois et du badge, après tout changement d'année.
+function majSelecteurMois(){
+  const sm=document.getElementById('mecMois');
+  if(sm){
+    sm.disabled=!FY;
+    if(!FY) sm.value='';
+    else if(FM) sm.value=String(FM);
+  }
+  majBadgeMEC();
+}
+function majBadgeMEC(){
+  const b=document.getElementById('mecBadge');
+  if(!b) return;
+  b.style.display = FY ? 'inline-flex' : 'none';
+  if(FY) b.textContent = libMEC();
+}
+function redessinerMEC(){
   rBrands(document.getElementById('srchB').value.trim());
   if(sel.b) rModels(document.getElementById('srchM').value.trim());
   if(sel.b&&sel.m) rVersions(document.getElementById('srchV').value.trim());
   if(sel.v) rResult();
   renderDrawer(document.getElementById('drawerSrch').value.trim());
-});
-function clearMEC(){FY=null;document.getElementById('mecIn').value='';document.getElementById('mecClr').style.display='none';document.getElementById('mecBadge').style.display='none';
+}
+function clearMEC(){FY=null;FM=null;document.getElementById('mecIn').value='';document.getElementById('mecClr').style.display='none';
+  majSelecteurMois();
   rBrands('');if(sel.b)rModels('');if(sel.b&&sel.m)rVersions('');if(sel.v)rResult();renderDrawer('');}
 
 // ── Global model search ──
@@ -3643,7 +3760,7 @@ function clearRes(){
 // Bloc du prix catalogue. Sans année de MEC, c'est le tarif du jour. Avec une MEC qui relève
 // d'une PHASE ANTÉRIEURE, c'est le dernier tarif de CETTE phase qui est mis en avant : afficher
 // le prix de la génération suivante sous le nom d'un véhicule de 2022 était le défaut signalé.
-function blocPrix(v, modelName, mecAnnee){
+function blocPrix(v, modelName, mecAnnee, mecMois){
   // ══ LA VALEUR À NEUF, AU SENS DE L'EXPERTISE ══
   //
   // Règle posée par Yassine : « la valeur à neuf à afficher est soit la valeur actuelle, soit
@@ -3665,19 +3782,32 @@ function blocPrix(v, modelName, mecAnnee){
   let avis='';
   const fr=PHASES[modelName];
   if(fr && fr.length && mecAnnee){
-    const ph=phaseDeAnnee(modelName, mecAnnee);
+    const ph=phaseDeAnnee(modelName, mecAnnee, mecMois);
     const rNow=rangPhase(modelName, v.d);
     if(ph.aCheval){
       avis='<div class="notice warn" style="margin:-6px 0 12px">🔀 <b>Millésime à cheval</b> — '+
-           'la génération a changé le '+fr[ph.rang].date+'. Un véhicule de '+mecAnnee+
-           ' peut relever de l\'une ou l\'autre phase ; la carte grise et le numéro de série '+
-           'tranchent. Par prudence, le calcul retient la phase <b>sortante</b>.</div>';
+           'la génération a changé le '+fr[ph.rang].date+'. Un véhicule de '+libMEC(mecAnnee, mecMois)+
+           (mecMois ? ' est mis en circulation le mois même de ce changement : seul le jour '+
+                      'trancherait. ' : ' peut relever de l\'une ou l\'autre phase ; la carte grise et '+
+                      'le numéro de série tranchent. ')+
+           'Par prudence, le calcul retient la phase <b>sortante</b>.</div>';
+    }
+    // Le mois a tranché un millésime que l'année seule laissait ambigu : on nomme la phase
+    // retenue et la raison, au lieu d'invoquer la prudence.
+    else if(ph.tranche && ph.frontiere){
+      const f=ph.frontiere;
+      const apres = ph.rang > 0 && rangPhase(modelName, f.date) <= ph.rang;
+      avis='<div class="notice ok" style="margin:-6px 0 12px">📅 <b>Génération tranchée par le mois</b> — '+
+           'mis en circulation en '+libMEC(mecAnnee, mecMois)+', '+
+           (apres ? 'après' : 'avant')+' le lancement de la '+(f.gen?'<b>'+f.gen+'</b> ':'')+
+           'le '+f.date+' : la valeur à neuf retenue est celle de la phase '+
+           (apres ? '<b>entrante</b>' : '<b>précédente</b>')+'.</div>';
     }
     else if(ph.rang < rNow){
       const f=fr[ph.rang];
       avis='<div class="notice warn" style="margin:-6px 0 12px">🔀 <b>Changement de génération</b> — '+
            'le tarif du jour de ce modèle ('+fmt(v.p)+') est celui de la '+
-           (f.gen?'<b>'+f.gen+'</b>, ':'')+'phase lancée le '+f.date+'. Un véhicule de '+mecAnnee+
+           (f.gen?'<b>'+f.gen+'</b>, ':'')+'phase lancée le '+f.date+'. Un véhicule de '+libMEC(mecAnnee, mecMois)+
            ' appartient à la phase précédente : la valeur à neuf retenue est celle de SA phase. '+
            '<span style="opacity:.75">'+f.motif+' Source : '+f.source+'.</span></div>';
     }
@@ -3702,7 +3832,7 @@ function blocPrix(v, modelName, mecAnnee){
   }
 
   // La série de référence reste celle de la phase du véhicule.
-  const H = histPhase(v, modelName, mecAnnee);
+  const H = histPhase(v, modelName, mecAnnee, mecMois);
   const dernier = H[H.length-1];
   if(!dernier){
     h+='<span class="price-val">'+v.p.toLocaleString('fr-TN')+'</span>'+
@@ -3713,7 +3843,7 @@ function blocPrix(v, modelName, mecAnnee){
   // « Au catalogue » suppose deux choses : un tarif récent, et que la phase du véhicule soit
   // encore celle qui se vend.
   const phaseCourante = !PHASES[modelName] || !mecAnnee ||
-    phaseDeAnnee(modelName, mecAnnee).rang === rangPhase(modelName, v.d);
+    phaseDeAnnee(modelName, mecAnnee, mecMois).rang === rangPhase(modelName, v.d);
   const auCatalogue = anFin >= CY-1 && phaseCourante;
 
   h+='<span class="price-val">'+dernier.p.toLocaleString('fr-TN')+'</span>'+
@@ -3735,11 +3865,11 @@ function blocPrix(v, modelName, mecAnnee){
        '</b> — le tarif de fin de série ramené au niveau des prix de '+AE+'.</div>';
 
   // Tarif catalogue à la mise en circulation : le prix d'achat d'origine du véhicule.
-  const t = tarifMillesime(v, mecAnnee);
+  const t = tarifMillesime(v, mecAnnee, mecMois);
   if(t && t.p!==dernier.p){
     const mm = yOf(t.d);
     h+='<div class="prix-ecart">Tarif catalogue à la 1ère mise en circulation'+
-       (mm===mecAnnee ? ' ('+mecAnnee+')' : ' — dernier connu, '+mm)+
+       (mm===mecAnnee ? ' ('+libMEC(mecAnnee, mecMois)+')' : ' — dernier connu, '+mm)+
        ' : <b>'+fmt(t.p)+'</b>.</div>';
   }
 
@@ -3752,6 +3882,33 @@ function blocPrix(v, modelName, mecAnnee){
          fm.d+'</b> ('+fm.v+', '+fmt(fm.p)+').</div>';
   }
   return h+avis;
+}
+
+// ── Invitation à saisir le mois, et SEULEMENT quand il changerait quelque chose ──
+// Deux cas seulement : l'année tombe sur une frontière de génération, ou au moins une finition
+// du modèle bascule d'« active » à « hors période » selon le mois. Sinon on se tait : le
+// bandeau est déjà chargé, et une invitation qui ne sert à rien ne sera plus lue.
+function moisUtile(modelName, vers, annee){
+  if(!annee || FM) return null;
+  const fr=PHASES[modelName];
+  if(fr) for(const f of fr) if(parseInt(f.date.slice(6))===annee) return {type:'phase', f};
+  for(const v of vers||[]){
+    const k0=kOf(v.d0), k1=kPlusMois(kOf(v.d),12);
+    let dedans=false, dehors=false;
+    for(let m=1;m<=12;m++){ const kv=kAnMois(annee,m); if(kv>=k0 && kv<=k1) dedans=true; else dehors=true; }
+    if(dedans && dehors) return {type:'compat', v};
+  }
+  return null;
+}
+function astuceMoisHtml(modelName, vers, annee){
+  const u=moisUtile(modelName, vers, annee);
+  if(!u) return '';
+  const txt = u.type==='phase'
+    ? 'Le mois de mise en circulation lèverait l\'ambiguïté : la génération '+
+      (u.f.gen?'<b>'+u.f.gen+'</b> ':'')+'est arrivée le <b>'+u.f.date+'</b>.'
+    : 'Le mois de mise en circulation affinerait le choix de la finition : certaines ne sont '+
+      'référencées que sur une partie de '+annee+'.';
+  return '<div class="notice" style="margin:-4px 0 12px">📅 '+txt+'</div>';
 }
 
 function rResult(){
@@ -3771,9 +3928,10 @@ function rResult(){
   else dHtml='<span class="cdelta flat">Stable</span>';
   let banner='';
   if(FY){
-    if(c==='ok') banner='<div class="compat-banner match">✅ Référencé lors de la 1ère MEC ('+FY+'). Phase base : '+v.d0+' → '+v.d+'</div>';
-    else if(c==='apres') banner='<div class="compat-banner apres">⛔ Dernière réf. base : '+v.d+'. Probablement non actif en '+FY+'.</div>';
-    else banner='<div class="compat-banner avant">⏳ Non encore référencé en Tunisie en '+FY+'. 1ère entrée : '+v.d0+'.</div>';
+    const lib=libMEC();
+    if(c==='ok') banner='<div class="compat-banner match">✅ Référencé lors de la 1ère MEC ('+lib+'). Phase base : '+v.d0+' → '+v.d+'</div>';
+    else if(c==='apres') banner='<div class="compat-banner apres">⛔ Dernière réf. base : '+v.d+'. Probablement non actif en '+lib+'.</div>';
+    else banner='<div class="compat-banner avant">⏳ Non encore référencé en Tunisie en '+lib+'. 1ère entrée : '+v.d0+'.</div>';
   }
   document.getElementById('resEmpty').style.display='none';
   const c2=document.getElementById('resContent'); c2.style.display='block'; c2.innerHTML='';
@@ -3797,7 +3955,8 @@ function rResult(){
       '<div class="rcard-ver">'+v.v+'</div>'+
     '</div>'+
     '<div class="rcard-body">'+banner+
-    blocPrix(v, sel.m, FY)+
+    blocPrix(v, sel.m, FY, FM)+
+    astuceMoisHtml(sel.m, DB[sel.b][sel.m], FY)+
     renderVVBlock(v)+
     (buildSpecsBlock(v, sel.m, FY))+(genSect?'<div class="sect"><div class="sect-hd"><span class="sect-title">Générations — prix par phase</span></div>'+genSect+'</div>':'')+
     (v.hist.length>=2?

@@ -1448,3 +1448,90 @@ L'**enveloppe de cohérence des millésimes**, introduite en v46 pour empêcher 
 - `snapshot.js` — instantané de la valeur vénale sur toute la base, pour comparer deux versions ;
 - `ab_methode.js` — comparaison de deux instantanés, par tranche d'âge ;
 - `risque_phase.js` — croise le mouvement mesuré et le détecteur de discontinuité, pour lister les modèles où la valeur à neuf retenue pourrait être celle d'un successeur.
+
+
+---
+
+## Version 52 (24/09/2026) — mois de 1ère mise en circulation
+
+### Ce que le mois change
+
+L'année seule ne suffit pas à trancher deux choses :
+
+1. **La génération du véhicule**, quand l'année de MEC tombe sur un changement de phase. Une Peugeot 208 de 2021 pouvait relever de la Ire ou de la II (P21), lancée le 03.02.2021 : le calcul retenait prudemment la phase **sortante** et l'indicateur de confiance posait la réserve « millésime à cheval » (2 points). Avec « 06/2021 », il n'y a plus d'ambiguïté : la phase entrante est retenue, nommée dans la fiche, et la réserve tombe.
+2. **La compatibilité d'une finition**, quand son dernier tarif relevé date du début de l'année précédente. Une finition arrêtée en mars 2020 ressortait « active » pour toute l'année 2021 ; elle ne l'est plus que jusqu'en mars 2021.
+
+Le mois est **facultatif**. Sans lui, tout se comporte exactement comme en v51 — c'est la contrainte qui a gouverné toute la mise en œuvre, et elle est vérifiée par la preuve de non-régression ci-dessous.
+
+### La règle de tolérance, et pourquoi 12 mois
+
+`d0` et `d` sont le **premier et le dernier tarif RELEVÉS** dans la base, pas les vraies dates de début et de fin de commercialisation. Le tri par période est donc un ordre de grandeur, et les libellés le disent ainsi (« ✓ actif en 11/2020 », jamais « commercialisé le 11/2020 »).
+
+À l'année, la règle s'écrivait `FY >= y0 && FY <= y1 + 1` : le « +1 » est une tolérance de stock — un véhicule immatriculé début N+1 peut être un exemplaire du millésime N resté en concession. Mais cette tolérance vaut **de 12 à 24 mois selon le mois réel** du véhicule : un janvier N+1 est à 13 mois du dernier relevé de décembre N, un décembre N+1 à 24 mois. Avec le mois, la règle devient `kv >= k0` et `kv <= k1 + 12 mois` en clés `AAAAMM` : **12 mois partout**, ce qui est la lecture stricte de la même intention.
+
+Sans mois, la règle annuelle est conservée **au caractère près**. La réécrire « proprement » en clés de mois aurait déplacé silencieusement des centaines de finitions.
+
+### Ce que le mois ne change pas
+
+**L'âge reste compté en années pleines** (année d'évaluation moins année de MEC). La date d'évaluation, elle, n'est qu'une année : compter l'âge au mois près d'un côté et à l'année de l'autre fabriquerait une précision qui n'existe pas. Les taux de décote ne sont pas retouchés, et la calibration n'est pas revue.
+
+### Les cinq modèles à frontière vérifiée
+
+Bascule mesurée sur la finition qui enjambe la frontière, MEC de l'année de la frontière, évaluation 2026, 60 000 km :
+
+| modèle · finition | frontière | mois d'avant | mois d'après | écart |
+|---|---|---|---|---|
+| Peugeot 208 · 1.2 L Allure | 03.02.2021 | 01/2021 → 68 761 | 03/2021 → 67 535 | −2 % |
+| Hyundai i20 · 1.2 L GLS High Grade | 15.07.2016 | 06/2016 → 51 569 | 08/2016 → 59 635 | +16 % |
+| Hyundai i20 · 1.2 L GLS | 05.04.2021 | 03/2021 → 53 379 | 05/2021 → 63 950 | +20 % |
+| Opel Corsa · 1.2 L | 03.06.2021 | 05/2021 → 48 459 | 07/2021 → 56 545 | +17 % |
+| Suzuki Swift · 1.2 L GL | 03.02.2025 | 01/2025 → 53 400 | 03/2025 → 57 900 | +8 % |
+
+Dans les cinq cas, **la valeur sans mois est identique à celle du mois d'avant** : la phase sortante, retenue par prudence, comme en v51. La Toyota RAV 4 Hybride (frontière du 14.06.2026) n'a aucune finition qui enjambe sa frontière — la XA50 a quitté le catalogue — donc aucune bascule à mesurer sur ce modèle.
+
+La bascule est franche (jusqu'à +20 %) : c'est précisément ce que la saisie du mois sert à trancher, puisque la méthode B ancre la valeur à neuf sur le **dernier tarif de la phase**. Le contrôle est rejouable : `node bascule_mois.js`.
+
+### Preuve de non-régression
+
+`snapshot.js` recalcule la valeur vénale de toute la base **sans jamais saisir de mois**, avant et après la modification, puis `ab_methode.js` compare :
+
+```
+Couples comparés : 6581
+Écart médian      : 0.0 %
+Écart absolu médian: 0.0 %
+Inchangés (<0,5 %): 100 %
+Bougent de +5 %   : 0 %
+```
+
+**0,0 % partout, 100 % d'inchangés** : le mois n'a fui dans aucun chemin de calcul. Trois points y veillent dans le code : le cache de `venSerie` porte le mois dans sa clé ; le mois n'est passé qu'au millésime de la MEC, jamais aux autres millésimes de la série ; `vCompat` garde sa branche annuelle intacte.
+
+### Contrôles
+
+| script | résultat |
+|---|---|
+| `test_vv.js` | **343 assertions** au vert (324 + 19 de la nouvelle section 16) |
+| `audit3.js` | 0 inversion d'âge (+ 4 populaires, voulues) |
+| `check_neuf.js` | 0 valeur vénale au-dessus du prix neuf du jour (5 915 cas) |
+| `check_pop.js` | 0 populaire au-dessus de sa jumelle (391 couples) |
+| `validation.js` | +14,5 % médian, 35/56 groupes sous 20 % — inchangé |
+| `css_audit*.js` | 104 paires fond/texte, thèmes clair et sombre, toutes au-dessus de 4,5:1 |
+| `mob_check.js` | parcours téléphone conforme |
+
+Contrôle visuel dans un navigateur réel : téléphone 390 px — le sélecteur tient sur la même ligne que l'année, sans débordement (largeur de défilement égale à 390) ; thème sombre — le `<select>` prend les jetons du thème, aucun blanc codé en dur.
+
+### Interface
+
+- `<select id="mecMois">` à côté de l'année, désactivé et estompé tant que l'année n'est pas complète, jamais autofocus.
+- Badge : `2020` sans mois, `11/2020` avec. Idem pour le libellé de compatibilité et la bannière de la fiche.
+- La croix efface l'année **et** le mois, et rend le sélecteur inactif.
+- Repère de la frise placé au milieu du mois saisi.
+- **Invitation contextuelle**, affichée seulement quand le mois changerait quelque chose : l'année tombe sur une frontière de génération, ou au moins une finition du modèle bascule d'« active » à « hors période » selon le mois. Sinon, rien.
+- Performance préservée : un changement de mois redessine une fois, un mois identique ne redessine pas, et les caches de compatibilité sont mémorisés sur le **couple année + mois**.
+
+### Mention bêta
+
+À la demande de Yassine, l'application se présente comme une version **bêta** : pastille `BÊTA` dans le bandeau, à côté du numéro de version, et mention « version bêta » dans la ligne de sous-titre. L'infobulle rappelle que les chiffres restent à vérifier par l'expert.
+
+### Livraison
+
+`index.html` seul — `data.js` n'a pas été modifié, pas une ligne.

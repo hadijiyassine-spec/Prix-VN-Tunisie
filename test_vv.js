@@ -1449,6 +1449,144 @@ setTimeout(() => {
     }
     setFY(2019);
 
+    // ── 16. Mois de 1ère mise en circulation (facultatif) ──
+    // Le mois lève l'ambiguïté des millésimes à cheval sur un changement de génération et
+    // affine le tri des finitions. Règle intangible : SANS mois, tout doit rendre le chiffre
+    // d'avant, au dinar près.
+    console.log('\n16. Mois de 1ère mise en circulation :');
+    {
+      const CY16 = win.eval('CY');
+      const PH16 = win.eval('PHASES');
+      const setFM = m => {
+        const el = doc.getElementById('mecMois');
+        el.value = m == null ? '' : String(m);
+        el.dispatchEvent(new win.Event('change', { bubbles: true }));
+      };
+      const moisDe = d => parseInt(d.slice(3, 5));
+
+      // 16.1 Sans mois, rien ne bouge — y compris après un détour par plusieurs mois, ce qui
+      // vérifie du même coup que le cache de venSerie n'est pas pollué par le mois.
+      const p208 = win.DB.Peugeot['Peugeot 208'].find(x => x.v === '1.2 L Active');
+      setFY(2021); setFM(null);
+      const sansMoisAvant = win.computeVV(p208, 60000, 'normal', 'particulier', null, CY16).vv;
+      setFM(1); setFM(6); setFM(11); setFM(null);
+      const sansMoisApres = win.computeVV(p208, 60000, 'normal', 'particulier', null, CY16).vv;
+      check('sans mois, la valeur vénale est exactement celle d\'avant (cache non pollué)',
+        sansMoisAvant === sansMoisApres, sansMoisAvant + ' DT');
+
+      // 16.2 Peugeot 208, MEC 2021 : la frontière du 03.02.2021 sépare les deux générations.
+      const fr208 = PH16['Peugeot 208'][0];
+      setFY(2021); setFM(1);
+      const janv = win.computeVV(p208, 60000, 'normal', 'particulier', null, CY16);
+      setFM(6);
+      const juin = win.computeVV(p208, 60000, 'normal', 'particulier', null, CY16);
+      check('Peugeot 208 : 01/2021 relève de la génération sortante, 06/2021 de l\'entrante',
+        janv.ven.L !== juin.ven.L && janv.vv !== juin.vv,
+        'janv. ' + janv.ven.L + ' (' + janv.ven.M + ') vs juin ' + juin.ven.L + ' (' + juin.ven.M + ')');
+      check('…et la bascule se fait bien à la date de la frontière (' + fr208.date + ')',
+        win.phaseDeAnnee('Peugeot 208', 2021, 1).rang < win.phaseDeAnnee('Peugeot 208', 2021, 6).rang);
+
+      // 16.3 Hyundai i20 : même bascule autour du 05.04.2021 (ce modèle a deux frontières).
+      const fri20 = (PH16['Hyundai i20'] || []).find(f => f.date.endsWith('2021'));
+      if (fri20) {
+        // Il faut une finition qui ENJAMBE la frontière : celles qui naissent le jour du
+        // lancement (« 1.2 L High Grade », 05.04.2021) n'ont qu'une phase, et ne basculent pas.
+        const kFront = parseInt(fri20.date.slice(6)) * 100 + parseInt(fri20.date.slice(3, 5));
+        const kh = d => parseInt(d.slice(6)) * 100 + parseInt(d.slice(3, 5));
+        const i20 = win.DB.Hyundai['Hyundai i20'].find(f =>
+          kh(f.hist[0].d) < kFront && kh(f.hist[f.hist.length - 1].d) > kFront)
+          || win.DB.Hyundai['Hyundai i20'][0];
+        setFY(2021); setFM(1);
+        const i20a = win.computeVV(i20, 60000, 'normal', 'particulier', null, CY16);
+        setFM(Math.min(12, moisDe(fri20.date) + 2));
+        const i20b = win.computeVV(i20, 60000, 'normal', 'particulier', null, CY16);
+        check('Hyundai i20 : bascule de génération autour du ' + fri20.date,
+          i20a.ven.L !== i20b.ven.L, i20.v + ' : ' + i20a.ven.L + ' (' + i20a.ven.M + ') vs ' + i20b.ven.L + ' (' + i20b.ven.M + ')');
+      }
+
+      // 16.4 Tolérance de 12 mois après le DERNIER TARIF RELEVÉ — et pas au-delà.
+      let finMars2020 = null;
+      for (const b of Object.keys(win.DB)) for (const m of Object.keys(win.DB[b])) for (const f of win.DB[b][m])
+        if (!finMars2020 && /^\d\d\.03\.2020$/.test(f.d) && win.yOf(f.d0) <= 2019) finMars2020 = f;
+      if (finMars2020) {
+        setFY(2021); setFM(1);
+        const c1 = win.vCompat(finMars2020);
+        setFM(6);
+        const c6 = win.vCompat(finMars2020);
+        check('dernier tarif de mars 2020 : actif en 01/2021, hors période en 06/2021',
+          c1 === 'ok' && c6 === 'apres', finMars2020.v + ' → ' + c1 + ' / ' + c6);
+      }
+
+      // 16.5 Mois égal au mois de la frontière : seul le jour trancherait, l'ambiguïté demeure.
+      const phFront = win.phaseDeAnnee('Peugeot 208', 2021, moisDe(fr208.date));
+      check('mois égal à celui de la frontière : le millésime reste « à cheval »',
+        phFront.aCheval === true && phFront.tranche === false);
+      check('mois différent : l\'ambiguïté est levée',
+        win.phaseDeAnnee('Peugeot 208', 2021, 11).aCheval === false &&
+        win.phaseDeAnnee('Peugeot 208', 2021, 11).tranche === true);
+      // Sans mois, le comportement d'avant est conservé : l'année entière reste à cheval.
+      check('sans mois, le millésime de la frontière reste à cheval comme avant',
+        win.phaseDeAnnee('Peugeot 208', 2021).aCheval === true);
+
+      // 16.6 La pénalité « millésime à cheval » tombe quand le mois a tranché.
+      setFY(2021); setFM(null);
+      const confSans = win.computeVV(p208, 60000, 'normal', 'particulier', null, CY16);
+      setFM(11);
+      const confAvec = win.computeVV(p208, 60000, 'normal', 'particulier', null, CY16);
+      const mSans = win.evaluerConfiance(p208, confSans).motifs.join(' ');
+      const mAvec = win.evaluerConfiance(p208, confAvec).motifs.join(' ');
+      check('la réserve « millésime à cheval » disparaît quand le mois tranche',
+        /cheval/i.test(mSans) && !/cheval/i.test(mAvec));
+
+      // 16.7 Affichage : badge, libellé de compatibilité et bannière en MM/AAAA.
+      setFY(2020); setFM(11);
+      check('le badge affiche MM/AAAA', doc.getElementById('mecBadge').textContent === '11/2020',
+        doc.getElementById('mecBadge').textContent);
+      check('le libellé de compatibilité affiche MM/AAAA', /actif en 11\/2020/.test(win.tagHtml('ok', 2012, 2021)));
+      const vAff = win.DB.Peugeot['Peugeot 208'].find(x => win.vCompat(x) === 'ok') || p208;
+      win.selectBrand('Peugeot');
+      [...doc.querySelectorAll('#listM .item')].find(x => x.querySelector('.item-name').textContent.trim().endsWith('Peugeot 208')).click();
+      const ligne = [...doc.querySelectorAll('#listV > .vi')].find(x => x.__v && x.__v.v === vAff.v);
+      if (ligne) ligne.click();
+      check('la bannière de la fiche affiche MM/AAAA',
+        /1ère MEC \(11\/2020\)|non actif en 11\/2020|en Tunisie en 11\/2020/.test(doc.getElementById('resContent').innerHTML));
+      check('l\'invitation à saisir le mois n\'apparaît que sans mois saisi',
+        !/lèverait l.ambiguïté|affinerait le choix/.test(doc.getElementById('resContent').innerHTML));
+      setFM(null);
+      check('…et elle apparaît quand le mois changerait quelque chose',
+        /lèverait l.ambiguïté|affinerait le choix/.test(doc.getElementById('resContent').innerHTML));
+
+      // 16.8 Le sélecteur : inactif sans année, actif ensuite, remis à zéro par la croix.
+      const selMois = doc.getElementById('mecMois');
+      check('le sélecteur de mois est un menu déroulant étiqueté', !!selMois && !!selMois.getAttribute('aria-label'));
+      check('il est actif une fois l\'année saisie', selMois.disabled === false);
+      setFM(7);
+      doc.getElementById('mecClr').click();
+      check('la croix efface l\'année ET le mois, et désactive le sélecteur',
+        win.eval('FY') === null && win.eval('FM') === null && selMois.disabled === true && selMois.value === '');
+
+      // 16.9 Aucun redessin superflu au changement de mois (même technique qu'en section 14).
+      setFY(2021);
+      const rBrandsOrig16 = win.rBrands; let rendus16 = 0;
+      win.rBrands = function () { rendus16++; return rBrandsOrig16.apply(this, arguments); };
+      setFM(5); setFM(5);            // deux fois le même mois : un seul redessin
+      const apresMeme = rendus16;
+      setFM(9);                       // un mois différent : un redessin de plus
+      win.rBrands = rBrandsOrig16;
+      check('un changement de mois redessine une fois, un mois identique ne redessine pas',
+        apresMeme === 1 && rendus16 === 2, 'rendus=' + apresMeme + '/' + rendus16);
+
+      // 16.10 L'âge n'est PAS passé en mois : il reste en années pleines.
+      setFY(2021); setFM(1);
+      const ageJanv = win.computeVV(p208, 60000, 'normal', 'particulier', null, CY16).age;
+      setFM(12);
+      const ageDec = win.computeVV(p208, 60000, 'normal', 'particulier', null, CY16).age;
+      check('l\'âge reste compté en années pleines, quel que soit le mois',
+        ageJanv === ageDec && ageJanv === CY16 - 2021, 'âge ' + ageJanv);
+      setFM(null);
+    }
+    setFY(2019);
+
     console.log('\n' + (fails === 0 ? '=== TOUS LES TESTS PASSENT ===' : '=== ' + fails + ' ÉCHEC(S) ==='));
   } catch (e) {
     console.log('EXCEPTION:', e.message);
