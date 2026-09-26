@@ -615,6 +615,10 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .vv-prix-val{display:block;font-family:'Syne','Inter','Segoe UI',system-ui,sans-serif;
   font-size:clamp(30px,7.2vw,38px);font-weight:800;color:var(--pr);line-height:1.02;letter-spacing:-.8px}
 .vv-prix-note{display:block;font-size:9.5px;color:var(--t3);margin-top:5px}
+/* Âge du véhicule : juste sous le montant, au même rang de lecture que lui. */
+.vv-prix-age{display:block;font-size:11.5px;color:var(--t2);margin-top:6px;line-height:1.5}
+.vv-prix-age b{color:var(--t1);font-weight:700}
+.vv-age-dates{color:var(--t3);font-size:10.5px}
 
 /* Pastilles : ce qui a pesé sur le calcul, en un coup d'œil. Les règles elles-mêmes
    sont repliées dans « Détail du calcul » — une fiche doit livrer un résultat,
@@ -840,6 +844,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   .spec-engines,.spec-note,.spec-change{font-size:11.5px}
   .vv-input{font-size:13.5px;padding:8px 10px}
   .vv-prix-lbl,.vv-prix-note{font-size:10.5px}
+  .vv-prix-age{font-size:12.5px} .vv-age-dates{font-size:11px}
   .vv-chip{font-size:10.5px}
   .vv-details summary{font-size:11.5px}
   .vv-details-body{font-size:11.5px;line-height:1.85}
@@ -1010,9 +1015,9 @@ let FY  = null;
 let FM  = null;
 // ── Version de l'application ──
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
-const VERSION = 'v53';
+const VERSION = 'v54';
 const VERSION_DATE = '26/09/2026';
-const VERSION_NOTES = 'âge compté au MOIS PRÈS, de la mise en circulation à la date du sinistre : mois d\'évaluation ajouté au module, vétusté et repère kilométrique fins, délais des régimes douaniers comptés depuis la date réelle ; tant qu\'un mois manque, l\'âge reste l\'entier d\'avant et aucune valeur ne bouge · mois de 1ère mise en circulation, facultatif : il lève l\'ambiguïté des millésimes à cheval sur un changement de génération et affine le tri des finitions ; sans mois, le calcul rend exactement le même chiffre qu\'avant · version signalée BÊTA dans le bandeau · méthode B : la valeur vénale part de la VALEUR À NEUF de la finition — tarif du jour, ou valeur de fin de série de sa génération — actualisée à la date d\'évaluation ; le millésime ne commande plus que la génération retenue et l\'âge · quatre changements de génération vérifiés ajoutés (Peugeot 208 en 2021, Hyundai i20 en 2016 et 2021, Opel Corsa en 2021, Suzuki Swift en 2025) · avertissement en tête de fiche sur les séries tarifaires discontinues, dont le calcul dépend désormais · effet 3D retiré · affichage accéléré : saisie de l\'année sans recalcul à chaque chiffre, graphique construit à son entrée à l\'écran, listes sans animation ni reconstruction inutile, tiroir mobile construit à l\'ouverture · tri des listes réparé : les modèles actifs à la MEC remontent enfin en tête · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
+const VERSION_NOTES = 'âge du véhicule affiché sous le montant de la valeur vénale, avec les deux dates qui le produisent · affichage corrigé sur écran 11 pouces en paysage : la grille débordait de l\'écran et la fiche était coupée · âge compté au MOIS PRÈS, de la mise en circulation à la date du sinistre : mois d\'évaluation ajouté au module, vétusté et repère kilométrique fins, délais des régimes douaniers comptés depuis la date réelle ; tant qu\'un mois manque, l\'âge reste l\'entier d\'avant et aucune valeur ne bouge · mois de 1ère mise en circulation, facultatif : il lève l\'ambiguïté des millésimes à cheval sur un changement de génération et affine le tri des finitions ; sans mois, le calcul rend exactement le même chiffre qu\'avant · version signalée BÊTA dans le bandeau · méthode B : la valeur vénale part de la VALEUR À NEUF de la finition — tarif du jour, ou valeur de fin de série de sa génération — actualisée à la date d\'évaluation ; le millésime ne commande plus que la génération retenue et l\'âge · quatre changements de génération vérifiés ajoutés (Peugeot 208 en 2021, Hyundai i20 en 2016 et 2021, Opel Corsa en 2021, Suzuki Swift en 2025) · avertissement en tête de fiche sur les séries tarifaires discontinues, dont le calcul dépend désormais · effet 3D retiré · affichage accéléré : saisie de l\'année sans recalcul à chaque chiffre, graphique construit à son entrée à l\'écran, listes sans animation ni reconstruction inutile, tiroir mobile construit à l\'ouverture · tri des listes réparé : les modèles actifs à la MEC remontent enfin en tête · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -3016,6 +3021,9 @@ function renderVVOutput(v){
       '<div class="vv-prix">'+
         '<span class="vv-prix-lbl">Valeur vénale estimée</span>'+
         '<span class="vv-prix-val" id="vvPrix"></span>'+
+        // L'âge est la première chose qu'un expert vérifie sur une valeur vénale : il se lit
+        // désormais sous le montant, sans avoir à déplier le détail du calcul.
+        '<span class="vv-prix-age" id="vvPrixAge"></span>'+
         '<span class="vv-prix-note">estimation — hors barème compagnie</span></div>'+
       coteGaugeHtml(base.relatif, courant)+
       '<div id="vvConf"></div>'+
@@ -3070,6 +3078,20 @@ function refreshVVValues(v){
   const prix=document.getElementById('vvPrix');
   // L'unité est composée à part : elle doit se lire comme une unité, pas concurrencer le montant.
   if(prix) prix.innerHTML=r.vv.toLocaleString('fr-TN')+'<em>DT</em>';
+
+  // ── Âge du véhicule, sous le montant ──
+  // On nomme les deux dates qui le produisent : mise en circulation et date d'évaluation.
+  // Sans mois saisi, l'âge reste en années pleines et la ligne le dit sans fausse précision.
+  const ageEl=document.getElementById('vvPrixAge');
+  if(ageEl){
+    const dateMec = libMEC(FY, r.moisMec);
+    const dateEval = (r.moisEval ? mm2(r.moisEval)+'/' : '') + r.anneeEval;
+    ageEl.innerHTML = r.mecPosterieure
+      ? '⚠️ Mise en circulation (<b>'+dateMec+'</b>) postérieure à la date d\'évaluation ('+dateEval+')'
+      : '🗓️ Âge : <b>'+libAge(r.age, r.ageMois)+'</b> <span class="vv-age-dates">('+
+        dateMec+' → '+dateEval+
+        ((r.moisMec && r.moisEval) ? '' : ', compté à l\'année faute de mois')+')</span>';
+  }
   const lab=document.getElementById('vvCoteLabel');
   if(lab){ lab.textContent='🎯 '+info.label; lab.style.color=info.color; }
   const ec=document.getElementById('vvCoteEcart');

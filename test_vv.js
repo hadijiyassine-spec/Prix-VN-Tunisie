@@ -1718,6 +1718,22 @@ setTimeout(() => {
         check('changer le mois d\'évaluation remet le curseur de cotation sur le conseil',
           doc.getElementById('vvCoteReset').hidden === true);
       }
+      // 17.10 L'âge se lit sur la fiche elle-même, pas seulement dans le détail replié.
+      setFY(2020);
+      const mecM = doc.getElementById('mecMois');
+      mecM.value = '3'; mecM.dispatchEvent(new win.Event('change', { bubbles: true }));
+      const ligneAge = doc.getElementById('vvPrixAge');
+      check('l\'âge est affiché dans le bloc de valeur vénale', !!ligneAge && /Âge/.test(ligneAge.textContent),
+        ligneAge && ligneAge.textContent.trim());
+      check('…et il est visible sans déplier le détail du calcul',
+        !!ligneAge && !ligneAge.closest('details'));
+      check('…avec les deux dates qui le produisent',
+        !!ligneAge && /03\/2020/.test(ligneAge.textContent) && /\d{4}/.test(ligneAge.textContent),
+        ligneAge && ligneAge.textContent.trim());
+      const attendu = win.computeVV(ech, null, 'normal', 'particulier', null, null, null, 'aucun');
+      check('…et il dit le même âge que le calcul',
+        !!ligneAge && ligneAge.textContent.includes(win.libAge(attendu.age, attendu.ageMois)),
+        win.libAge(attendu.age, attendu.ageMois));
       vvI.moisEval = null;
     }
     setFY(2019);

@@ -1664,3 +1664,32 @@ Le format en cause : 1 280 × 800 avec un facteur d'échelle de 1,5, soit **853 
 | 1 280 × 800 | fiche coupée | 186+608+486 |
 | 800 × 1 280 (portrait) | — | inchangé : résultat pleine largeur sous les colonnes |
 | 390 × 844 (téléphone) | — | inchangé, aucun débordement |
+
+
+---
+
+## Version 54 (26/09/2026) — l'âge du véhicule s'affiche avec la valeur vénale
+
+Demande de Yassine : l'âge devait se lire sur la fiche, et non plus seulement dans « Détail du calcul », replié par défaut. C'est la première chose qu'un expert vérifie sur une valeur vénale.
+
+Une ligne apparaît donc **sous le montant**, au même rang de lecture que lui :
+
+```
+37 200 DT
+🗓️ Âge : 7 ans et 3 mois (06/2019 → 09/2026)
+estimation — hors barème compagnie
+```
+
+Trois cas, trois formulations :
+
+| situation | affichage |
+|---|---|
+| les deux mois saisis | `Âge : 7 ans et 3 mois (06/2019 → 09/2026)` |
+| un mois manquant | `Âge : 7 ans (2019 → 09/2026, compté à l'année faute de mois)` |
+| MEC postérieure à l'évaluation | `⚠️ Mise en circulation (06/2019) postérieure à la date d'évaluation (02/2019)` |
+
+Les deux dates qui produisent l'âge sont nommées : sans elles, un « 7 ans et 3 mois » laisserait deviner d'où il sort. La mention « compté à l'année faute de mois » évite de laisser croire à une précision qui n'existe pas — la convention des mois manquants (§ v53) rend l'âge exact à l'année, pas au mois.
+
+L'âge reste également dans le détail du calcul, à côté du taux de la gamme et du coefficient de vétusté : la fiche donne le résultat, le détail donne la règle.
+
+Contrôles : `test_vv.js` à **369 assertions**, toutes au vert, dont quatre nouvelles qui vérifient que la ligne existe, qu'elle est **hors du bloc replié**, qu'elle porte les deux dates et qu'elle annonce le même âge que le calcul.
