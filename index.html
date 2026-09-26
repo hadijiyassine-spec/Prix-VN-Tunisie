@@ -129,10 +129,20 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 /* ══════════════════════════════════════
    DESKTOP LAYOUT  (≥ 900px)
 ══════════════════════════════════════ */
-.app{display:grid;grid-template-rows:var(--hdr) 1fr;height:100vh;overflow:hidden}
+/* `grid-template-columns:minmax(0,1fr)` : sans cela la colonne implicite de .app prend la
+   largeur MINIMALE DE CONTENU de la barre du haut et de la grille (1 273 px mesurés), et tout
+   déborde de l'écran sur un 11 pouces — la fiche se retrouvait coupée à droite, sans barre de
+   défilement puisque tout est en overflow:hidden. */
+/* Rangée d'en-tête en `auto` : quand la barre du haut se replie sur deux lignes (écran étroit),
+   sa hauteur figée à 56 px laissait la seconde ligne — filtre MEC, mois, thème — déborder sous
+   la barre, derrière les colonnes. Le `minmax(0,1fr)` de la seconde rangée évite le même piège
+   en hauteur que celui corrigé en largeur. */
+.app{display:grid;grid-template-rows:auto minmax(0,1fr);grid-template-columns:minmax(0,1fr);height:100vh;overflow:hidden}
 
 /* Top bar */
-.topbar{background:linear-gradient(105deg,var(--sur-bleu) 0%,var(--sur-bleu2) 55%,var(--sur-bleu2) 100%);color:#fff;display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 10px rgba(7,47,82,.28);z-index:50;position:relative}
+/* `min-width:0` et `flex-wrap` : sur un 11 pouces la somme des éléments de la barre dépassait
+   la largeur de l'écran et poussait toute la grille hors cadre. */
+.topbar{background:linear-gradient(105deg,var(--sur-bleu) 0%,var(--sur-bleu2) 55%,var(--sur-bleu2) 100%);color:#fff;display:flex;align-items:center;flex-wrap:wrap;row-gap:6px;min-width:0;min-height:var(--hdr);box-sizing:border-box;padding:6px 20px;gap:12px;box-shadow:0 2px 10px rgba(7,47,82,.28);z-index:50;position:relative}
 .logo{display:flex;align-items:center;gap:9px;flex-shrink:0}
 .logo-ico{width:30px;height:30px;background:rgba(255,255,255,.18);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px}
 .logo-txt{font-family:'Syne','Inter','Segoe UI',system-ui,sans-serif;font-size:15px;font-weight:800;white-space:nowrap}
@@ -173,7 +183,14 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .pill{background:rgba(255,255,255,.1);border-radius:14px;padding:3px 9px;font-size:10.5px;font-weight:500;white-space:nowrap}
 
 /* Main 3-col grid */
-.main{display:grid;grid-template-columns:240px 1fr 420px;overflow:hidden}
+/* `minmax(0,1fr)` et non `1fr` : une piste `1fr` ne descend jamais sous la largeur minimale de
+   son contenu. Sur un écran de 1 194 px, les trois colonnes totalisaient 1 273 px et le panneau
+   de résultat sortait de l'écran, sans barre de défilement puisque .main est en overflow:hidden.
+   La fiche était littéralement coupée à droite — c'est le défaut signalé sur 11 pouces. */
+.main{display:grid;grid-template-columns:240px minmax(0,1fr) 420px;overflow:hidden}
+/* min-width:0 : un élément de grille refuse par défaut de descendre sous sa largeur minimale
+   de contenu. Sans cette ligne, les trois colonnes s'additionnent au-delà de l'écran. */
+.col,.col-mid,.res-col{min-width:0}
 .col{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--bd)}
 .col:last-child{border-right:none}
 
@@ -395,7 +412,7 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
    TABLET  (769–1100px)
 ══════════════════════════════════════ */
 @media (min-width:769px) and (max-width:1100px){
-  .main{grid-template-columns:220px 1fr}
+  .main{grid-template-columns:220px minmax(0,1fr)}
   .res-col{display:none}
   /* Le résultat occupe toute la largeur sur une 2e rangée. Sans hauteur de rangée
      explicite, la grille (en overflow:hidden dans une app à 100vh) l'écrasait ou le
@@ -538,6 +555,9 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   border-radius:7px;padding:2px 4px 2px 8px;cursor:pointer;flex-shrink:0}
 .vv-annee:hover{border-color:var(--pr3)}
 .vv-annee-ico{font-size:11px;line-height:1}
+/* Deux menus dans la même pastille : mois puis année. Le mois est borné en largeur pour que
+   l'en-tête du module tienne dans le panneau de 420 px comme sur un téléphone. */
+#vvMois{max-width:92px}
 .vv-annee select{border:none;background:none;outline:none;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;font-size:12px;
   font-weight:700;color:var(--t1);cursor:pointer;padding:3px 2px}
 /* Une évaluation à une date passée est une décision d'expertise : elle doit se voir. */
@@ -768,6 +788,71 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
     padding:9px 12px;border-radius:8px;border:1px solid var(--bd2);background:var(--sf);color:var(--pr);
     font:600 12px 'Inter','Segoe UI',system-ui,sans-serif;cursor:pointer}
 }
+/* ══════════════════════════════════════
+   ÉCRANS COMPACTS — 11 à 13 pouces, notamment EN PAYSAGE (v53)
+   Trois défauts constatés sur un 11 pouces (xpad 1105b, 1280 × 800 en paysage) :
+     1. la grille débordait de l'écran et la fiche était coupée à droite, sans barre de
+        défilement (corrigé plus haut : minmax(0,1fr) au lieu de 1fr) ;
+     2. sous 1101 px, le résultat passait SOUS les colonnes et n'avait plus que 40 % de la
+        hauteur — alors qu'en paysage la largeur ne manque pas ;
+     3. la fiche se lisait en 9,5 à 11 px : acceptable sur un 24 pouces, illisible sur un 11.
+══════════════════════════════════════ */
+/* Sous 1 300 px, les trois pastilles de comptage (marques / modèles / finitions) prennent la
+   place dont la recherche et le filtre MEC ont besoin. L'information reste dans le sous-titre. */
+@media (max-width:1300px){ .top-pills{display:none} }
+/* Seuil à 840 px et non 900 : une tablette 11 pouces de 1280 × 800 avec un facteur d'échelle
+   de 1,5 ne fait que 853 px CSS de large — c'est le cas du xpad 1105b signalé. */
+@media (min-width:840px) and (max-width:1100px) and (orientation:landscape){
+  /* En paysage, le résultat redevient une colonne pleine hauteur, comme sur grand écran :
+     empilé sous les colonnes, il ne disposait que de 40 % d'une hauteur déjà réduite. */
+  .main{grid-template-columns:154px minmax(210px,1fr) minmax(360px,45%)}
+  .main.with-result{grid-template-rows:1fr}
+  .res-col{display:flex}
+  .res-col.has-result{grid-column:auto;min-height:0}
+  .back-to-sel{display:none}   /* plus rien à remonter : tout est côte à côte */
+  /* Sur 533 px de haut, chaque rangée compte : la barre se replie sur deux lignes, on lui
+     retire le sous-titre et un peu de marge, et on resserre les en-têtes de colonnes. */
+  .topbar{padding:4px 12px;gap:8px;row-gap:4px}
+  .logo-sub{display:none}
+  .col-head{padding:8px 10px 6px}
+  .res-scroll{padding:12px}
+}
+@media (min-width:1101px) and (max-width:1500px){
+  /* La colonne des marques ne porte que des noms : on lui reprend de la place pour la fiche. */
+  .main{grid-template-columns:186px minmax(260px,1fr) minmax(430px,38%)}
+}
+/* Typographie des écrans compacts : ce que l'expert lit vraiment, remonté d'un point et demi.
+   Les tailles de base (9,5 à 12,5 px) ont été réglées sur un grand écran ; à surface physique
+   réduite, elles tombent sous le seuil de lecture confortable. */
+@media (min-width:840px) and (max-width:1500px){
+  .item-name{font-size:13px}
+  .item-sub,.item-meta{font-size:11px}
+  .vi-name,.vi-price{font-size:12.5px}
+  .vi-dates,.vi-prices{font-size:10.5px}
+  .itag,.vi-badge{font-size:10.5px}
+  .rcard-brand{font-size:11.5px} .rcard-model{font-size:19px} .rcard-ver{font-size:12.5px}
+  .price-val{font-size:30px} .price-unit{font-size:15px} .price-lbl{font-size:11px}
+  .prix-ecart{font-size:11.5px}
+  .compat-banner,.notice{font-size:12px}
+  .sect-title{font-size:10.5px}
+  .spec-label,.mc-l{font-size:10.5px}
+  .spec-value,.mc-v{font-size:12.5px}
+  .spec-engines,.spec-note,.spec-change{font-size:11.5px}
+  .vv-input{font-size:13.5px;padding:8px 10px}
+  .vv-prix-lbl,.vv-prix-note{font-size:10.5px}
+  .vv-chip{font-size:10.5px}
+  .vv-details summary{font-size:11.5px}
+  .vv-details-body{font-size:11.5px;line-height:1.85}
+  .cote-label,.cote-ecart{font-size:12.5px}
+  .cote-foot,.cote-reset{font-size:11px}
+  .conf,.conf-t,.conf-l{font-size:11.5px}
+  .bat-t{font-size:12.5px}
+  .bat-part,.bat-legend,.bat-foot,.bat-depr-d{font-size:10.5px}
+  .or-name,.or-price{font-size:12.5px} .or-dates{font-size:10.5px}
+  .oh{font-size:11px}
+  .fld-aide{font-size:10px}
+}
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;
     transition-duration:.01ms !important;scroll-behavior:auto !important}
@@ -925,9 +1010,9 @@ let FY  = null;
 let FM  = null;
 // ── Version de l'application ──
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
-const VERSION = 'v52';
-const VERSION_DATE = '24/09/2026';
-const VERSION_NOTES = 'mois de 1ère mise en circulation, facultatif : il lève l\'ambiguïté des millésimes à cheval sur un changement de génération et affine le tri des finitions ; sans mois, le calcul rend exactement le même chiffre qu\'avant · version signalée BÊTA dans le bandeau · méthode B : la valeur vénale part de la VALEUR À NEUF de la finition — tarif du jour, ou valeur de fin de série de sa génération — actualisée à la date d\'évaluation ; le millésime ne commande plus que la génération retenue et l\'âge · quatre changements de génération vérifiés ajoutés (Peugeot 208 en 2021, Hyundai i20 en 2016 et 2021, Opel Corsa en 2021, Suzuki Swift en 2025) · avertissement en tête de fiche sur les séries tarifaires discontinues, dont le calcul dépend désormais · effet 3D retiré · affichage accéléré : saisie de l\'année sans recalcul à chaque chiffre, graphique construit à son entrée à l\'écran, listes sans animation ni reconstruction inutile, tiroir mobile construit à l\'ouverture · tri des listes réparé : les modèles actifs à la MEC remontent enfin en tête · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
+const VERSION = 'v53';
+const VERSION_DATE = '26/09/2026';
+const VERSION_NOTES = 'âge compté au MOIS PRÈS, de la mise en circulation à la date du sinistre : mois d\'évaluation ajouté au module, vétusté et repère kilométrique fins, délais des régimes douaniers comptés depuis la date réelle ; tant qu\'un mois manque, l\'âge reste l\'entier d\'avant et aucune valeur ne bouge · mois de 1ère mise en circulation, facultatif : il lève l\'ambiguïté des millésimes à cheval sur un changement de génération et affine le tri des finitions ; sans mois, le calcul rend exactement le même chiffre qu\'avant · version signalée BÊTA dans le bandeau · méthode B : la valeur vénale part de la VALEUR À NEUF de la finition — tarif du jour, ou valeur de fin de série de sa génération — actualisée à la date d\'évaluation ; le millésime ne commande plus que la génération retenue et l\'âge · quatre changements de génération vérifiés ajoutés (Peugeot 208 en 2021, Hyundai i20 en 2016 et 2021, Opel Corsa en 2021, Suzuki Swift en 2025) · avertissement en tête de fiche sur les séries tarifaires discontinues, dont le calcul dépend désormais · effet 3D retiré · affichage accéléré : saisie de l\'année sans recalcul à chaque chiffre, graphique construit à son entrée à l\'écran, listes sans animation ni reconstruction inutile, tiroir mobile construit à l\'ouverture · tri des listes réparé : les modèles actifs à la MEC remontent enfin en tête · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -1460,7 +1545,7 @@ let POP_JUMELEES=0;
 // On retient la finition la MOINS CHÈRE disponible à l'année de référence : une populaire est
 // par construction une entrée de gamme, la comparer à une finition haute la surévaluerait.
 // Pas de récursion possible : les finitions retenues ici ne sont jamais populaires.
-function venJumelle(v, anneeRef, anneeEval, mois){
+function venJumelle(v, anneeRef, anneeEval, mois, moisEval){
   const j=v.popJum;
   if(!j||!j.length) return null;
   let pool=j;
@@ -1470,7 +1555,7 @@ function venJumelle(v, anneeRef, anneeEval, mois){
   }
   let best=null;
   for(const x of pool){
-    const r=computeVEN(x, anneeRef, anneeEval, 'aucun', mois);
+    const r=computeVEN(x, anneeRef, anneeEval, 'aucun', mois, moisEval);
     if(r && isFinite(r.VEN) && (best===null || r.VEN<best)) best=r.VEN;
   }
   return best;
@@ -2291,7 +2376,7 @@ function venSerie(v, AE, fc, anneeRef, mois){
 // `mois` (facultatif) : mois de 1ère mise en circulation. Il ne sert qu'à désigner la PHASE du
 // véhicule quand l'année est à cheval sur un changement de génération — l'âge, lui, reste
 // compté en années pleines.
-function computeVEN(v, anneeRef, anneeEval, regimeKey, mois){
+function computeVEN(v, anneeRef, anneeEval, regimeKey, mois, moisEval){
   const fc=fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
   const AE = (anneeEval!=null && isFinite(anneeEval)) ? anneeEval : CY;
 
@@ -2357,7 +2442,13 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey, mois){
   // Régime douanier : saisi par l'expert (il figure sur la carte grise, pas au catalogue).
   // À défaut, le repérage par le nom du modèle propose « populaire ».
   const RG = VVPARAMS.regimes[regimeKey] || VVPARAMS.regimes[v.pop?'populaire':'aucun'];
-  const ageEval = (anneeRef!=null && isFinite(anneeRef)) ? (AE-anneeRef) : null;
+  // ── Délais des régimes douaniers : ils courent depuis la DATE de mise en circulation ──
+  // Incessibilité de 2 ans d'une voiture populaire, extinction de l'avantage taxi/louage à
+  // 5 ans, régime FCR : ces délais ne partent pas du 1er janvier de l'année. Une populaire de
+  // 03/2024 évaluée en 01/2026 est encore sous délai ; la même de 11/2023 ne l'est plus.
+  // Sans mois, `ageEnAnnees` rend l'entier d'avant : le comportement est inchangé.
+  const ageEval = (anneeRef!=null && isFinite(anneeRef)) ? ageEnAnnees(anneeRef, mois, AE, moisEval) : null;
+  const ageEvalMois = (anneeRef!=null && isFinite(anneeRef)) ? ageMoisEntre(anneeRef, mois, AE, moisEval) : null;
 
   // ── DEUX CHOSES DISTINCTES, QUE J'AVAIS CONFONDUES ──
   //
@@ -2408,7 +2499,7 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey, mois){
     const cd=chargeDouaniere(fc, VVPARAMS.regimes.populaire.majorationDouane);
     majPop = 1+cd.taux;
     tvaSeule = cd.tva;
-    if(VVPARAMS.populaire.plafondJumelle) venJum=venJumelle(v, anneeRef, AE, mois);
+    if(VVPARAMS.populaire.plafondJumelle) venJum=venJumelle(v, anneeRef, AE, mois, moisEval);
   }
   // ── Plafond « prix neuf du jour » ──
   // La valeur à neuf de référence ne peut pas dépasser ce que coûte réellement le véhicule
@@ -2441,7 +2532,8 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey, mois){
   // la valeur abattue le faisait glisser d'une gamme à l'autre et changeait son taux — un
   // avantage fiscal ne transforme pas une berline premium en citadine.
   const venGamme = venJum!=null ? venJum : (abattement<1 ? VEN/abattement : VEN);
-  return {VEN, idx, L, M, dAncre, fc, reforme, predites, ancre, anneeEval:AE, anneeRef, mois:mois||null, majPop, popStatut,
+  return {VEN, idx, L, M, dAncre, fc, reforme, predites, ancre, anneeEval:AE, anneeRef, mois:mois||null,
+          moisEval:moisEval||null, ageEval, ageEvalMois, majPop, popStatut,
           venJum, plafonne, venGamme, plafondNeuf, neufPlafonne, regime:RG, regimeKey, tvaSeule,
           abattement, abattementMotif};
 }
@@ -2595,16 +2687,21 @@ function classementGamme(v, ven, AE, regimeKey){
 // `coteAjustee` (facultatif) : position de cotation forcée par l'expert via le curseur.
 // Elle remplace le `relatif` calculé, sans effacer ce dernier — la fiche affiche les deux
 // pour que l'écart entre la recommandation et le jugement de l'expert reste visible.
-function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh, regimeKey, mois){
+function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh, regimeKey, mois, moisEval){
   if(!FY) return null;
   const AE = (anneeEval!=null && isFinite(anneeEval)) ? anneeEval : CY;
   // Mois de 1ère MEC : celui passé en argument, sinon celui saisi dans la barre du haut.
   const MM = (mois===undefined || mois===null) ? FM : mois;
-  // L'ÂGE RESTE EN ANNÉES PLEINES. La date d'évaluation n'est qu'une année : compter l'âge au
-  // mois près d'un côté et à l'année de l'autre fabriquerait une précision qui n'existe pas.
-  // Le mois ne sert donc qu'à désigner la phase du véhicule et à trier les finitions.
-  const age=Math.max(0, AE-FY);
-  const ven=computeVEN(v, FY, AE, regimeKey, MM); // prix ancré sur la MEC, actualisé à la date d'évaluation
+  // Mois d'évaluation (mois du sinistre) : celui passé en argument, sinon celui du module.
+  const ME = (moisEval===undefined || moisEval===null) ? (vvInputs ? vvInputs.moisEval : null) : moisEval;
+  // ── ÂGE AU MOIS PRÈS, quand les deux bouts sont connus ──
+  // Avec un seul mois, ou aucun, `ageMoisEntre` rend null et l'âge reste l'entier d'avant.
+  const ageMois = ageMoisEntre(FY, MM, AE, ME);
+  const age = Math.max(0, ageMois!=null ? ageMois/12 : (AE-FY));
+  // Mise en circulation postérieure à la date d'évaluation : l'âge est borné à 0, et la fiche
+  // le dit — un âge nul sans explication passerait pour un bug.
+  const mecPosterieure = (ageMois!=null ? ageMois : (AE-FY)*12) < 0;
+  const ven=computeVEN(v, FY, AE, regimeKey, MM, ME); // prix ancré sur la MEC, actualisé à la date d'évaluation
 
   // F_âge : géométrique, au rythme propre à la gamme du véhicule (déterminée par sa valeur
   // à neuf), avec valeur résiduelle plancher.
@@ -2644,6 +2741,8 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh, regime
 
   // F_km : écart au kilométrage normal, en kilomètres absolus. Référence commune à tous
   // les usages (la spécificité de l'usage est portée par F_usage, pas par la référence).
+  // Le repère kilométrique suit l'âge fin : un véhicule de 8 mois n'a pas le kilométrage normal
+  // d'un véhicule d'un an — à 0,67 an le repère est de 10 000 km, et le facteur joue.
   let fKm=1, ecartKm=0, kmRef=null;
   if(age>0 && km!=null && !isNaN(km) && km>=0){
     kmRef=age*VVPARAMS.kmRefAnnuel;
@@ -2692,13 +2791,14 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh, regime
   // hors âge et hors gamme, qui sont des caractéristiques subies. C'est cette part qui dit
   // si le véhicule est bien ou mal coté POUR SON ÂGE.
   return {vv, ven, fAge, fEtat, fKm, fCarb, fUsage, fBat, ratio, relatif, relatifEff, ajuste,
-          gamme, tauxDepr, surcout, baseVE, age, ecartKm, kmRef, etat, usage, km, anneeEval:AE,
+          gamme, tauxDepr, surcout, baseVE, age, ageMois, mecPosterieure, moisMec:MM||null, moisEval:ME||null,
+          ecartKm, kmRef, etat, usage, km, anneeEval:AE,
           vvPlafonnee, borneNeuf, partBat, bat, garantieBat};
 }
 
 // État des champs du module Valeur vénale — conservé au niveau module pour survivre
 // à un changement de finition/modèle (l'expert n'a pas à ressaisir km/état/usage à chaque clic).
-let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null, coteCle:null, anneeEval:null, soh:'', regime:null, privilege:false};
+let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null, coteCle:null, anneeEval:null, moisEval:null, soh:'', regime:null, privilege:false};
 
 // Bloc HTML du module (inséré dans la fiche résultat, sous le prix neuf).
 //
@@ -2707,8 +2807,8 @@ let vvInputs = {km:'', etat:'normal', usage:'particulier', cote:null, coteCle:nu
 // d'aspect dès qu'elle s'écarte de l'année courante. Les trois saisies restantes tiennent sur
 // deux rangées : le panneau résultat fait 420 px, quatre colonnes n'y laissaient que ~104 px
 // par champ, ce qui tronquait les libellés et enroulait les intitulés sur deux lignes.
-function rappelAnneeTexte(annee){
-  return 'Évaluation au <b>'+annee+'</b> — pensez à saisir le kilométrage <b>à cette date</b>, et non celui d\'aujourd\'hui.';
+function rappelAnneeTexte(annee, mois){
+  return 'Évaluation au <b>'+(mois?mm2(mois)+'/'+annee:annee)+'</b> — pensez à saisir le kilométrage <b>à cette date</b>, et non celui d\'aujourd\'hui.';
 }
 // Met à jour l'en-tête quand l'année change, sans reconstruire le bloc (ce qui ferait perdre
 // le focus du menu et refermerait le détail du calcul).
@@ -2718,7 +2818,12 @@ function majEtatAnnee(){
   const chip = document.querySelector('#vvSect .vv-annee');
   if(chip) chip.classList.toggle('passe', passe);
   const rap = document.getElementById('vvAnneeRappel');
-  if(rap){ rap.innerHTML = rappelAnneeTexte(ae); rap.hidden = !passe; }
+  if(rap){ rap.innerHTML = rappelAnneeTexte(ae, vvInputs.moisEval); rap.hidden = !passe; }
+}
+// Mois d'évaluation proposé par défaut : le mois courant, et seulement si l'évaluation porte sur
+// l'année courante. On ne devine pas le mois d'un sinistre de 2022.
+function moisEvalParDefaut(annee){
+  return annee===CY ? (new Date().getMonth()+1) : null;
 }
 
 function renderVVBlock(v){
@@ -2732,18 +2837,23 @@ function renderVVBlock(v){
 
   const aeCourante = vvInputs.anneeEval || CY;
   const passe = aeCourante < CY;
+  // Mois du sinistre : proposé sur l'année courante, laissé vide sur une année passée.
+  if(vvInputs.moisEval==null) vvInputs.moisEval = moisEvalParDefaut(aeCourante);
   let optsAE='';
   for(let y=CY; y>=FY; y--) optsAE+='<option value="'+y+'"'+(aeCourante===y?' selected':'')+'>'+y+'</option>';
+  let optsME='<option value="">Mois</option>';
+  for(let m=1;m<=12;m++) optsME+='<option value="'+m+'"'+(vvInputs.moisEval===m?' selected':'')+'>'+MOIS_NOMS[m-1]+'</option>';
 
   html+='<div class="sect-hd vv-head">'+
     '<span class="sect-title">💰 Valeur vénale (estimation)</span>'+
-    '<label class="vv-annee'+(passe?' passe':'')+'" title="Année à laquelle le véhicule est évalué">'+
+    '<label class="vv-annee'+(passe?' passe':'')+'" title="Date à laquelle le véhicule est évalué — en pratique, la date du sinistre">'+
       '<span class="vv-annee-ico">📅</span>'+
-      '<select id="vvAnnee" aria-label="Année d\'évaluation">'+optsAE+'</select>'+
+      '<select id="vvMois" aria-label="Mois d\'évaluation (date du sinistre, facultatif)">'+optsME+'</select>'+
+      '<select id="vvAnnee" aria-label="Année d\'évaluation (date du sinistre)">'+optsAE+'</select>'+
     '</label></div>';
   // Conteneur permanent : le changement d'année ne reconstruit que la zone de résultat,
   // il faut donc pouvoir mettre à jour ce rappel sans régénérer l'en-tête.
-  html+='<div class="vv-annee-rappel" id="vvAnneeRappel"'+(passe?'':' hidden')+'>'+rappelAnneeTexte(aeCourante)+'</div>';
+  html+='<div class="vv-annee-rappel" id="vvAnneeRappel"'+(passe?'':' hidden')+'>'+rappelAnneeTexte(aeCourante, vvInputs.moisEval)+'</div>';
 
   html+='<div class="vv-fields">';
   html+='<div class="vv-f-km"><label class="spec-label" for="vvKm">Kilométrage réel</label>'+
@@ -3024,7 +3134,7 @@ function refreshVVValues(v){
           '</div>'+
           '<div class="bat-legend">'+
             '<span><b>'+(mes!=null?Math.round(mes*100)+' %':'—')+'</b> mesuré</span>'+
-            '<span><b>'+Math.round(att*100)+' %</b> attendu à '+r.age+' an'+(r.age>1?'s':'')+'</span>'+
+            '<span><b>'+Math.round(att*100)+' %</b> attendu à '+libAge(r.age, r.ageMois)+'</span>'+
             '<span><b>'+Math.round(B.sohGarantie*100)+' %</b> seuil garantie</span>'+
           '</div>'+
           '<div class="bat-depr">'+
@@ -3037,7 +3147,7 @@ function refreshVVValues(v){
               (r.baseVE.climat*100).toFixed(1).replace('.',',')+'\u00a0% climat'+
               (r.tauxDepr>r.baseVE.net+r.baseVE.climat+1e-9?' (plancher gamme)':'')
             : r.gamme.nom.toLowerCase()+' '+(r.gamme.tauxDeprAn*100).toFixed(2).replace('.',',')+'\u00a0%')+
-            ' \u2192 <b>\u00d7'+r.fAge.toFixed(3).replace('.',',')+'</b> à '+r.age+'\u00a0an'+(r.age>1?'s':'')+'</div>'+
+            ' \u2192 <b>\u00d7'+r.fAge.toFixed(3).replace('.',',')+'</b> à '+libAge(r.age, r.ageMois)+'</div>'+
           '<div class="bat-foot">'+etatTxt+
             (mes!=null?' · effet sur la valeur <b>'+signePct((r.fBat-1)*100)+'</b>':'')+
             (P.coutRemplacement?' · remplacement ≈ <b>'+fmt(P.coutRemplacement)
@@ -3082,7 +3192,7 @@ function refreshVVValues(v){
         (r.ven.majPop>1?' × taxe douanière réintégrée +'+Math.round((r.ven.majPop-1)*100)+'%':'')+')</span>'+
         (r.ven.neufPlafonne?' <span style="opacity:.75">— ramenée au prix neuf du jour ('+fmt(r.ven.plafondNeuf)+', tarif '+r.anneeEval+')</span>':'')+
         (r.ven.plafonne?' <span style="opacity:.75">— plafonnée à la valeur à neuf de la version normale ('+fmt(Math.round(r.ven.venJum/100)*100)+')</span>':'')+'</div>'+
-      '<div>Âge ('+r.age+' an'+(r.age>1?'s':'')+', '+r.gamme.nom.toLowerCase()+' à '+(r.tauxDepr*100).toFixed(2)+' %/an'+
+      '<div>Âge ('+libAge(r.age, r.ageMois)+', '+r.gamme.nom.toLowerCase()+' à '+(r.tauxDepr*100).toFixed(2)+' %/an'+
         (r.surcout>1?', majoré de '+Math.round((r.surcout-1)*100)+' % — véhicule à batterie':'')+') : <b>×'+r.fAge.toFixed(3)+'</b></div>'+
       '<div>État ('+r.etat.label+') : <b>×'+r.fEtat.toFixed(3)+'</b> · Usage ('+r.usage.label+') : <b>×'+r.fUsage.toFixed(3)+'</b> · Énergie : <b>×'+r.fCarb.toFixed(3)+'</b></div>'+
       '<div>Kilométrage'+(r.km!=null?' ('+r.km.toLocaleString('fr-TN')+' km'+(r.kmRef!=null?' vs '+Math.round(r.kmRef).toLocaleString('fr-TN')+' km normaux à cet âge':' — véhicule neuf, sans effet')+')':' <i>(non renseigné)</i>')+' : <b>×'+r.fKm.toFixed(3)+'</b></div>'+
@@ -3137,7 +3247,8 @@ function refreshVVValues(v){
     // beaucoup travaillé. Le facteur d'usage doit le traduire, et l'expert doit y penser.
     if(r.ven.regime && r.ven.regime.usageIntensif && r.ven.popStatut==='majore'){
       h+='<div class="notice" style="margin-top:8px">🚕 <b>Avantage acquis</b> — le véhicule a dépassé les '+
-        r.ven.regime.incessibilite+' ans d\'affectation : il est désormais de <b>droit commun</b> et plus aucune taxe n\'est due. '+
+        r.ven.regime.incessibilite+' ans d\'affectation'+depuisEcheance(r.ven)+
+        ' : il est désormais de <b>droit commun</b> et plus aucune taxe n\'est due. '+
         'Mais il a subi une <b>utilisation intensive</b> : vérifiez que le champ Usage la traduit'+
         (r.usage && /particulier/i.test(r.usage.label)?' — il est actuellement sur « Particulier »':'')+'.</div>';
     }
@@ -3145,21 +3256,29 @@ function refreshVVValues(v){
     // Régime populaire : dire ce qui est appliqué, et pourquoi.
     if(r.ven.popStatut==='majore' && r.ven.majPop>1){
       h+='<div class="notice ok" style="margin-top:8px">🏷️ <b>'+r.ven.regime.label+'</b> — '+r.ven.regime.note+
-        ' Le délai de '+r.ven.regime.incessibilite+' ans étant écoulé, le véhicule s\'échange sur le marché normal : la valeur à neuf de référence est majorée de <b>'+
+        ' Le délai de '+r.ven.regime.incessibilite+' ans étant écoulé'+depuisEcheance(r.ven)+
+        ', le véhicule s\'échange sur le marché normal : la valeur à neuf de référence est majorée de <b>'+
         Math.round((r.ven.majPop-1)*100)+' %</b> pour réintégrer la taxe et le comparer au marché normal.'+
         (r.ven.plafonne
           ? ' Cette majoration dépassait ici le prix à neuf de la <b>version normale du même modèle</b> : elle a été ramenée à ce niveau, la populaire ne pouvant valoir davantage que la voiture non subventionnée dont elle est la déclinaison.'
           : '')+'</div>';
     } else if(r.ven.popStatut==='incessible'){
       h+='<div class="notice warn" style="margin-top:8px">🏷️ <b>'+r.ven.regime.label+' — encore sous délai</b> — moins de '+
-        r.ven.regime.incessibilite+' ans depuis la mise en circulation. '+r.ven.regime.note+
+        r.ven.regime.incessibilite+' ans depuis la mise en circulation'+resteAvantEcheance(r.ven)+'. '+r.ven.regime.note+
         (r.ven.regime.subventionne?' La valeur à neuf reste le prix subventionné, sans réintégration de la taxe douanière.':'')+
         (r.ven.regime.sur===false?' <b>Durée et barème à confirmer</b> : ces éléments ne sont publiés nulle part.':'')+'</div>';
+    }
+    // Mise en circulation postérieure à la date d'évaluation : l'âge est borné à 0, il faut
+    // le dire — sinon l'expert lit un véhicule neuf sans comprendre pourquoi.
+    if(r.mecPosterieure){
+      h='<div class="notice warn" style="margin-top:8px">⚠️ <b>Mise en circulation postérieure à la date d\'évaluation</b> — '+
+        'le véhicule est mis en circulation en '+libMEC(FY, r.moisMec)+', après la date retenue pour l\'évaluation ('+
+        (r.moisEval?mm2(r.moisEval)+'/':'')+r.anneeEval+'). L\'âge est ramené à zéro : vérifiez les deux dates.</div>'+h;
     }
     // Évaluation à une date passée : le dire clairement, c'est une décision d'expertise.
     if(r.anneeEval<CY){
       h='<div class="notice ok" style="margin-top:8px">📆 Évaluation au <b>'+r.anneeEval+'</b> et non à l\'année courante ('+CY+
-        '). L\'âge retenu est de '+r.age+' an'+(r.age>1?'s':'')+', et l\'évolution des prix postérieure à '+r.anneeEval+
+        '). L\'âge retenu est de '+libAge(r.age, r.ageMois)+', et l\'évolution des prix postérieure à '+r.anneeEval+
         ' — réformes fiscales comprises — n\'est pas appliquée.</div>'+h;
     }
     // Péremption : l'évaluation dépasse la base, une partie de l'actualisation est prédite.
@@ -3195,7 +3314,23 @@ function wireVVInputs(v){
     else renderVVOutput(veh);
   };
   const anneeField=document.getElementById('vvAnnee');
-  if(anneeField) anneeField.addEventListener('change',()=>{ vvInputs.anneeEval=parseInt(anneeField.value); majEtatAnnee(); relance(); });
+  if(anneeField) anneeField.addEventListener('change',()=>{
+    vvInputs.anneeEval=parseInt(anneeField.value);
+    // Changer d'année d'évaluation change la date du sinistre : le mois proposé suit la même
+    // règle qu'à la construction — mois courant sur l'année courante, vide sur une année passée.
+    vvInputs.moisEval=moisEvalParDefaut(vvInputs.anneeEval);
+    const mf=document.getElementById('vvMois');
+    if(mf) mf.value = vvInputs.moisEval ? String(vvInputs.moisEval) : '';
+    majEtatAnnee(); relance();
+  });
+  // Le mois d'évaluation est une nouvelle consultation, au même titre que l'année : le curseur
+  // de cotation repart du conseil (c'est ce que fait `relance`).
+  const moisEvalField=document.getElementById('vvMois');
+  if(moisEvalField) moisEvalField.addEventListener('change',()=>{
+    const m=parseInt(moisEvalField.value)||null;
+    if(m===vvInputs.moisEval) return;
+    vvInputs.moisEval=m; majEtatAnnee(); relance();
+  });
   const kmField=document.getElementById('vvKm');
   if(kmField) kmField.addEventListener('input',()=>{ vvInputs.km=kmField.value; relance(); });
   const etatField=document.getElementById('vvEtat');
@@ -3270,6 +3405,35 @@ function kPlusMois(k, n){
   return y*100+m;
 }
 const MOIS_NOMS=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+// ══════════ ÂGE AU MOIS PRÈS ══════════
+// En expertise, l'âge se compte de la mise en circulation à la DATE DU SINISTRE. Un véhicule de
+// janvier 2020 et un de décembre 2020 n'ont pas le même âge : onze mois les séparent, soit près
+// de 4 % de valeur sur une gamme courante et 8 % sur un premium.
+//
+// CONVENTION DES MOIS MANQUANTS, à respecter à la lettre : un mois absent d'un côté prend celui
+// de l'autre ; si les deux manquent, l'âge reste l'entier d'avant. La propriété recherchée est
+// qu'il suffit qu'un mois manque quelque part pour retomber EXACTEMENT sur l'âge entier
+// d'aujourd'hui — aucune valeur de la base ne bouge tant que l'expert n'a pas renseigné les deux.
+// Remplacer un mois manquant par « janvier » ou « juin » déplacerait toute la base d'un demi-taux
+// de décote, en silence.
+function ageMoisEntre(anneeRef, moisRef, anneeEval, moisEval){
+  const mr = moisRef || moisEval || null, me = moisEval || moisRef || null;
+  if(mr && me) return (anneeEval*12+me) - (anneeRef*12+mr);
+  return null;                               // aucun mois exploitable : on reste à l'année
+}
+function ageEnAnnees(anneeRef, moisRef, anneeEval, moisEval){
+  const am = ageMoisEntre(anneeRef, moisRef, anneeEval, moisEval);
+  return am!=null ? am/12 : (anneeEval-anneeRef);
+}
+// Âge en clair, jamais en décimales : « 5 ans et 9 mois », « 9 mois », « moins d'un mois ».
+// Sans mois saisi, on n'invente pas de « et 0 mois » : « 6 ans » suffit.
+function libAge(annees, moisTotal){
+  if(moisTotal==null){ const a=Math.max(0,Math.round(annees)); return a+' an'+(a>1?'s':''); }
+  const t=Math.max(0, moisTotal), a=Math.floor(t/12), m=t%12;
+  if(t===0) return 'moins d\'un mois';
+  if(a===0) return m+' mois';
+  return a+' an'+(a>1?'s':'')+(m ? ' et '+m+' mois' : '');
+}
 const mm2=m=>(m<10?'0':'')+m;
 // Libellé de la MEC : « 2020 » sans mois, « 11/2020 » avec.
 function libMEC(annee, mois){
@@ -4233,6 +4397,22 @@ function basculerTheme(){
   try{ localStorage.setItem('pvn-theme', t); }catch(e){}
   appliquerTheme(t);
 }
+// Depuis quand le délai d'un régime est-il échu, et combien reste-t-il à courir ? Le délai se
+// compte au mois dès que la date de MEC et celle d'évaluation sont connues au mois ; sinon on
+// se tait plutôt que d'annoncer une précision qu'on n'a pas.
+function depuisEcheance(ven){
+  if(!ven || ven.ageEvalMois==null || !ven.regime || !ven.regime.incessibilite) return '';
+  const reste = ven.ageEvalMois - ven.regime.incessibilite*12;
+  if(reste<0) return '';
+  return ' (échu depuis '+libAge(reste/12, reste)+')';
+}
+function resteAvantEcheance(ven){
+  if(!ven || ven.ageEvalMois==null || !ven.regime || !ven.regime.incessibilite || !isFinite(ven.regime.incessibilite)) return '';
+  const reste = ven.regime.incessibilite*12 - ven.ageEvalMois;
+  if(reste<=0) return '';
+  return ' — encore '+libAge(reste/12, reste)+' à courir';
+}
+
 // Le graphique est peint sur un canvas : il faut le repeindre pour qu'il suive le thème.
 function redessinerGraphique(){
   const cv=document.querySelector('#resContent canvas');

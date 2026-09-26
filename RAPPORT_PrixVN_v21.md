@@ -1535,3 +1535,132 @@ Contrôle visuel dans un navigateur réel : téléphone 390 px — le sélecteur
 ### Livraison
 
 `index.html` seul — `data.js` n'a pas été modifié, pas une ligne.
+
+
+---
+
+## Version 53 (26/09/2026) — âge compté au mois près, et affichage sur écran 11 pouces
+
+### La règle d'âge
+
+L'âge se compte désormais de la mise en circulation à la **date du sinistre**, au mois près :
+
+```
+ageMois = (année d'évaluation × 12 + mois d'évaluation) − (année de MEC × 12 + mois de MEC)
+age     = max(0, ageMois / 12)
+```
+
+Il fallait les deux bouts. Le mois de MEC existait depuis la v52 ; le module de valeur vénale reçoit donc un **mois d'évaluation**, pré-rempli sur le mois courant quand l'évaluation porte sur l'année courante, et laissé vide sur une année passée — on ne devine pas le mois d'un sinistre de 2022.
+
+Un véhicule de janvier 2020 et un de décembre 2020 avaient rigoureusement le même âge alors que onze mois les séparent : près de 4 % de valeur sur une gamme courante, 8 % sur un premium. C'est cet écart que la v53 restitue.
+
+### La convention des mois manquants, et pourquoi elle est ainsi
+
+**Un mois absent d'un côté prend celui de l'autre ; si les deux manquent, l'âge reste `AE − FY`.**
+
+Cette convention a une propriété recherchée : dès qu'un mois manque quelque part, l'âge retombe **exactement** sur l'entier d'avant. Aucune valeur de la base ne bouge tant que l'expert n'a pas renseigné les deux dates. C'est ce qui rend la preuve de non-régression possible — et c'est pourquoi un mois manquant n'est jamais remplacé par « janvier » ni par « juin » : un mois par défaut déplacerait toute la base d'un demi-taux de décote, en silence.
+
+Mise en circulation postérieure à la date d'évaluation : l'âge est borné à 0 **et la fiche le dit**, plutôt que d'afficher un véhicule neuf sans explication.
+
+### Ce qui reste annuel, et pourquoi
+
+- **L'indice des prix automobiles.** `indexMultiplier` chaîne des taux annuels mesurés sur la base ; ces taux n'existent pas au mois. Les prorater serait inventer une mesure. L'actualisation de la valeur à neuf reste donc d'année en année : c'est la **vétusté** qui devient mensuelle, pas l'inflation.
+- **L'ancrage de la valeur à neuf.** `venSerie` raisonne millésime par millésime et son enveloppe de cohérence compare des années. Le mois de MEC n'y sert qu'à désigner la phase du véhicule, comme en v52.
+- **Les taux de décote** (4,27 / 6,98 / 8,33 %/an) n'ont pas été touchés : ils ont été calibrés sur des annonces dont l'âge était compté en années pleines, et la convention ci-dessus fait que la moyenne ne bouge pas.
+
+### Les délais des régimes douaniers courent depuis la date réelle
+
+`ageEval`, qui décide de `sousDelai`, se comptait de 1ᵉʳ janvier à 1ᵉʳ janvier. Or ces délais courent légalement **depuis la mise en circulation** : incessibilité de 2 ans d'une voiture populaire, extinction de l'avantage taxi et louage à 5 ans, régime FCR.
+
+Exemple, évaluation en 01/2026 :
+
+| véhicule populaire | âge réel | avant (v52) | maintenant |
+|---|---|---|---|
+| MEC 03/2024 | 1 an et 10 mois | délai échu, taxe réintégrée | **encore incessible** |
+| MEC 11/2023 | 2 ans et 2 mois | délai échu | délai échu (inchangé) |
+
+Les deux étaient traités pareil ; ils ne le sont plus. La fiche annonce maintenant « délai de 2 ans échu depuis 5 mois » ou « encore 2 mois à courir » plutôt que de raisonner en années.
+
+### Affichage
+
+La ligne de détail dit l'âge réellement retenu, en clair : « Âge (5 ans et 9 mois, grand public à 4,27 %/an) ». Jamais de décimales — « 5,75 ans » n'est pas la langue d'un rapport. Quand aucun mois n'est saisi, elle dit « 6 ans », sans « et 0 mois ».
+
+### Mesures : ce que la saisie du mois apporte (`age_mois.js`)
+
+Nouvel audit, une finition sur douze, 211 finitions, 5 316 points mensuels, évaluation fixée à 09/2026 :
+
+| gamme | finitions | écart médian 01→12 | maximum |
+|---|---|---|---|
+| Grand public | 85 | **4,10 %** | 14,80 % |
+| Haut de gamme | 66 | **6,85 %** | 14,67 % |
+| Luxe / premium | 60 | **8,30 %** | 14,60 % |
+| Ensemble | 211 | 6,84 % | 14,80 % |
+
+C'est l'écart entre un véhicule de janvier et un de décembre du même millésime, à date d'évaluation identique. L'ordre de grandeur attendu (4 à 8 % selon la gamme) est **confirmé** ; les maxima de près de 15 % sont des véhicules à batterie, qui se déprécient à 13,8 %/an.
+
+Deux contrôles de forme, tous deux au vert :
+
+- **Monotonie** : 0 inversion sur 5 316 points — la valeur croît strictement à mesure que la MEC se rapproche, y compris aux deux franchissements de frontière de génération rencontrés (Suzuki Swift, 02/2025). Les 80 paliers plats observés sont des véhicules déjà au plancher de valeur résiduelle, où l'âge ne fait plus rien perdre.
+- **Continuité aux bornes d'année** : 0,56 % d'écart médian entre deux mois consécutifs à l'intérieur d'une année, 0,55 % entre 12/N et 01/N+1 — rapport ×0,98. L'âge et l'ancrage se parlent.
+
+### Preuve de non-régression
+
+`snapshot.js` recalcule toute la base **sans jamais saisir de mois**, avant et après :
+
+```
+Couples comparés : 6581
+Écart médian      : 0.0 %
+Écart absolu médian: 0.0 %
+Inchangés (<0,5 %): 100 %
+```
+
+**0,0 % partout, 100 % d'inchangés.** Aucun mois par défaut ne s'est glissé dans un chemin de calcul.
+
+### Contrôles
+
+| script | résultat |
+|---|---|
+| `test_vv.js` | 365 assertions au vert, dont la nouvelle section 17 |
+| `age_mois.js` | 0 inversion mensuelle, continuité ×0,98, amplitude mesurée par gamme |
+| `audit3.js` | 0 inversion d'âge (+ 4 populaires, voulues) |
+| `check_neuf.js` | 0 valeur vénale au-dessus du prix neuf du jour (5 915 cas) |
+| `check_pop.js` | 0 populaire au-dessus de sa jumelle (391 couples) |
+| `validation.js` | +14,5 % médian, 35/56 groupes sous 20 % — inchangé |
+| `css_audit*.js` | 104 paires fond/texte, deux thèmes, toutes au-dessus de 4,5:1 |
+| `mob_check.js` | parcours téléphone conforme |
+
+---
+
+## Défaut d'affichage sur écran 11 pouces en paysage (xpad 1105b)
+
+Signalé par Yassine, capture à l'appui : sur une tablette 11 pouces en paysage, les colonnes débordaient à droite et le résultat était **inexploitable**.
+
+### Ce qui se passait
+
+Trois causes, dont une décisive :
+
+1. **La grille dépassait l'écran, sans barre de défilement.** `.app` et `.main` sont en `overflow:hidden` ; or une piste `1fr` et une colonne de grille `auto` ne descendent jamais sous la **largeur minimale de contenu** de ce qu'elles portent. Mesuré sur un écran de 1 194 px : les colonnes totalisaient 1 273 px, et la fiche était purement et simplement coupée à droite. C'est le défaut de la capture.
+2. **Sous 1 101 px, le résultat passait sous les colonnes**, avec 40 % d'une hauteur déjà réduite. Sur un écran de 533 px de haut, cela laissait environ 210 px pour lire une fiche qui en fait 2 900.
+3. **La barre du haut, une fois repliée sur deux lignes, débordait derrière les colonnes** : sa rangée de grille était figée à 56 px.
+
+Le format en cause : 1 280 × 800 avec un facteur d'échelle de 1,5, soit **853 px CSS de large et 533 de haut** — sous le seuil de 900 px que j'avais d'abord retenu.
+
+### Corrections
+
+- `minmax(0,1fr)` au lieu de `1fr` sur les colonnes, `grid-template-columns:minmax(0,1fr)` sur `.app`, `min-width:0` sur les colonnes et la barre : la grille ne peut plus dépasser l'écran.
+- Rangée d'en-tête en `auto` avec `min-height` : la barre garde sa hauteur habituelle et peut se replier sans déborder.
+- **En paysage entre 840 et 1 100 px, le résultat redevient une colonne pleine hauteur** (154 / 1fr / 45 %), comme sur grand écran : la largeur est là, autant s'en servir. Le bouton « Retour à la sélection » disparaît, devenu inutile.
+- Entre 1 101 et 1 500 px, colonnes rééquilibrées (186 / 1fr / 38 %) : la colonne des marques ne porte que des noms, la fiche récupère la place.
+- Typographie remontée d'environ un point et demi sur tous les écrans de 840 à 1 500 px : les tailles de 9,5 à 11 px avaient été réglées sur un grand écran.
+- Les trois pastilles de comptage disparaissent sous 1 300 px, où elles prenaient la place de la recherche.
+
+### Vérifié dans un navigateur réel
+
+| format | avant | après |
+|---|---|---|
+| 853 × 533 (xpad 1105b en paysage) | colonnes coupées, résultat empilé | 3 colonnes 154+315+384, résultat pleine hauteur, rien de coupé |
+| 1 024 × 768 | fiche coupée à droite | 164+420+440, barre sur une ligne |
+| 1 194 × 834 | grille à 1 273 px pour 1 194 | grille à la largeur exacte de l'écran |
+| 1 280 × 800 | fiche coupée | 186+608+486 |
+| 800 × 1 280 (portrait) | — | inchangé : résultat pleine largeur sous les colonnes |
+| 390 × 844 (téléphone) | — | inchangé, aucun débordement |

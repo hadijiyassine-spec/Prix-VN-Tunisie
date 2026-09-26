@@ -1576,14 +1576,149 @@ setTimeout(() => {
       check('un changement de mois redessine une fois, un mois identique ne redessine pas',
         apresMeme === 1 && rendus16 === 2, 'rendus=' + apresMeme + '/' + rendus16);
 
-      // 16.10 L'âge n'est PAS passé en mois : il reste en années pleines.
-      setFY(2021); setFM(1);
+      // 16.10 Le mois de MEC SEUL ne touche pas à l'âge : il faut aussi le mois d'évaluation
+      // (v53). Tant qu'il manque, l'âge reste l'entier d'avant, quel que soit le mois de MEC.
+      const vvI16 = win.eval('vvInputs');
+      const moisEvalMem = vvI16.moisEval;
+      // Le mois d'évaluation est remis à zéro APRÈS chaque setFM : reconstruire le module le
+      // re-pré-remplit sur le mois courant (comportement voulu de l'interface en v53).
+      setFY(2021); setFM(1); vvI16.moisEval = null;
       const ageJanv = win.computeVV(p208, 60000, 'normal', 'particulier', null, CY16).age;
-      setFM(12);
+      setFM(12); vvI16.moisEval = null;
       const ageDec = win.computeVV(p208, 60000, 'normal', 'particulier', null, CY16).age;
-      check('l\'âge reste compté en années pleines, quel que soit le mois',
+      check('mois de MEC seul : l\'âge reste en années pleines',
         ageJanv === ageDec && ageJanv === CY16 - 2021, 'âge ' + ageJanv);
+      vvI16.moisEval = moisEvalMem;
       setFM(null);
+    }
+    setFY(2019);
+
+    // ── 17. Âge compté au mois près ──
+    // L'âge se compte de la mise en circulation à la DATE DU SINISTRE. Règle intangible : tant
+    // qu'un mois manque d'un côté ou de l'autre, l'âge retombe sur l'entier d'avant.
+    console.log('\n17. Âge au mois près :');
+    {
+      const CY17 = win.eval('CY');
+      const vvI = win.eval('vvInputs');
+      const setFM = m => {
+        const el = doc.getElementById('mecMois');
+        el.value = m == null ? '' : String(m);
+        el.dispatchEvent(new win.Event('change', { bubbles: true }));
+      };
+      const vv = (f, km, mois, moisEval, an, regime) =>
+        win.computeVV(f, km, 'normal', 'particulier', null, an || CY17, null, regime || 'aucun', mois, moisEval);
+      const ech = win.DB.Peugeot['Peugeot 208'].find(x => x.v === '1.2 L Active');
+
+      // 17.1 Aucun mois : le chiffre d'avant, à l'unité près.
+      setFY(2020); setFM(null); vvI.moisEval = null;
+      const rien = vv(ech, 90000, null, null);
+      check('sans aucun mois, l\'âge reste en années pleines', rien.age === CY17 - 2020 && rien.ageMois === null,
+        'âge ' + rien.age);
+
+      // 17.2 Un seul mois, d'un côté ou de l'autre : le chiffre ne bouge pas.
+      const mecSeul = vv(ech, 90000, 3, null);
+      const evalSeul = vv(ech, 90000, null, 3);
+      check('mois de MEC seul : valeur inchangée', mecSeul.vv === rien.vv && mecSeul.age === rien.age,
+        mecSeul.vv + ' vs ' + rien.vv);
+      check('mois d\'évaluation seul : valeur inchangée', evalSeul.vv === rien.vv && evalSeul.age === rien.age,
+        evalSeul.vv + ' vs ' + rien.vv);
+      const croise = vv(ech, 90000, 11, 11);
+      check('mêmes mois des deux côtés : on retombe exactement sur l\'âge entier',
+        croise.age === rien.age && croise.vv === rien.vv);
+
+      // 17.3 Janvier contre décembre : onze mois d'écart, et décembre vaut plus cher.
+      const janv = vv(ech, 90000, 1, 9, null);
+      const dec = vv(ech, 90000, 12, 9, null);
+      check('MEC 01/2020 et 12/2020 évaluées en 09/' + CY17 + ' : les deux diffèrent, décembre est plus haut',
+        dec.vv > janv.vv, janv.vv + ' → ' + dec.vv + ' (' + ((dec.vv / janv.vv - 1) * 100).toFixed(1) + ' %)');
+      check('l\'âge est bien fractionnaire et compté en mois',
+        janv.ageMois === (CY17 - 2020) * 12 + 8 && dec.ageMois === (CY17 - 2020) * 12 - 3,
+        janv.ageMois + ' vs ' + dec.ageMois + ' mois');
+
+      // 17.4 F_âge d'un âge intermédiaire tombe entre les deux entiers qui l'encadrent.
+      setFY(CY17 - 6);
+      const a5 = vv(ech, 90000, 9, 9);        // exactement 6 ans
+      const a55 = vv(ech, 90000, 3, 9);       // 6 ans et 6 mois
+      setFY(CY17 - 7);
+      const a6 = vv(ech, 90000, 9, 9);        // exactement 7 ans
+      check('F_âge d\'un âge intermédiaire tombe entre les deux entiers',
+        a55.fAge < a5.fAge && a55.fAge > a6.fAge,
+        a6.fAge.toFixed(4) + ' < ' + a55.fAge.toFixed(4) + ' < ' + a5.fAge.toFixed(4));
+
+      // 17.5 Kilométrage de référence d'un véhicule de 6 mois : 7 500 km, et le facteur joue.
+      setFY(CY17);
+      const jeune = vv(ech, 20000, 3, 9);
+      check('kmRef d\'un véhicule de 6 mois vaut 7 500 km', Math.round(jeune.kmRef) === 7500, jeune.kmRef + ' km');
+      check('…et le facteur kilométrique joue (pas de « véhicule neuf, sans effet »)',
+        jeune.fKm !== 1 && jeune.age > 0, 'F_km ×' + jeune.fKm.toFixed(3));
+
+      // 17.6 Les délais des régimes courent depuis la DATE de mise en circulation.
+      let pop = null;
+      for (const b of Object.keys(win.DB)) for (const m of Object.keys(win.DB[b]))
+        if (!pop && /populaire/i.test(m)) pop = win.DB[b][m][0];
+      if (pop) {
+        setFY(2024);
+        const mars24 = vv(pop, 20000, 3, 1, 2026, 'populaire');    // 1 an 10 mois : sous délai
+        setFY(2023);
+        const nov23 = vv(pop, 20000, 11, 1, 2026, 'populaire');    // 2 ans 2 mois : délai échu
+        check('populaire de 03/2024 évaluée en 01/2026 : encore incessible',
+          mars24.ven.popStatut === 'incessible', 'âge ' + (mars24.ven.ageEvalMois) + ' mois');
+        check('populaire de 11/2023 évaluée en 01/2026 : délai échu, taxe réintégrée',
+          nov23.ven.popStatut === 'majore', 'âge ' + (nov23.ven.ageEvalMois) + ' mois');
+        // Sans mois, les deux millésimes retombent sur le comportement d'avant (années pleines).
+        setFY(2024);
+        const sansMois24 = vv(pop, 20000, null, null, 2026, 'populaire');
+        check('sans mois, le délai se compte comme avant, à l\'année',
+          sansMois24.ven.ageEval === 2, 'ageEval ' + sansMois24.ven.ageEval);
+      }
+      // Taxi : bascule des 5 ans à un mois près.
+      setFY(2021);
+      const taxiAvant = vv(ech, 90000, 6, 5, 2026, 'taxi_louage');   // 4 ans 11 mois
+      const taxiApres = vv(ech, 90000, 6, 7, 2026, 'taxi_louage');   // 5 ans 1 mois
+      check('taxi de 06/2021 : sous délai en 05/2026, avantage acquis en 07/2026',
+        taxiAvant.ven.popStatut === 'incessible' && taxiApres.ven.popStatut === 'majore',
+        taxiAvant.ven.ageEvalMois + ' mois vs ' + taxiApres.ven.ageEvalMois + ' mois');
+
+      // 17.7 MEC postérieure à la date d'évaluation : âge borné à 0 et message explicite.
+      setFY(2026);
+      const futur = vv(ech, 10000, 11, 2, 2026);
+      check('MEC postérieure à la date d\'évaluation : âge borné à 0 et signalé',
+        futur.age === 0 && futur.mecPosterieure === true, 'âge ' + futur.age);
+
+      // 17.8 Libellés : en clair, jamais en décimales.
+      check('l\'âge s\'écrit « 5 ans et 9 mois »', win.libAge(5.75, 69) === '5 ans et 9 mois', win.libAge(5.75, 69));
+      check('…« 6 ans » quand aucun mois n\'est saisi', win.libAge(6, null) === '6 ans', win.libAge(6, null));
+      check('…« 9 mois », « 1 an », « moins d\'un mois »',
+        win.libAge(0.75, 9) === '9 mois' && win.libAge(1, 12) === '1 an' && win.libAge(0, 0) === 'moins d\'un mois',
+        [win.libAge(0.75, 9), win.libAge(1, 12), win.libAge(0, 0)].join(' · '));
+      check('aucun âge décimal dans la fiche', !/\d,\d+\s*an/.test(win.libAge(5.75, 69) + win.libAge(6, null)));
+
+      // 17.9 Interface : le sélecteur de mois d'évaluation existe et est pré-rempli.
+      setFY(2018); setFM(null); vvI.moisEval = null;
+      win.selectBrand('Peugeot');
+      [...doc.querySelectorAll('#listM .item')].find(x => x.querySelector('.item-name').textContent.trim().endsWith('Peugeot 208')).click();
+      doc.querySelector('#listV > .vi').click();
+      const selMoisEval = doc.getElementById('vvMois');
+      check('le module porte un sélecteur de mois d\'évaluation', !!selMoisEval && !!selMoisEval.getAttribute('aria-label'));
+      check('il est pré-rempli sur le mois courant quand l\'évaluation porte sur l\'année courante',
+        parseInt(selMoisEval.value) === new Date().getMonth() + 1, 'mois ' + selMoisEval.value);
+      const selAnnee17 = doc.getElementById('vvAnnee');
+      selAnnee17.value = String(CY17 - 3);
+      selAnnee17.dispatchEvent(new win.Event('change', { bubbles: true }));
+      check('sur une année passée, le mois est laissé vide — on ne devine pas la date d\'un sinistre',
+        doc.getElementById('vvMois').value === '' && win.eval('vvInputs').moisEval === null);
+      // Changer le mois d'évaluation est une nouvelle consultation : le curseur repart du conseil.
+      selAnnee17.value = String(CY17);
+      selAnnee17.dispatchEvent(new win.Event('change', { bubbles: true }));
+      const sl = doc.getElementById('vvCote');
+      if (sl) {
+        sl.value = '1.20'; sl.dispatchEvent(new win.Event('input', { bubbles: true }));
+        const me = doc.getElementById('vvMois');
+        me.value = '4'; me.dispatchEvent(new win.Event('change', { bubbles: true }));
+        check('changer le mois d\'évaluation remet le curseur de cotation sur le conseil',
+          doc.getElementById('vvCoteReset').hidden === true);
+      }
+      vvI.moisEval = null;
     }
     setFY(2019);
 
