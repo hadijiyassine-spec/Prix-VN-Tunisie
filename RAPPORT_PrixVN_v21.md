@@ -1693,3 +1693,96 @@ Les deux dates qui produisent l'âge sont nommées : sans elles, un « 7 ans et 
 L'âge reste également dans le détail du calcul, à côté du taux de la gamme et du coefficient de vétusté : la fiche donne le résultat, le détail donne la règle.
 
 Contrôles : `test_vv.js` à **369 assertions**, toutes au vert, dont quatre nouvelles qui vérifient que la ligne existe, qu'elle est **hors du bloc replié**, qu'elle porte les deux dates et qu'elle annonce le même âge que le calcul.
+
+
+---
+
+## Version 55 (28/09/2026) — révision du niveau de la valeur vénale (jeu « P5 »)
+
+Le diagnostic complet figure dans `DIAGNOSTIC_VV_28092026.md`. Cette section retient ce qui était faux, comment cela a été mesuré, ce qui change, et ce qui reste ouvert.
+
+### Ce qui a déclenché la révision
+
+Cas signalé par Yassine Hadiji : **Toyota Agya 1.2 VVTi BVM, MEC 07/2022, 78 160 km, usage location** — 37 500 DT calculés, contre 25 000 à 26 000 DT constatés sur le marché. Le kilométrage n'y est pour rien (78 160 km pour un repère de 62 500, soit 1 % de malus) et l'ancrage sur la valeur à neuf non plus (+2,4 % seulement entre fin de série et tarif du millésime). C'était un problème de **niveau**.
+
+### Ce qui était faux : une fenêtre d'ajustement trompeuse
+
+Les taux de décote étaient ajustés sur la fenêtre d'âge **1-20 ans**. Or la courbe de dévalorisation n'est pas une exponentielle : elle est raide au début, puis s'aplatit. Et la bande de faible valeur à neuf est peuplée surtout de **vieux** véhicules, déjà près du plancher résiduel. La pente ajustée sur vingt ans en ressortait tirée vers le bas — puis était appliquée aux véhicules **récents**, qui sont précisément ceux qu'on expertise.
+
+Le même ajustement, bande < 60 000 DT, selon la fenêtre retenue :
+
+| fenêtre | 1-20 ans | 1-10 ans | 1-8 ans | 1-6 ans |
+|---|---|---|---|---|
+| taux mesuré | 4,39 %/an | 4,46 % | **6,81 %** | **8,43 %** |
+
+Rétention observée sur les annonces, corrigée du kilométrage, contre le modèle :
+
+| âge | observé | modèle 4,27 %/an | écart |
+|---|---|---|---|
+| 3 ans | 0,734 | 0,877 | +20 % |
+| 4 ans | 0,701 | 0,840 | +20 % |
+| 6 ans | 0,585 | 0,770 | +32 % |
+| 8 ans | 0,573 | 0,705 | +23 % |
+
+### Comment les nouvelles valeurs ont été établies
+
+Échantillon **indépendant** de 152 annonces relevées le 28.09.2026 sur automobile.tn, 18 modèles, trois gammes (`marche_occasion_28092026.csv`), confrontées **annonce par annonce** au calcul (`compare_marche.js`). Cinq jeux de paramètres ont été simulés en mémoire, sans modifier le fichier, avant d'en retenir un.
+
+### Ce qui change
+
+| paramètre | avant | après | origine |
+|---|---|---|---|
+| taux grand public | 4,27 %/an | **5,80 %/an** | fenêtre 1-8 ans, arbitré sur l'échantillon du 28.09 |
+| taux haut de gamme | 6,98 %/an | **7,50 %/an** | idem |
+| taux luxe / premium | 8,33 %/an | **9,50 %/an** | idem — c'était la gamme la plus surévaluée (+19,3 %) |
+| pente kilométrique | 0,70 %/10 000 km | **0,91 %/10 000 km** | résidus après retrait de l'âge, 545 annonces |
+
+Le coefficient d'usage « location » (0,92) et l'abattement annonce → transaction **n'ont pas été touchés** : voir les réserves ci-dessous.
+
+### Résultat mesuré
+
+| indicateur | avant | après |
+|---|---|---|
+| biais médian, échantillon du 28.09 (152 annonces) | +13,6 % | **+2,8 %** |
+| écart absolu médian | 15,0 % | **10,8 %** |
+| annonces à moins de 20 % | 98/152 | **110/152** |
+| biais par gamme (gp / hg / premium) | +12,8 / +7,1 / +19,3 % | **+1,7 / +5,7 / +6,3 %** |
+| `validation.js`, échantillon du 28.08 (561 annonces) | +14,5 % · 16,2 % · 35/56 | **+2,6 % · 12,7 % · 39/56** |
+
+Le second jeu de chiffres compte autant que le premier : l'échantillon du 28.08 n'a pas servi à choisir entre les jeux de paramètres, et il confirme l'amélioration.
+
+Le jeu retenu est le seul des cinq à rendre le biais **homogène entre les trois gammes**. Son biais encadre zéro selon la convention de finition retenue (+2,8 % avec la finition médiane en prix, −4,0 % avec la moins chère) : c'est la position attendue d'une valeur de transaction face à des prix **demandés**.
+
+### Contrôles
+
+| script | résultat |
+|---|---|
+| `test_vv.js` | **369 assertions au vert** — aucune n'a eu besoin d'être adaptée, aucun test figeant ces taux |
+| `audit3.js` | 0 inversion d'âge (+ 4 populaires, voulues) |
+| `check_neuf.js` | 0 valeur vénale au-dessus du prix neuf du jour (5 915 cas) |
+| `check_pop.js` | 0 populaire au-dessus de sa jumelle (391 couples) |
+| `validation.js` | +2,6 % médian, 39/56 groupes sous 20 % |
+
+L'ordre des usages reste : particulier > société > location > taxi, à kilométrage égal.
+
+### Ce qui reste ouvert, et qu'il ne faut pas oublier
+
+1. **Le cas de l'Agya n'est pas clos.** Après correction, la valeur passe de 37 500 à **35 000 DT** en usage location. C'est cohérent avec les annonces publiques relevées le 28.09 — une Agya de 2022 se demande **35 000 DT**, une de 2021 **38 500 DT**, sur deux sources indépendantes (automobile.tn et tayara.tn, 14 annonces dans `marche_agya_28092026.csv`) — mais cela reste **+37 % au-dessus des 25 500 DT** cités par l'expert. L'écart résiduel ne peut venir que du statut **ex-location**, qui n'est documenté nulle part publiquement.
+2. **Le coefficient « location » de 0,92 est une hypothèse**, jamais mesurée. Si les 25-26 000 DT sont bien un prix de transaction d'ex-location face à un marché particulier à 35 000 DT, ce coefficient devrait être de l'ordre de **0,73**. Décision de l'expert, faute de données.
+3. **L'abattement annonce → transaction n'existe toujours pas** dans le calcul. Le modèle se compare à des prix demandés ; une valeur d'indemnisation devrait se situer légèrement en dessous.
+4. **Les annonces ne déclarent pas l'usage** : l'échantillon mélange particuliers, sociétés et ex-flottes. Une part du biais résiduel ne vient donc pas du modèle — à 25 % d'annonces non-particulier et un coefficient de 0,80, la lecture du biais se déplace d'environ 5 points.
+5. **La convention de finition** pèse autant que les paramètres : +13,6 % avec la finition médiane contre +4,0 % avec la moins chère, sur le même échantillon et les mêmes paramètres d'avant. Elle devra être tranchée avant toute recalibration ultérieure.
+6. Les bandes **haut de gamme (33 annonces) et premium (29)** restent peu fournies : leurs taux sont moins solides que celui de la gamme grand public.
+7. **Ni validation hors échantillon formelle, ni jackknife** sur les nouveaux paramètres : à faire sur un échantillon de marché élargi.
+
+### Fichiers ajoutés
+
+| fichier | rôle |
+|---|---|
+| `DIAGNOSTIC_VV_28092026.md` | diagnostic complet, décomposition de l'Agya, instruction des suspects |
+| `marche_occasion_28092026.csv` | 152 annonces datées et sourcées, relevé du 28.09.2026 |
+| `marche_agya_28092026.csv` | 14 annonces d'Agya, deux sources |
+| `compare_marche.js` | confrontation annonce par annonce, effet de la finition et de l'usage inconnu |
+| `diag_agya.js`, `diag_agya2.js` | décomposition facteur par facteur du cas signalé |
+| `diag_taux.js` | taux par bande de valeur à neuf selon la fenêtre d'âge, pente kilométrique |
+| `diag_simul.js` | simulation des jeux de paramètres et cas de référence |
