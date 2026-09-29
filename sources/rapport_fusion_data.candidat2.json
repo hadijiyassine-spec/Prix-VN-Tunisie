@@ -1,11 +1,11 @@
 {
- "source": "_backup_avant_3d/data.avant_fusion_092026.js",
- "sortie": "data.js",
+ "source": "data.js",
+ "sortie": "data.candidat2.js",
  "avant": {
   "marques": 69,
-  "modeles": 739,
-  "finitions": 2522,
-  "releves": 10574
+  "modeles": 749,
+  "finitions": 2553,
+  "releves": 10682
  },
  "apres": {
   "marques": 69,
@@ -37,287 +37,10 @@
    "regle": "valeur de data.js retenue"
   }
  ],
- "quasi": [
-  {
-   "modele": "KIA Sportage PHEV",
-   "classeur": "1.6 T-GDI 4WD GT-Line",
-   "dataJs": "1.6 T-GDI 2WD GT-Line"
-  },
-  {
-   "modele": "KIA Sportage PHEV",
-   "classeur": "1.6 T-GDI 2WD GT-Line",
-   "dataJs": "1.6 T-GDI 4WD GT-Line"
-  },
-  {
-   "modele": "M-Hero 817",
-   "classeur": "1.5 L PHREEV 31.7 kWh AWD E1",
-   "dataJs": "1.5 L PHREEV 31.7 kWh AWD E0"
-  },
-  {
-   "modele": "M-Hero 817",
-   "classeur": "1.5 L PHREEV 31.7 kWh AWD E1",
-   "dataJs": "1.5 L PHREEV 31.7 kWh AWD E1 αlpha"
-  },
-  {
-   "modele": "M-Hero 817",
-   "classeur": "1.5 L PHREEV 31.7 kWh AWD E1 αlpha",
-   "dataJs": "1.5 L PHREEV 31.7 kWh AWD E1"
-  },
-  {
-   "modele": "Renault Kwid Populaire",
-   "classeur": "1.0 L Outsider",
-   "dataJs": "1.0 L"
-  },
-  {
-   "modele": "Volvo EX90",
-   "classeur": "Twin Performance Ultra - 7 places",
-   "dataJs": "Twin Performance Ultra - 6 places"
-  },
-  {
-   "modele": "Volvo EX90",
-   "classeur": "Single Motor Plus - 7 places",
-   "dataJs": "Single Motor Plus"
-  },
-  {
-   "modele": "Volvo EX90",
-   "classeur": "Twin Performance Ultra - 6 places",
-   "dataJs": "Twin Performance Ultra - 7 places"
-  },
-  {
-   "modele": "Mazda 3 sedan",
-   "classeur": "1.5 L Skyactiv-G Core+ Grade BVA",
-   "dataJs": "1.5 L Skyactiv-G Core+ Grade"
-  }
- ],
- "nouvellesFinitions": [
-  {
-   "marque": "BAIC",
-   "modele": "BAIC U5 Plus",
-   "version": "1.5 L Luxury",
-   "energie": null,
-   "regle": null
-  },
-  {
-   "marque": "BAIC",
-   "modele": "BAIC X55",
-   "version": "1.5 L DCT LV4 Sport Plus",
-   "energie": null,
-   "regle": null
-  },
-  {
-   "marque": "BAIC",
-   "modele": "BAIC X55",
-   "version": "1.5 L DCT LV2 Sport",
-   "energie": null,
-   "regle": null
-  },
-  {
-   "marque": "BMW",
-   "modele": "BMW Z4",
-   "version": "sDrive 20i Pack M",
-   "energie": null,
-   "regle": null
-  },
-  {
-   "marque": "Chevrolet",
-   "modele": "Chevrolet Captiva EV",
-   "version": "60 KWH",
-   "energie": "⚡ Élec.",
-   "regle": "capacité en kWh dans le nom"
-  },
-  {
-   "marque": "Chevrolet",
-   "modele": "Chevrolet Groove",
-   "version": "1.5 Turbo RS",
-   "energie": "⛽ Ess.",
-   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
-  },
-  {
-   "marque": "Chevrolet",
-   "modele": "Chevrolet Groove",
-   "version": "1.5 L LT",
-   "energie": "⛽ Ess.",
-   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
-  },
-  {
-   "marque": "Chevrolet",
-   "modele": "Chevrolet Spark EUV",
-   "version": "42 KWH",
-   "energie": "⚡ Élec.",
-   "regle": "capacité en kWh dans le nom"
-  },
-  {
-   "marque": "Citroën",
-   "modele": "Citroën C3",
-   "version": "1.2 L Plus",
-   "energie": "⛽ Ess.",
-   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
-  },
-  {
-   "marque": "Cupra",
-   "modele": "Cupra Terramar VZ Hybride",
-   "version": "1.5 TSI PHEV",
-   "energie": "🔌 Hybride rechargeable",
-   "regle": "mention PHEV / rechargeable"
-  },
-  {
-   "marque": "Honda",
-   "modele": "Honda HR-V Hybride",
-   "version": "1.5 L e-HEV",
-   "energie": "🌿 Hybride",
-   "regle": "mention hybride / HEV"
-  },
-  {
-   "marque": "IM",
-   "modele": "IM Motors IM7",
-   "version": "100 kwh AWD",
-   "energie": "⚡ Élec.",
-   "regle": "capacité en kWh dans le nom"
-  },
-  {
-   "marque": "JMC",
-   "modele": "JMC Grand Avenue",
-   "version": "2.3 l Turbo 4x4 Plus BVA",
-   "energie": null,
-   "regle": null
-  },
-  {
-   "marque": "KIA",
-   "modele": "KIA Sportage",
-   "version": "1.6 l T-GDI 7-DCT Motion",
-   "energie": null,
-   "regle": null
-  },
-  {
-   "marque": "KIA",
-   "modele": "KIA Sportage PHEV",
-   "version": "1.6 T-GDI 4WD GT-Line",
-   "energie": "🔌 Hybride rechargeable",
-   "regle": "mention PHEV / rechargeable"
-  },
-  {
-   "marque": "KIA",
-   "modele": "KIA Sportage PHEV",
-   "version": "1.6 T-GDI 2WD Prestige",
-   "energie": "🔌 Hybride rechargeable",
-   "regle": "mention PHEV / rechargeable"
-  },
-  {
-   "marque": "KIA",
-   "modele": "KIA Sportage PHEV",
-   "version": "1.6 T-GDI 2WD GT-Line",
-   "energie": "🔌 Hybride rechargeable",
-   "regle": "mention PHEV / rechargeable"
-  },
-  {
-   "marque": "Land Rover",
-   "modele": "Land Rover Range Rover Sport",
-   "version": "3.0 L P460 PHEV Autobiography",
-   "energie": "🔌 Hybride rechargeable",
-   "regle": "mention PHEV / rechargeable"
-  },
-  {
-   "marque": "M-Hero",
-   "modele": "M-Hero 817",
-   "version": "1.5 L PHREEV 31.7 kWh AWD E1",
-   "energie": "⚡ Élec.",
-   "regle": "capacité en kWh dans le nom"
-  },
-  {
-   "marque": "M-Hero",
-   "modele": "M-Hero 817",
-   "version": "1.5 L PHREEV 31.7 kWh AWD E1 αlpha",
-   "energie": "⚡ Élec.",
-   "regle": "capacité en kWh dans le nom"
-  },
-  {
-   "marque": "Porsche",
-   "modele": "Porsche Cayenne E-Hybrid Coupé",
-   "version": "Cayenne E-Hybrid Coupé Black Edition",
-   "energie": "🔌 Hybride rechargeable",
-   "regle": "désignation E-Hybrid (Porsche)"
-  },
-  {
-   "marque": "Renault",
-   "modele": "Renault Kwid Populaire",
-   "version": "1.0 L Outsider",
-   "energie": "⛽ Ess.",
-   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
-  },
-  {
-   "marque": "Volvo",
-   "modele": "Volvo EX90",
-   "version": "Twin Performance Ultra - 7 places",
-   "energie": "⚡ Élec.",
-   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
-  },
-  {
-   "marque": "Volvo",
-   "modele": "Volvo EX90",
-   "version": "Single Motor Plus - 7 places",
-   "energie": "⚡ Élec.",
-   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
-  },
-  {
-   "marque": "Volvo",
-   "modele": "Volvo EX90",
-   "version": "Twin Performance Ultra - 6 places",
-   "energie": "⚡ Élec.",
-   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
-  },
-  {
-   "marque": "Volvo",
-   "modele": "Volvo XC60",
-   "version": "2.0 l B5 AWD Ultimate Dark",
-   "energie": null,
-   "regle": null
-  },
-  {
-   "marque": "Volvo",
-   "modele": "Volvo XC60",
-   "version": "2.0 l T8 AWD Ultra Dark",
-   "energie": "🔌 Hybride rechargeable",
-   "regle": "désignation Volvo T8 (hybride rechargeable)"
-  },
-  {
-   "marque": "Volvo",
-   "modele": "Volvo XC60",
-   "version": "2.0 l T8 AWD Ultra Black Edition",
-   "energie": "🔌 Hybride rechargeable",
-   "regle": "désignation Volvo T8 (hybride rechargeable)"
-  },
-  {
-   "marque": "Volvo",
-   "modele": "Volvo XC90",
-   "version": "2.0 l T8 AWD Ultra Black Edition",
-   "energie": "🔌 Hybride rechargeable",
-   "regle": "désignation Volvo T8 (hybride rechargeable)"
-  },
-  {
-   "marque": "Volvo",
-   "modele": "Volvo XC90",
-   "version": "2.0 l T8 AWD Ultra Bright",
-   "energie": "🔌 Hybride rechargeable",
-   "regle": "désignation Volvo T8 (hybride rechargeable)"
-  },
-  {
-   "marque": "Mazda",
-   "modele": "Mazda 3 sedan",
-   "version": "1.5 L Skyactiv-G Core+ Grade BVA",
-   "energie": "⛽ Ess.",
-   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
-  }
- ],
+ "quasi": [],
+ "nouvellesFinitions": [],
  "nouvellesMarques": [],
- "sansEnergie": [
-  "BAIC · BAIC U5 Plus · 1.5 L Luxury",
-  "BAIC · BAIC X55 · 1.5 L DCT LV4 Sport Plus",
-  "BAIC · BAIC X55 · 1.5 L DCT LV2 Sport",
-  "BMW · BMW Z4 · sDrive 20i Pack M",
-  "JMC · JMC Grand Avenue · 2.3 l Turbo 4x4 Plus BVA",
-  "KIA · KIA Sportage · 1.6 l T-GDI 7-DCT Motion",
-  "Volvo · Volvo XC60 · 2.0 l B5 AWD Ultimate Dark"
- ],
+ "sansEnergie": [],
  "marquesNonResolues": [],
  "marquesRattachees": [
   {
@@ -333,7 +56,7 @@
    "dataJs": "BAIC"
   }
  ],
- "relevesAjoutes": 108,
+ "relevesAjoutes": 0,
  "doublonsRetires": 238,
  "casesFusionnees": [
   {
@@ -968,7 +691,7 @@
   {
    "modele": "MG 3",
    "orthographes": [
-    "1.5 l Confort (4 relevés, 23.12.2016→08.01.2018)",
+    "1.5 l Confort (5 relevés, 23.12.2016→15.11.2024)",
     "1.5 L Confort (1 relevés, 20.01.2025→20.01.2025)"
    ],
    "retenue": "1.5 l Confort"

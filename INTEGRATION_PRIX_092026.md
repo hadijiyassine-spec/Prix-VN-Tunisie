@@ -3,10 +3,12 @@
 **Date du rapport :** 28.09.2026
 **Source :** `prix VN 2011-092026 (1).xlsx` → copie de travail `sources/prix_VN_2011-092026_1.xlsx`
 **Base visée :** `data.js` (69 marques · 739 modèles · 2 522 finitions · 10 574 relevés)
-**État :** **fusion à blanc — `data.js` n'a pas été modifié.** Le résultat est dans `data.candidat.js`.
+**État :** **base écrite le 29.09.2026**, sur demande de Yassine Hadiji, après lecture de ce rapport.
+Sauvegarde de la base d'avant : `_backup_avant_3d/data.avant_fusion_092026.js`.
 
-> Ce rapport est à lire **avant** toute écriture. Rien n'a été écrit dans la base. Cinq points
-> demandent un arbitrage : ils sont regroupés au § 9.
+> La phase 1 (fusion à blanc) et la phase 2 (écriture) sont toutes deux passées. Deux des points
+> d'arbitrage du § 9 ont été tranchés — la Volvo T8 (§ 9.2) par Yassine, les six retraits (§ 9.3)
+> par l'échec de `test_vv.js`. **Trois restent ouverts** : § 9.1, § 9.4 et § 9.5, plus le § 3.2.
 
 ---
 
@@ -14,11 +16,11 @@
 
 | règle du cahier des charges | comment elle est tenue |
 |---|---|
-| fusionner, jamais remplacer | `integrer_prix.js` part de `data.js`, ajoute, et ne supprime rien : 2 448 finitions sur 2 522 sont **identiques à l'octet** après fusion |
+| fusionner, jamais remplacer | `integrer_prix.js` part de `data.js`, ajoute, et ne supprime rien : 2 454 finitions sur 2 522 sont **identiques à l'octet** après fusion |
 | pas de rapprochement approximatif | la correspondance est **exacte** sur marque + modèle + version, aux seules espaces et à la casse près ; les 10 quasi-correspondances sont **listées, pas appliquées** (§ 9.4) |
 | pas de relevé reconstitué depuis `Variation` | la colonne n'est utilisée **que** comme contrôle de complétude (§ 6) ; elle donne l'ancien prix, jamais sa date — donc rien n'est reconstituable |
 | pas de promotion supprimée à l'import | aucun relevé de `data.js` n'est retiré : `verif_fusion.js` vérifie que les 10 574 relevés d'origine sont tous là |
-| aucune électrique classée « essence » en silence | 20 énergies déduites par règle **écrite et citée**, 11 finitions laissées **sans énergie** et listées nominativement (§ 5) |
+| aucune électrique classée « essence » en silence | 24 énergies déduites par règle **écrite et citée**, 7 finitions laissées **sans énergie** et listées nominativement (§ 5) |
 | aucune fiche technique inventée | `eg`/`sp` ne sont jamais créés ; seul `eg.fuel` est renseigné quand la règle est explicite |
 | base jamais réécrite avant lecture du rapport | `--ecrire` est un drapeau explicite, absent des exécutions de ce rapport |
 
@@ -50,22 +52,22 @@ Trois pièges de format, traités dans `export_classeur.py` :
 | marques | 69 | **69** | 0 |
 | modèles | 739 | **749** | +10 |
 | finitions | 2 522 | **2 553** | +31 |
-| relevés | 10 574 | **10 688** | **+114** |
+| relevés | 10 574 | **10 682** | **+108** |
 
 | | |
 |---|---|
-| relevés ajoutés | **114** |
+| relevés ajoutés | **108** |
+| **retraits du 13.09.2026 écartés** (le classeur les réintroduisait) | **6** (§ 9.3) |
 | doublons exacts écartés (même finition, même date, même prix) | **238** |
 | doublons de casse du classeur ramenés à une orthographe (`1.0 L` / `1.0 l`) | **5** |
 | doublons de casse **préexistants dans `data.js`** | **5** (§ 3.2) |
 | relevés non recopiés car déjà présents sous l'orthographe sœur | **18** (§ 3.2) |
 | conflits de prix | **2** (§ 9.5) |
 | relevés vérifiés conservés contre le classeur | 0 — aucun n'était contredit |
-| retraits du 13.09.2026 réintroduits par le classeur | **6** (§ 9.3) |
 | marques créées | 0 |
 | marques non résolues | 0 |
 
-**Seulement 114 relevés nouveaux sur 10 781 lignes lues** : le classeur recouvre très largement ce que la base contient déjà. C'est le résultat attendu — et c'est ce qui rend la fusion peu risquée.
+**Seulement 108 relevés nouveaux sur 10 781 lignes lues** : le classeur recouvre très largement ce que la base contient déjà. C'est le résultat attendu — et c'est ce qui rend la fusion peu risquée.
 
 ### 3.1 Rattachement des marques
 
@@ -94,7 +96,7 @@ La première version de la fusion déversait tous les relevés du classeur dans 
 1. l'entrée qui reçoit les relevés nouveaux est celle qui en compte **le plus** (l'orthographe principale), et non « la dernière rencontrée » ;
 2. un relevé déjà porté par l'entrée sœur **n'est pas recopié** ailleurs.
 
-C'est la différence entre les 135 relevés de la première exécution et les **114** retenus : 21 étaient soit des duplications, soit écartés par ces règles.
+C'est une partie de la différence entre les 135 relevés de la première exécution et les **108** retenus au final : 18 étaient des duplications de casse, 6 des retraits du 13.09.2026 (§ 9.3), 3 des relevés en conflit.
 
 **Réunir ces cinq doublons en une seule entrée est une modification de la base** : cela relève de l'arbitrage de l'expert, pas de l'import. Rien n'a donc été réuni. Le cas Peugeot est le plus gênant, parce que ce sont deux **modèles** : dans l'application, le même Traveller apparaît deux fois dans la liste.
 
@@ -115,10 +117,12 @@ Réparties sur 10 modèles nouveaux et 21 modèles existants. Toutes proviennent
 | Deepal | S07, L07 | 2 | ⚡ Élec. | capacité en kWh dans le nom |
 | Lynk & Co | 06, 08 | 2 | 🔌 Hybride rechargeable | mention PHEV |
 | BAIC | Kenbo S2, X55 | 2 | 🛢️ / essence | héritée des finitions du même modèle |
-| Volvo | XC60, XC90 | **5** | **aucune** | voir § 9.2 |
+| Volvo | XC60, XC90 | 4 | **🔌 Hybride rechargeable** | désignation Volvo T8 (§ 9.2) |
+| Volvo | XC60 | 1 | **aucune** | `B5`, hybride léger — voir § 9.2 |
+| Volvo | EX90 | 3 | ⚡ Élec. | héritée des finitions du même modèle |
 | divers (BAIC, BMW, JMC, KIA, Chery, Haval, Jetour…) | 8 modèles | 8 | 2 héritées, 6 aucune | héritage des finitions sœurs |
 
-**20 énergies déduites**, **11 finitions laissées sans énergie** (§ 5).
+**24 énergies déduites**, **7 finitions laissées sans énergie** (§ 5).
 
 ---
 
@@ -134,6 +138,7 @@ Règles appliquées, dans l'ordre :
 | désignation constructeur | `330e`, `530e` chez BMW / Mercedes | 🔌 Hybride rechargeable |
 | prolongateur d'autonomie | `REEV`, `Range Extender` | 🔌 Hybride rechargeable |
 | désignation Porsche | `E-Hybrid` | 🔌 Hybride rechargeable |
+| **désignation Volvo T8** | `T8` **chez Volvo seulement** | 🔌 Hybride rechargeable |
 | mention hybride | `e:HEV`, `HEV`, `Hybrid` | 🌿 Hybride |
 | capacité batterie | `kWh` dans le nom | ⚡ Élec. |
 | mention électrique | `EV`, `e-tron`, `électrique` | ⚡ Élec. |
@@ -187,7 +192,7 @@ Autrement dit : les baisses spectaculaires du classeur étaient, à une exceptio
 | aucune marque / modèle / finition perdu | **OK** |
 | aucun relevé perdu (10 574 retrouvés) | **OK** |
 | aucune fiche technique (`eg`, `sp`) perdue | **OK** |
-| finitions identiques à l'octet | **2 448 / 2 522 (97,1 %)** |
+| finitions identiques à l'octet | **2 454 / 2 522 (97,3 %)** |
 | les **107** clés de `RELEVES_VERIFIES` se résolvent dans la base fusionnée | **OK** |
 | les **5** clés de `PHASES` se résolvent dans la base fusionnée | **OK** |
 | `RELEVES_VERIFIES` lu et respecté | 107 modèles · 106 relevés protégés · 6 retraits |
@@ -216,16 +221,14 @@ La première exécution de la fusion a tourné **sur la mauvaise base** : la cop
 
 Le classeur écrit `BAIC YX Kenbo S2`, la base range ses modèles sous `BAIC`. J'ai rattaché à `BAIC`. À confirmer : est-ce bien la même marque, ou `BAIC YX` est-il un importateur / une gamme distincte qui mérite sa propre entrée ?
 
-### 9.2 Les 11 finitions sans énergie — dont quatre Volvo T8
+### 9.2 Les finitions sans énergie — les quatre Volvo T8 sont réglées
 
-Liste complète :
+**Tranché le 29.09.2026 par Yassine Hadiji : la Volvo T8 est bien rechargeable.** La règle « `T8` chez Volvo → 🔌 Hybride rechargeable » est donc écrite dans `energieDuNom`, bornée à Volvo. Les quatre finitions concernées (XC60 et XC90 `2.0 l T8 AWD Ultra`) entrent avec la bonne énergie : module batterie, décote VE et TVA à 7 % s'appliquent.
+
+Il reste **7 finitions sans énergie**, qui seront traitées comme essence :
 
 | marque | modèle | finition |
 |---|---|---|
-| **Volvo** | XC60 | **2.0 l T8 AWD Ultra Dark** |
-| **Volvo** | XC60 | **2.0 l T8 AWD Ultra Black Edition** |
-| **Volvo** | XC90 | **2.0 l T8 AWD Ultra Black Edition** |
-| **Volvo** | XC90 | **2.0 l T8 AWD Ultra Bright** |
 | Volvo | XC60 | 2.0 l B5 AWD Ultimate Dark |
 | BAIC | U5 Plus | 1.5 L Luxury |
 | BAIC | X55 | 1.5 L DCT LV4 Sport Plus |
@@ -234,11 +237,24 @@ Liste complète :
 | JMC | Grand Avenue | 2.3 l Turbo 4x4 Plus BVA |
 | KIA | Sportage | 1.6 l T-GDI 7-DCT Motion |
 
-Les **quatre Volvo T8** sont des **hybrides rechargeables**, et aucune règle écrite ne le déduit du seul libellé `T8`. Les laisser en l'état les fait traiter comme essence : pas de module batterie, pas de décote VE, TVA ordinaire. Faut-il ajouter la règle « Volvo T8 → hybride rechargeable » ? Le `B5` de la cinquième ligne est un **hybride léger 48 V** — à classer en essence ou en hybride, c'est une convention à fixer. Les six dernières sont des thermiques : « essence » par défaut y est probablement juste, mais ce n'est pas écrit.
+Le `B5` de la première ligne est un **hybride léger 48 V** : il ne roule jamais en électrique seul, « essence » est donc la convention habituelle — mais c'est une convention, à confirmer d'un mot. Les six autres sont des thermiques : « essence » par défaut y est juste, simplement ce n'est pas écrit dans la fiche.
 
-### 9.3 Les 6 retraits du 13.09.2026 réintroduits
+### 9.3 Les 6 retraits du 13.09.2026 — réglé, c'est `test_vv.js` qui l'a tranché
 
-Le classeur rapporte six relevés que le contrôle catalogue du 13.09.2026 avait **retirés** comme substitutions mal attribuées. Ils reviennent donc dans `hist`, mais `RELEVES_VERIFIES` les neutralise **au runtime**. Deux lectures possibles : soit le retrait était une erreur et le classeur a raison, soit le retrait tient et il faut aussi l'appliquer à l'import. Aujourd'hui : ils sont présents dans la base et neutralisés à l'affichage. À confirmer.
+Le classeur rapporte six relevés que le contrôle catalogue du 13.09.2026 avait **retirés** comme substitutions mal attribuées. La première écriture les a laissés revenir dans `hist` : le calcul restait juste — `RELEVES_VERIFIES` les neutralise à l'exécution — mais **`test_vv.js` a signalé l'échec** (« un retrait déjà appliqué dans la base ne casse rien »), parce que la base n'était plus propre et que l'erreur reviendrait dès qu'on la régénérerait.
+
+Ils sont désormais **écartés à l'import** :
+
+| modèle · finition | date écartée |
+|---|---|
+| Renault Clio · 1.0 L SCe Life Plus | 06.05.2024 |
+| Renault Clio Populaire · 1.2 L | 02.09.2020 |
+| Jaguar E-Pace · 2.0 T 200 ch S | 23.01.2024 |
+| Jaguar F-Pace · 2.0 T 250 R-Sport | 23.01.2024 |
+| Seat Ibiza · 1.0 L TSI Style BVA | 16.01.2026 |
+| Volkswagen Caddy Cargo · 2.0 L TDI Business | 27.02.2026 |
+
+Quatre d'entre eux faisaient partie des « prix du jour qui changent » de la première écriture — c'étaient précisément les quatre **faux** changements : la Jaguar E-Pace serait passée de 289 000 à 350 000 DT et la Seat Ibiza de 69 980 à 86 980 DT, sur des tarifs qui n'appartiennent pas à ces finitions. Le classeur est la source même qui avait produit l'erreur ; le laisser la réécrire, c'était la refaire.
 
 ### 9.4 Les 10 quasi-correspondances
 

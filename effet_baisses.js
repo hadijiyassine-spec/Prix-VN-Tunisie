@@ -13,8 +13,11 @@ const lire = ch => {
   const i = l.findIndex(x => x.startsWith('window.DB='));
   return JSON.parse(l[i].slice('window.DB='.length).replace(/;\s*$/, ''));
 };
-const A = lire('data.js');
-const B = lire('data.candidat.js');
+// Les deux bases à comparer : par défaut l'ancienne (sauvegarde d'avant fusion) et celle en
+// service. Avant l'écriture, on passait data.js et data.candidat.js — une fois data.js écrit,
+// ces deux-là sont identiques et le script ne dirait plus rien.
+const A = lire(process.argv[2] || '_backup_avant_3d/data.avant_fusion_092026.js');
+const B = lire(process.argv[3] || 'data.js');
 const cle = s => String(s || '').replace(/\s+/g, ' ').trim().toLowerCase();
 
 // Décote d'âge du jeu P5, gamme déduite de la valeur à neuf, pour un véhicule de 2 ans.

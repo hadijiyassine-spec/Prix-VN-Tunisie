@@ -29,13 +29,19 @@ function bloc(html, decl) {
   return eval('(' + html.slice(i + decl.length - 1, j + 2) + ')');
 }
 
-const A = lire('data.js');
-const B = lire('data.candidat.js');
+// Les deux bases à comparer : celle d'AVANT la fusion et celle d'APRÈS. Avant l'écriture,
+// c'était data.js et data.candidat.js ; une fois data.js écrit, il faut repartir de la
+// sauvegarde, sans quoi on comparerait la base fusionnée à elle-même.
+const AVANT = process.argv[2] || (fs.existsSync('data.candidat.js') ? 'data.js' : '_backup_avant_3d/data.avant_fusion_092026.js');
+const APRES = process.argv[3] || (fs.existsSync('data.candidat.js') ? 'data.candidat.js' : 'data.js');
+console.log('avant : ' + AVANT + '   après : ' + APRES + '\n');
+const A = lire(AVANT);
+const B = lire(APRES);
 let ko = 0;
 const ok = (b, t, det) => { console.log((b ? '  OK   ' : '  ÉCHEC') + ' · ' + t + (det ? '   ' + det : '')); if (!b) ko++; };
 
 // ── 1. Idempotence ──
-execSync('node integrer_prix.js --source data.candidat.js --sortie data.candidat2.js', { stdio: 'pipe' });
+execSync('node integrer_prix.js --source "' + APRES + '" --sortie data.candidat2.js', { stdio: 'pipe' });
 const C = lire('data.candidat2.js');
 ok(JSON.stringify(B) === JSON.stringify(C), 'idempotence : refusionner le candidat ne change plus rien');
 

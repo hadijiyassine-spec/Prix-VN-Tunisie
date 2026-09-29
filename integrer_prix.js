@@ -112,6 +112,11 @@ function energieDuNom(marque, modele, version) {
   if (/\d{2,3}e\b/.test(t) && /bmw|mercedes/i.test(marque)) return { fuel: '🔌 Hybride rechargeable', regle: 'désignation constructeur (330e, 530e…)' };
   if (/\breev\b|range extender|prolongateur/i.test(t)) return { fuel: '🔌 Hybride rechargeable', regle: 'prolongateur d\'autonomie (REEV)' };
   if (/e-hybrid/i.test(t)) return { fuel: '🔌 Hybride rechargeable', regle: 'désignation E-Hybrid (Porsche)' };
+  // Volvo réserve la désignation T8 à sa chaîne hybride rechargeable (Twin Engine / Recharge) :
+  // confirmé par Yassine Hadiji le 29.09.2026. Sans cette règle, quatre XC60 / XC90 T8 entraient
+  // sans énergie, donc traités comme essence — pas de module batterie, pas de décote VE, TVA
+  // ordinaire. La règle est bornée à Volvo : « T8 » ne veut pas dire cela ailleurs.
+  if (/volvo/i.test(marque) && /\bT8\b/.test(t)) return { fuel: '🔌 Hybride rechargeable', regle: 'désignation Volvo T8 (hybride rechargeable)' };
   if (/e:?-?hev|\bhev\b|hybride|hybrid\b/i.test(t)) return { fuel: '🌿 Hybride', regle: 'mention hybride / HEV' };
   if (/\bkwh\b/i.test(t)) return { fuel: '⚡ Élec.', regle: 'capacité en kWh dans le nom' };
   if (/\be-?tron\b|\bev\b|électrique|electrique/i.test(t)) return { fuel: '⚡ Élec.', regle: 'mention électrique / EV / e-tron' };
@@ -256,6 +261,17 @@ for (const l of lignes) {
 
   const h = cible.fin.hist;
   const existant = h.find(x => x.d === l.date);
+  // Un retrait déjà décidé ne doit pas revenir par le classeur. Le contrôle catalogue du
+  // 13.09.2026 a retiré six tarifs parce qu'ils appartenaient à une AUTRE finition (les
+  // substitutions de gamme de la Clio) : chacun porte son motif et sa source. Le classeur est
+  // la source même qui a produit l'erreur — le laisser les réécrire, c'est la refaire. Ils sont
+  // certes neutralisés à l'exécution par RELEVES_VERIFIES, mais une base sale reviendrait à
+  // l'endroit dès qu'on la régénère, et test_vv.js l'a d'ailleurs signalé.
+  const kRetrait = cle(cible.modele) + '|' + cle(cible.fin.v) + '|' + l.date;
+  if (RV.retraits.has(kRetrait) && !existant) {
+    R.retraitsReintroduits.push(cible.modele + ' · ' + cible.fin.v + ' · ' + l.date + ' · écarté (retrait du 13.09.2026)');
+    continue;
+  }
   if (!existant) {
     // Le relevé est-il déjà dans la base sous une orthographe sœur (doublon de casse) ? Alors il
     // y est déjà : l'ajouter ici le compterait deux fois et ferait reculer le début de série.
@@ -280,9 +296,6 @@ for (const l of lignes) {
       touchees.add(k);
     }
   }
-  // Un retrait déjà décidé ne doit pas revenir par le classeur.
-  const kRet = cle(cible.modele) + '|' + cle(cible.fin.v) + '|' + l.date;
-  if (RV.retraits.has(kRet)) R.retraitsReintroduits.push(cible.modele + ' · ' + cible.fin.v + ' · ' + l.date);
 }
 
 // ── Recalcul des champs dérivés sur les finitions touchées ──
@@ -327,7 +340,8 @@ console.log('Avant         : ' + avant.marques + ' marques · ' + avant.modeles 
 console.log('Après         : ' + apres.marques + ' marques · ' + apres.modeles + ' modèles · ' + apres.finitions + ' finitions · ' + apres.releves + ' relevés');
 console.log('Relevés ajoutés : ' + R.relevesAjoutes + ' · doublons exacts écartés : ' + R.doublonsRetires);
 console.log('Finitions créées : ' + R.nouvellesFinitions.length + ' · marques créées : ' + R.nouvellesMarques.length + ' (' + R.nouvellesMarques.join(', ') + ')');
-console.log('Conflits de prix : ' + R.conflits.length + ' · relevés vérifiés conservés : ' + R.protegesConserves.length);
+console.log('Conflits de prix : ' + R.conflits.length + ' · relevés vérifiés conservés : ' + R.protegesConserves.length +
+  ' · retraits du 13.09.2026 écartés : ' + R.retraitsReintroduits.length);
 console.log('Finitions sans énergie identifiée : ' + R.sansEnergie.length);
 console.log('Doublons de casse du classeur ramenés à une orthographe : ' + R.casesFusionnees.length);
 console.log('Doublons de casse préexistants dans data.js : ' + R.doublonsCasseBase.length +
