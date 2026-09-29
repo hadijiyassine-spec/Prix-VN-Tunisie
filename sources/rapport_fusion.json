@@ -1,0 +1,1025 @@
+{
+ "source": "data.js",
+ "sortie": "data.candidat.js",
+ "avant": {
+  "marques": 69,
+  "modeles": 739,
+  "finitions": 2522,
+  "releves": 10574
+ },
+ "apres": {
+  "marques": 69,
+  "modeles": 749,
+  "finitions": 2553,
+  "releves": 10688
+ },
+ "conflits": [
+  {
+   "type": "interne au classeur",
+   "finition": "Land Rover · Land Rover Range Rover Evoque · 2.0 l D150 S",
+   "date": "01.08.2019",
+   "prix": [
+    280000,
+    249000
+   ],
+   "dansDataJs": 249000,
+   "regle": "valeur de data.js retenue"
+  },
+  {
+   "type": "interne au classeur",
+   "finition": "Mitsubishi · Mitsubishi Mirage · 1.2 L GLX",
+   "date": "03.04.2015",
+   "prix": [
+    24720,
+    26840
+   ],
+   "dansDataJs": 24720,
+   "regle": "valeur de data.js retenue"
+  }
+ ],
+ "quasi": [
+  {
+   "modele": "KIA Sportage PHEV",
+   "classeur": "1.6 T-GDI 4WD GT-Line",
+   "dataJs": "1.6 T-GDI 2WD GT-Line"
+  },
+  {
+   "modele": "KIA Sportage PHEV",
+   "classeur": "1.6 T-GDI 2WD GT-Line",
+   "dataJs": "1.6 T-GDI 4WD GT-Line"
+  },
+  {
+   "modele": "M-Hero 817",
+   "classeur": "1.5 L PHREEV 31.7 kWh AWD E1",
+   "dataJs": "1.5 L PHREEV 31.7 kWh AWD E0"
+  },
+  {
+   "modele": "M-Hero 817",
+   "classeur": "1.5 L PHREEV 31.7 kWh AWD E1",
+   "dataJs": "1.5 L PHREEV 31.7 kWh AWD E1 αlpha"
+  },
+  {
+   "modele": "M-Hero 817",
+   "classeur": "1.5 L PHREEV 31.7 kWh AWD E1 αlpha",
+   "dataJs": "1.5 L PHREEV 31.7 kWh AWD E1"
+  },
+  {
+   "modele": "Renault Kwid Populaire",
+   "classeur": "1.0 L Outsider",
+   "dataJs": "1.0 L"
+  },
+  {
+   "modele": "Volvo EX90",
+   "classeur": "Twin Performance Ultra - 7 places",
+   "dataJs": "Twin Performance Ultra - 6 places"
+  },
+  {
+   "modele": "Volvo EX90",
+   "classeur": "Single Motor Plus - 7 places",
+   "dataJs": "Single Motor Plus"
+  },
+  {
+   "modele": "Volvo EX90",
+   "classeur": "Twin Performance Ultra - 6 places",
+   "dataJs": "Twin Performance Ultra - 7 places"
+  },
+  {
+   "modele": "Mazda 3 sedan",
+   "classeur": "1.5 L Skyactiv-G Core+ Grade BVA",
+   "dataJs": "1.5 L Skyactiv-G Core+ Grade"
+  }
+ ],
+ "nouvellesFinitions": [
+  {
+   "marque": "BAIC",
+   "modele": "BAIC U5 Plus",
+   "version": "1.5 L Luxury",
+   "energie": null,
+   "regle": null
+  },
+  {
+   "marque": "BAIC",
+   "modele": "BAIC X55",
+   "version": "1.5 L DCT LV4 Sport Plus",
+   "energie": null,
+   "regle": null
+  },
+  {
+   "marque": "BAIC",
+   "modele": "BAIC X55",
+   "version": "1.5 L DCT LV2 Sport",
+   "energie": null,
+   "regle": null
+  },
+  {
+   "marque": "BMW",
+   "modele": "BMW Z4",
+   "version": "sDrive 20i Pack M",
+   "energie": null,
+   "regle": null
+  },
+  {
+   "marque": "Chevrolet",
+   "modele": "Chevrolet Captiva EV",
+   "version": "60 KWH",
+   "energie": "⚡ Élec.",
+   "regle": "capacité en kWh dans le nom"
+  },
+  {
+   "marque": "Chevrolet",
+   "modele": "Chevrolet Groove",
+   "version": "1.5 Turbo RS",
+   "energie": "⛽ Ess.",
+   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
+  },
+  {
+   "marque": "Chevrolet",
+   "modele": "Chevrolet Groove",
+   "version": "1.5 L LT",
+   "energie": "⛽ Ess.",
+   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
+  },
+  {
+   "marque": "Chevrolet",
+   "modele": "Chevrolet Spark EUV",
+   "version": "42 KWH",
+   "energie": "⚡ Élec.",
+   "regle": "capacité en kWh dans le nom"
+  },
+  {
+   "marque": "Citroën",
+   "modele": "Citroën C3",
+   "version": "1.2 L Plus",
+   "energie": "⛽ Ess.",
+   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
+  },
+  {
+   "marque": "Cupra",
+   "modele": "Cupra Terramar VZ Hybride",
+   "version": "1.5 TSI PHEV",
+   "energie": "🔌 Hybride rechargeable",
+   "regle": "mention PHEV / rechargeable"
+  },
+  {
+   "marque": "Honda",
+   "modele": "Honda HR-V Hybride",
+   "version": "1.5 L e-HEV",
+   "energie": "🌿 Hybride",
+   "regle": "mention hybride / HEV"
+  },
+  {
+   "marque": "IM",
+   "modele": "IM Motors IM7",
+   "version": "100 kwh AWD",
+   "energie": "⚡ Élec.",
+   "regle": "capacité en kWh dans le nom"
+  },
+  {
+   "marque": "JMC",
+   "modele": "JMC Grand Avenue",
+   "version": "2.3 l Turbo 4x4 Plus BVA",
+   "energie": null,
+   "regle": null
+  },
+  {
+   "marque": "KIA",
+   "modele": "KIA Sportage",
+   "version": "1.6 l T-GDI 7-DCT Motion",
+   "energie": null,
+   "regle": null
+  },
+  {
+   "marque": "KIA",
+   "modele": "KIA Sportage PHEV",
+   "version": "1.6 T-GDI 4WD GT-Line",
+   "energie": "🔌 Hybride rechargeable",
+   "regle": "mention PHEV / rechargeable"
+  },
+  {
+   "marque": "KIA",
+   "modele": "KIA Sportage PHEV",
+   "version": "1.6 T-GDI 2WD Prestige",
+   "energie": "🔌 Hybride rechargeable",
+   "regle": "mention PHEV / rechargeable"
+  },
+  {
+   "marque": "KIA",
+   "modele": "KIA Sportage PHEV",
+   "version": "1.6 T-GDI 2WD GT-Line",
+   "energie": "🔌 Hybride rechargeable",
+   "regle": "mention PHEV / rechargeable"
+  },
+  {
+   "marque": "Land Rover",
+   "modele": "Land Rover Range Rover Sport",
+   "version": "3.0 L P460 PHEV Autobiography",
+   "energie": "🔌 Hybride rechargeable",
+   "regle": "mention PHEV / rechargeable"
+  },
+  {
+   "marque": "M-Hero",
+   "modele": "M-Hero 817",
+   "version": "1.5 L PHREEV 31.7 kWh AWD E1",
+   "energie": "⚡ Élec.",
+   "regle": "capacité en kWh dans le nom"
+  },
+  {
+   "marque": "M-Hero",
+   "modele": "M-Hero 817",
+   "version": "1.5 L PHREEV 31.7 kWh AWD E1 αlpha",
+   "energie": "⚡ Élec.",
+   "regle": "capacité en kWh dans le nom"
+  },
+  {
+   "marque": "Porsche",
+   "modele": "Porsche Cayenne E-Hybrid Coupé",
+   "version": "Cayenne E-Hybrid Coupé Black Edition",
+   "energie": "🔌 Hybride rechargeable",
+   "regle": "désignation E-Hybrid (Porsche)"
+  },
+  {
+   "marque": "Renault",
+   "modele": "Renault Kwid Populaire",
+   "version": "1.0 L Outsider",
+   "energie": "⛽ Ess.",
+   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
+  },
+  {
+   "marque": "Volvo",
+   "modele": "Volvo EX90",
+   "version": "Twin Performance Ultra - 7 places",
+   "energie": "⚡ Élec.",
+   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
+  },
+  {
+   "marque": "Volvo",
+   "modele": "Volvo EX90",
+   "version": "Single Motor Plus - 7 places",
+   "energie": "⚡ Élec.",
+   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
+  },
+  {
+   "marque": "Volvo",
+   "modele": "Volvo EX90",
+   "version": "Twin Performance Ultra - 6 places",
+   "energie": "⚡ Élec.",
+   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
+  },
+  {
+   "marque": "Volvo",
+   "modele": "Volvo XC60",
+   "version": "2.0 l B5 AWD Ultimate Dark",
+   "energie": null,
+   "regle": null
+  },
+  {
+   "marque": "Volvo",
+   "modele": "Volvo XC60",
+   "version": "2.0 l T8 AWD Ultra Dark",
+   "energie": null,
+   "regle": null
+  },
+  {
+   "marque": "Volvo",
+   "modele": "Volvo XC60",
+   "version": "2.0 l T8 AWD Ultra Black Edition",
+   "energie": null,
+   "regle": null
+  },
+  {
+   "marque": "Volvo",
+   "modele": "Volvo XC90",
+   "version": "2.0 l T8 AWD Ultra Black Edition",
+   "energie": null,
+   "regle": null
+  },
+  {
+   "marque": "Volvo",
+   "modele": "Volvo XC90",
+   "version": "2.0 l T8 AWD Ultra Bright",
+   "energie": null,
+   "regle": null
+  },
+  {
+   "marque": "Mazda",
+   "modele": "Mazda 3 sedan",
+   "version": "1.5 L Skyactiv-G Core+ Grade BVA",
+   "energie": "⛽ Ess.",
+   "regle": "héritée des finitions du même modèle, toutes de cette énergie"
+  }
+ ],
+ "nouvellesMarques": [],
+ "sansEnergie": [
+  "BAIC · BAIC U5 Plus · 1.5 L Luxury",
+  "BAIC · BAIC X55 · 1.5 L DCT LV4 Sport Plus",
+  "BAIC · BAIC X55 · 1.5 L DCT LV2 Sport",
+  "BMW · BMW Z4 · sDrive 20i Pack M",
+  "JMC · JMC Grand Avenue · 2.3 l Turbo 4x4 Plus BVA",
+  "KIA · KIA Sportage · 1.6 l T-GDI 7-DCT Motion",
+  "Volvo · Volvo XC60 · 2.0 l B5 AWD Ultimate Dark",
+  "Volvo · Volvo XC60 · 2.0 l T8 AWD Ultra Dark",
+  "Volvo · Volvo XC60 · 2.0 l T8 AWD Ultra Black Edition",
+  "Volvo · Volvo XC90 · 2.0 l T8 AWD Ultra Black Edition",
+  "Volvo · Volvo XC90 · 2.0 l T8 AWD Ultra Bright"
+ ],
+ "marquesNonResolues": [],
+ "marquesRattachees": [
+  {
+   "classeur": "IM Motors",
+   "dataJs": "IM"
+  },
+  {
+   "classeur": "Omoda & Jaecoo",
+   "dataJs": "Omoda"
+  },
+  {
+   "classeur": "BAIC YX",
+   "dataJs": "BAIC"
+  }
+ ],
+ "relevesAjoutes": 114,
+ "doublonsRetires": 238,
+ "casesFusionnees": [
+  {
+   "cle": "hyundai|hyundai grand i10 populaire|1.0 l",
+   "formes": [
+    "Hyundai Grand i10 Populaire|1.0 L",
+    "Hyundai Grand i10 Populaire|1.0 l"
+   ],
+   "retenue": "Hyundai Grand i10 Populaire|1.0 L"
+  },
+  {
+   "cle": "volkswagen|volkswagen tiguan|1.4 l tsi r-line",
+   "formes": [
+    "Volkswagen Tiguan|1.4 L TSI R-Line",
+    "Volkswagen Tiguan|1.4 l TSI R-Line"
+   ],
+   "retenue": "Volkswagen Tiguan|1.4 L TSI R-Line"
+  },
+  {
+   "cle": "mg|mg 3|1.5 l confort",
+   "formes": [
+    "MG 3|1.5 L Confort",
+    "MG 3|1.5 l Confort"
+   ],
+   "retenue": "MG 3|1.5 l Confort"
+  },
+  {
+   "cle": "peugeot|peugeot traveller|2.0 l hdi 9 places",
+   "formes": [
+    "Peugeot Traveller|2.0 L HDI 9 places",
+    "Peugeot traveller|2.0 L HDI 9 places"
+   ],
+   "retenue": "Peugeot traveller|2.0 L HDI 9 places"
+  },
+  {
+   "cle": "mg|mg 3|1.5 l confort plus",
+   "formes": [
+    "MG 3|1.5 L Confort Plus",
+    "MG 3|1.5 l Confort Plus"
+   ],
+   "retenue": "MG 3|1.5 L Confort Plus"
+  }
+ ],
+ "protegesConserves": [],
+ "retraitsReintroduits": [
+  "Seat Ibiza · 1.0 L TSI Style BVA · 16.01.2026",
+  "Volkswagen Caddy Cargo · 2.0 L TDI Business · 27.02.2026",
+  "Jaguar E-Pace · 2.0 T 200 ch S · 23.01.2024",
+  "Jaguar F-Pace · 2.0 T 250 R-Sport · 23.01.2024",
+  "Renault Clio · 1.0 L SCe Life Plus · 06.05.2024",
+  "Renault Clio Populaire · 1.2 L · 02.09.2020"
+ ],
+ "baisses2026": [
+  {
+   "modele": "Land Rover Range Rover Sport",
+   "version": "3.0 L P460 PHEV SE",
+   "de": 682800,
+   "a": 424900,
+   "date": "09.01.2026",
+   "baisse": -37.8
+  },
+  {
+   "modele": "Land Rover Range Rover",
+   "version": "3.0 L P460 PHEV SE",
+   "de": 735875,
+   "a": 469900,
+   "date": "09.01.2026",
+   "baisse": -36.1
+  },
+  {
+   "modele": "BMW iX1",
+   "version": "xDrive30 Lounge",
+   "de": 214900,
+   "a": 139900,
+   "date": "09.04.2026",
+   "baisse": -34.9
+  },
+  {
+   "modele": "BMW X3",
+   "version": "20i xDrive Pack M",
+   "de": 373000,
+   "a": 248900,
+   "date": "06.03.2026",
+   "baisse": -33.3
+  },
+  {
+   "modele": "BMW X5 Hybride",
+   "version": "50e X-Drive Pack M",
+   "de": 569900,
+   "a": 379900,
+   "date": "03.01.2026",
+   "baisse": -33.3
+  },
+  {
+   "modele": "BMW iX1",
+   "version": "xDrive30 xLine",
+   "de": 223900,
+   "a": 149900,
+   "date": "09.04.2026",
+   "baisse": -33.1
+  },
+  {
+   "modele": "Land Rover Defender 110",
+   "version": "2.0 L P400e PHEV S",
+   "de": 441000,
+   "a": 299000,
+   "date": "09.01.2026",
+   "baisse": -32.2
+  },
+  {
+   "modele": "BMW Série 5 Hybride",
+   "version": "530e Pack M",
+   "de": 379900,
+   "a": 264900,
+   "date": "03.01.2026",
+   "baisse": -30.3
+  },
+  {
+   "modele": "BMW X3 Hybride",
+   "version": "xDrive 30e Pack M",
+   "de": 369900,
+   "a": 264900,
+   "date": "03.01.2026",
+   "baisse": -28.4
+  },
+  {
+   "modele": "BMW Série 3 Hybride",
+   "version": "330e Pack M",
+   "de": 303900,
+   "a": 219900,
+   "date": "06.04.2026",
+   "baisse": -27.6
+  },
+  {
+   "modele": "BMW Série 3 Hybride",
+   "version": "330e Lounge",
+   "de": 281900,
+   "a": 204900,
+   "date": "06.04.2026",
+   "baisse": -27.3
+  },
+  {
+   "modele": "BMW iX",
+   "version": "xDrive40 Impressive",
+   "de": 369900,
+   "a": 269900,
+   "date": "09.04.2026",
+   "baisse": -27
+  },
+  {
+   "modele": "BYD Song Plus",
+   "version": "1.5 L DM-i",
+   "de": 156990,
+   "a": 115990,
+   "date": "05.01.2026",
+   "baisse": -26.1
+  },
+  {
+   "modele": "BMW Série 5 Hybride",
+   "version": "530e Pack M Pro",
+   "de": 399900,
+   "a": 299900,
+   "date": "01.06.2026",
+   "baisse": -25
+  },
+  {
+   "modele": "BMW X4",
+   "version": "20i xDrive Pack M",
+   "de": 399900,
+   "a": 299900,
+   "date": "06.03.2026",
+   "baisse": -25
+  },
+  {
+   "modele": "Land Rover Range Rover Evoque",
+   "version": "1.5 l P300e PHEV S",
+   "de": 299000,
+   "a": 225000,
+   "date": "09.01.2026",
+   "baisse": -24.7
+  },
+  {
+   "modele": "Mercedes-Benz Classe E Plug-in Hybride",
+   "version": "350e Avantgarde",
+   "de": 354900,
+   "a": 269900,
+   "date": "19.02.2026",
+   "baisse": -24
+  },
+  {
+   "modele": "BMW X1 Hybride",
+   "version": "xDrive 25e Pack M",
+   "de": 255900,
+   "a": 194900,
+   "date": "03.01.2026",
+   "baisse": -23.8
+  },
+  {
+   "modele": "Mercedes-Benz Classe E Plug-in Hybride",
+   "version": "350e Exclusive",
+   "de": 359900,
+   "a": 274900,
+   "date": "19.02.2026",
+   "baisse": -23.6
+  },
+  {
+   "modele": "BMW X1 Hybride",
+   "version": "xDrive 25e xLine",
+   "de": 247900,
+   "a": 189900,
+   "date": "03.01.2026",
+   "baisse": -23.4
+  },
+  {
+   "modele": "BMW X1 Hybride",
+   "version": "xDrive 25e Lounge",
+   "de": 229900,
+   "a": 179900,
+   "date": "23.01.2026",
+   "baisse": -21.7
+  },
+  {
+   "modele": "Hyundai i20",
+   "version": "1.0 L T-GDI BVA",
+   "de": 83950,
+   "a": 66950,
+   "date": "13.09.2026",
+   "baisse": -20.3
+  },
+  {
+   "modele": "Omoda & Jaecoo J7",
+   "version": "1.5 TGDI SHS",
+   "de": 132900,
+   "a": 105900,
+   "date": "06.01.2026",
+   "baisse": -20.3
+  },
+  {
+   "modele": "Hyundai Ioniq 5",
+   "version": "77 kWh 4WD HG",
+   "de": 210715,
+   "a": 168950,
+   "date": "13.09.2026",
+   "baisse": -19.8
+  },
+  {
+   "modele": "Mercedes-Benz GLC Coupé Plug-in Hybride",
+   "version": "350e 4Matic AMG",
+   "de": 369900,
+   "a": 299900,
+   "date": "09.02.2026",
+   "baisse": -18.9
+  },
+  {
+   "modele": "Mercedes-Benz Classe C Plug-in Hybride",
+   "version": "350e AMG +",
+   "de": 332000,
+   "a": 270900,
+   "date": "07.01.2026",
+   "baisse": -18.4
+  },
+  {
+   "modele": "Mercedes-Benz Classe C Plug-in Hybride",
+   "version": "350e Avantgarde",
+   "de": 291000,
+   "a": 239900,
+   "date": "07.01.2026",
+   "baisse": -17.6
+  },
+  {
+   "modele": "Jaguar E-Pace",
+   "version": "2.0 D 163 R-Dynamic S",
+   "de": 369000,
+   "a": 305000,
+   "date": "09.01.2026",
+   "baisse": -17.3
+  },
+  {
+   "modele": "Omoda & Jaecoo J8",
+   "version": "1.5 TGDI SHS 4WD",
+   "de": 176900,
+   "a": 146900,
+   "date": "06.01.2026",
+   "baisse": -17
+  },
+  {
+   "modele": "Mercedes-Benz Classe C Plug-in Hybride",
+   "version": "350e AMG",
+   "de": 315000,
+   "a": 262900,
+   "date": "07.01.2026",
+   "baisse": -16.5
+  }
+ ],
+ "variations": {
+  "coherentes": 7605,
+  "incoherentes": 178,
+  "debutSigne": 40,
+  "reapparitions": 218,
+  "detailIncoherentes": [
+   {
+    "finition": "Audi · Audi Q3 · 35 TFSI Advanced Line S-tronic",
+    "de": "08.04.2025 207000",
+    "a": "22.12.2025 189000",
+    "variationAnnoncee": -10000,
+    "ecartObserve": -18000,
+    "prixManquant": 199000
+   },
+   {
+    "finition": "BMW · BMW i4 · eDrive40 Business Line",
+    "de": "22.09.2025 245900",
+    "a": "24.09.2026 245900",
+    "variationAnnoncee": 26000,
+    "ecartObserve": 0,
+    "prixManquant": 219900
+   },
+   {
+    "finition": "BMW · BMW Série 1 · 118 Business Line",
+    "de": "10.09.2025 155900",
+    "a": "09.04.2026 139900",
+    "variationAnnoncee": -5000,
+    "ecartObserve": -16000,
+    "prixManquant": 144900
+   },
+   {
+    "finition": "BMW · BMW Série 1 · 118 Lounge",
+    "de": "10.09.2025 174900",
+    "a": "09.04.2026 154900",
+    "variationAnnoncee": -5000,
+    "ecartObserve": -20000,
+    "prixManquant": 159900
+   },
+   {
+    "finition": "BMW · BMW Série 2 Gran Coupé · 218 Pack M",
+    "de": "27.08.2025 203900",
+    "a": "15.06.2026 206900",
+    "variationAnnoncee": 32000,
+    "ecartObserve": 3000,
+    "prixManquant": 174900
+   },
+   {
+    "finition": "BMW · BMW Série 3 · 320i Lounge",
+    "de": "20.10.2025 225900",
+    "a": "09.04.2026 199900",
+    "variationAnnoncee": -15000,
+    "ecartObserve": -26000,
+    "prixManquant": 214900
+   },
+   {
+    "finition": "BMW · BMW Série 4 Gran Coupé · 420i Pack M",
+    "de": "07.10.2021 320700",
+    "a": "13.03.2022 326700",
+    "variationAnnoncee": 2600,
+    "ecartObserve": 6000,
+    "prixManquant": 324100
+   },
+   {
+    "finition": "BMW · BMW X1 · 18i sDrive Lounge",
+    "de": "08.03.2023 182500",
+    "a": "18.01.2024 188900",
+    "variationAnnoncee": 3800,
+    "ecartObserve": 6400,
+    "prixManquant": 185100
+   },
+   {
+    "finition": "BMW · BMW X1 · 18i sDrive Lounge",
+    "de": "10.09.2025 199900",
+    "a": "13.05.2026 199900",
+    "variationAnnoncee": 15000,
+    "ecartObserve": 0,
+    "prixManquant": 184900
+   },
+   {
+    "finition": "BMW · BMW X2 · 18i sDrive Pack M Pro",
+    "de": "10.09.2025 258900",
+    "a": "09.04.2026 224900",
+    "variationAnnoncee": -15000,
+    "ecartObserve": -34000,
+    "prixManquant": 239900
+   },
+   {
+    "finition": "Cupra · Cupra Leon · 1.4 TSI",
+    "de": "19.02.2024 131980",
+    "a": "22.07.2025 146980",
+    "variationAnnoncee": -3000,
+    "ecartObserve": 15000,
+    "prixManquant": 149980
+   },
+   {
+    "finition": "GAC · GAC GA4 · 1.5 L BVA",
+    "de": "18.07.2022 67000",
+    "a": "04.06.2024 69900",
+    "variationAnnoncee": 2835,
+    "ecartObserve": 2900,
+    "prixManquant": 67065
+   },
+   {
+    "finition": "Honda · Honda City · 1.5 L CVT LX",
+    "de": "01.12.2023 78990",
+    "a": "04.04.2025 77400",
+    "variationAnnoncee": 1410,
+    "ecartObserve": -1590,
+    "prixManquant": 75990
+   },
+   {
+    "finition": "Honda · Honda CR-V · 1.5 T CVT",
+    "de": "01.07.2025 190990",
+    "a": "22.06.2026 179980",
+    "variationAnnoncee": -11000,
+    "ecartObserve": -11010,
+    "prixManquant": 190980
+   },
+   {
+    "finition": "Hyundai · Hyundai Grand i10 Populaire · 1.0 L",
+    "de": "29.09.2023 33746",
+    "a": "04.01.2024 33809",
+    "variationAnnoncee": 60,
+    "ecartObserve": 63,
+    "prixManquant": 33749
+   },
+   {
+    "finition": "Hyundai · Hyundai Tucson · 1.6 l T-GDI 7-DCT 4WD Top Grade",
+    "de": "27.10.2023 179950",
+    "a": "27.02.2026 170000",
+    "variationAnnoncee": -10000,
+    "ecartObserve": -9950,
+    "prixManquant": 180000
+   },
+   {
+    "finition": "KIA · KIA Sonet · 1.5 L CVT SX",
+    "de": "07.02.2025 101480",
+    "a": "26.03.2026 101480",
+    "variationAnnoncee": 1500,
+    "ecartObserve": 0,
+    "prixManquant": 99980
+   },
+   {
+    "finition": "Mahindra · Mahindra Pick-up DC · 2.2 l Diesel 4x2",
+    "de": "04.05.2023 75900",
+    "a": "22.01.2024 77945",
+    "variationAnnoncee": 45,
+    "ecartObserve": 2045,
+    "prixManquant": 77900
+   },
+   {
+    "finition": "Mercedes-Benz · Mercedes-Benz Classe C · 180 Premium",
+    "de": "05.12.2022 249000",
+    "a": "01.03.2024 249000",
+    "variationAnnoncee": 10000,
+    "ecartObserve": 0,
+    "prixManquant": 239000
+   },
+   {
+    "finition": "Mercedes-Benz · Mercedes-Benz GLB · 200 AMG",
+    "de": "27.12.2020 199000",
+    "a": "16.06.2021 204000",
+    "variationAnnoncee": 3000,
+    "ecartObserve": 5000,
+    "prixManquant": 201000
+   },
+   {
+    "finition": "Mercedes-Benz · Mercedes-Benz GLB · 200 AMG",
+    "de": "30.12.2021 208900",
+    "a": "01.12.2022 219000",
+    "variationAnnoncee": 5000,
+    "ecartObserve": 10100,
+    "prixManquant": 214000
+   },
+   {
+    "finition": "Mercedes-Benz · Mercedes-Benz GLB · 200 AMG",
+    "de": "31.08.2023 223000",
+    "a": "01.07.2024 221000",
+    "variationAnnoncee": 3000,
+    "ecartObserve": -2000,
+    "prixManquant": 218000
+   },
+   {
+    "finition": "Mini · Mini Countryman · 1.5 L Classic BVA",
+    "de": "12.08.2024 159000",
+    "a": "09.04.2026 149900",
+    "variationAnnoncee": -20000,
+    "ecartObserve": -9100,
+    "prixManquant": 169900
+   },
+   {
+    "finition": "Peugeot · Peugeot 2008 · 1.2 L Puretech 130 Active BVA",
+    "de": "05.12.2023 97900",
+    "a": "09.04.2025 96400",
+    "variationAnnoncee": -500,
+    "ecartObserve": -1500,
+    "prixManquant": 96900
+   },
+   {
+    "finition": "Peugeot · Peugeot 2008 · 1.2 L Puretech 130 Allure BVA",
+    "de": "04.01.2021 93990",
+    "a": "03.01.2022 99990",
+    "variationAnnoncee": 5000,
+    "ecartObserve": 6000,
+    "prixManquant": 94990
+   },
+   {
+    "finition": "Peugeot · Peugeot 2008 · 1.2 L Puretech 130 Allure BVA",
+    "de": "10.03.2022 99740",
+    "a": "04.04.2023 104900",
+    "variationAnnoncee": 2410,
+    "ecartObserve": 5160,
+    "prixManquant": 102490
+   },
+   {
+    "finition": "Peugeot · Peugeot Boxer Double Cabine · Plateau 350 L2",
+    "de": "02.06.2021 86900",
+    "a": "10.03.2022 90900",
+    "variationAnnoncee": 2500,
+    "ecartObserve": 4000,
+    "prixManquant": 88400
+   },
+   {
+    "finition": "Peugeot · Peugeot Landtrek Simple Cabine · 1.9 L Diesel 4x2",
+    "de": "05.11.2021 66990",
+    "a": "05.09.2022 71490",
+    "variationAnnoncee": -2500,
+    "ecartObserve": 4500,
+    "prixManquant": 73990
+   },
+   {
+    "finition": "Renault · Renault Express Van · 1.5 L dCi",
+    "de": "12.07.2022 53900",
+    "a": "28.04.2023 58550",
+    "variationAnnoncee": 1750,
+    "ecartObserve": 4650,
+    "prixManquant": 56800
+   },
+   {
+    "finition": "Skoda · Skoda Fabia · 1.0 L MPI Essence",
+    "de": "02.10.2025 66980",
+    "a": "19.03.2026 66980",
+    "variationAnnoncee": -2000,
+    "ecartObserve": 0,
+    "prixManquant": 68980
+   },
+   {
+    "finition": "Skoda · Skoda Fabia · 1.0 L MPI Monte Carlo",
+    "de": "03.01.2025 87980",
+    "a": "24.02.2026 87980",
+    "variationAnnoncee": 2000,
+    "ecartObserve": 0,
+    "prixManquant": 85980
+   },
+   {
+    "finition": "Skoda · Skoda Scala · 1.0 L TSI Selection DSG",
+    "de": "18.04.2025 102980",
+    "a": "12.06.2026 99980",
+    "variationAnnoncee": -1000,
+    "ecartObserve": -3000,
+    "prixManquant": 100980
+   },
+   {
+    "finition": "Suzuki · Suzuki Celerio Populaire · 1.0 L GL",
+    "de": "31.07.2023 28391",
+    "a": "29.03.2024 28518",
+    "variationAnnoncee": 47,
+    "ecartObserve": 127,
+    "prixManquant": 28471
+   },
+   {
+    "finition": "Suzuki · Suzuki Dzire · 1.2 L GLX",
+    "de": "04.11.2022 56900",
+    "a": "11.03.2026 60900",
+    "variationAnnoncee": 500,
+    "ecartObserve": 4000,
+    "prixManquant": 60400
+   },
+   {
+    "finition": "Suzuki · Suzuki Swift · 1.2 L GLX",
+    "de": "14.03.2022 48400",
+    "a": "04.05.2022 50700",
+    "variationAnnoncee": 1300,
+    "ecartObserve": 2300,
+    "prixManquant": 49400
+   },
+   {
+    "finition": "Volkswagen · Volkswagen Golf 8 · 1.4 L TSI R-Line",
+    "de": "04.01.2022 159980",
+    "a": "01.11.2025 159980",
+    "variationAnnoncee": 3000,
+    "ecartObserve": 0,
+    "prixManquant": 156980
+   },
+   {
+    "finition": "Volkswagen · Volkswagen Polo · 1.0 L TSI Drive",
+    "de": "04.01.2024 82980",
+    "a": "09.11.2025 89980",
+    "variationAnnoncee": 4500,
+    "ecartObserve": 7000,
+    "prixManquant": 85480
+   },
+   {
+    "finition": "Volkswagen · Volkswagen Polo · 1.0 L TSI Life",
+    "de": "04.01.2024 89980",
+    "a": "12.03.2026 94980",
+    "variationAnnoncee": 1500,
+    "ecartObserve": 5000,
+    "prixManquant": 93480
+   },
+   {
+    "finition": "Volkswagen · Volkswagen T-Cross · 1.0 L Topline BVA",
+    "de": "01.07.2025 103980",
+    "a": "12.03.2026 98980",
+    "variationAnnoncee": -1000,
+    "ecartObserve": -5000,
+    "prixManquant": 99980
+   },
+   {
+    "finition": "Volkswagen · Volkswagen Tiguan · 1.4 L TSI R-Line",
+    "de": "29.07.2021 184980",
+    "a": "18.01.2023 199980",
+    "variationAnnoncee": 10000,
+    "ecartObserve": 15000,
+    "prixManquant": 189980
+   }
+  ]
+ },
+ "doublonsCasseBase": [
+  {
+   "modele": "Hyundai Grand i10 Populaire",
+   "orthographes": [
+    "1.0 l (3 relevés, 26.04.2019→16.12.2019)",
+    "1.0 L (12 relevés, 07.01.2021→09.02.2026)"
+   ],
+   "retenue": "1.0 L"
+  },
+  {
+   "modele": "MG 3",
+   "orthographes": [
+    "1.5 l Confort (4 relevés, 23.12.2016→08.01.2018)",
+    "1.5 L Confort (1 relevés, 20.01.2025→20.01.2025)"
+   ],
+   "retenue": "1.5 l Confort"
+  },
+  {
+   "modele": "MG 3",
+   "orthographes": [
+    "1.5 l Confort Plus (6 relevés, 23.12.2016→27.08.2018)",
+    "1.5 L Confort Plus (15 relevés, 08.04.2019→30.04.2024)"
+   ],
+   "retenue": "1.5 L Confort Plus"
+  },
+  {
+   "modele": "Peugeot traveller",
+   "orthographes": [
+    "2.0 L HDI 9 places (2 relevés, 21.04.2025→17.10.2025)",
+    "2.0 L HDI 9 places (9 relevés, 09.03.2020→03.01.2024)"
+   ],
+   "retenue": "2.0 L HDI 9 places"
+  },
+  {
+   "modele": "Volkswagen Tiguan",
+   "orthographes": [
+    "1.4 l TSI R-Line (6 relevés, 12.05.2017→28.01.2019)",
+    "1.4 L TSI R-Line (10 relevés, 30.04.2021→12.03.2026)"
+   ],
+   "retenue": "1.4 L TSI R-Line"
+  }
+ ],
+ "dejaSousAutreOrthographe": [
+  "MG 3 · 20.01.2025 · déjà sous « 1.5 L Confort », pas recopié dans « 1.5 l Confort »",
+  "Peugeot traveller · 17.10.2025 · déjà sous « 2.0 L HDI 9 places », pas recopié dans « 2.0 L HDI 9 places »",
+  "Peugeot traveller · 21.04.2025 · déjà sous « 2.0 L HDI 9 places », pas recopié dans « 2.0 L HDI 9 places »",
+  "Hyundai Grand i10 Populaire · 16.12.2019 · déjà sous « 1.0 l », pas recopié dans « 1.0 L »",
+  "Hyundai Grand i10 Populaire · 07.10.2019 · déjà sous « 1.0 l », pas recopié dans « 1.0 L »",
+  "Hyundai Grand i10 Populaire · 26.04.2019 · déjà sous « 1.0 l », pas recopié dans « 1.0 L »",
+  "Volkswagen Tiguan · 28.01.2019 · déjà sous « 1.4 l TSI R-Line », pas recopié dans « 1.4 L TSI R-Line »",
+  "MG 3 · 27.08.2018 · déjà sous « 1.5 l Confort Plus », pas recopié dans « 1.5 L Confort Plus »",
+  "MG 3 · 17.04.2018 · déjà sous « 1.5 l Confort Plus », pas recopié dans « 1.5 L Confort Plus »",
+  "MG 3 · 08.01.2018 · déjà sous « 1.5 l Confort Plus », pas recopié dans « 1.5 L Confort Plus »",
+  "Volkswagen Tiguan · 28.11.2018 · déjà sous « 1.4 l TSI R-Line », pas recopié dans « 1.4 L TSI R-Line »",
+  "Volkswagen Tiguan · 27.08.2018 · déjà sous « 1.4 l TSI R-Line », pas recopié dans « 1.4 L TSI R-Line »",
+  "Volkswagen Tiguan · 19.01.2018 · déjà sous « 1.4 l TSI R-Line », pas recopié dans « 1.4 L TSI R-Line »",
+  "MG 3 · 22.08.2017 · déjà sous « 1.5 l Confort Plus », pas recopié dans « 1.5 L Confort Plus »",
+  "MG 3 · 12.05.2017 · déjà sous « 1.5 l Confort Plus », pas recopié dans « 1.5 L Confort Plus »",
+  "Volkswagen Tiguan · 02.10.2017 · déjà sous « 1.4 l TSI R-Line », pas recopié dans « 1.4 L TSI R-Line »",
+  "Volkswagen Tiguan · 12.05.2017 · déjà sous « 1.4 l TSI R-Line », pas recopié dans « 1.4 L TSI R-Line »",
+  "MG 3 · 23.12.2016 · déjà sous « 1.5 l Confort Plus », pas recopié dans « 1.5 L Confort Plus »"
+ ]
+}
