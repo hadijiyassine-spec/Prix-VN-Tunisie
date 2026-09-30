@@ -2769,6 +2769,86 @@ function finitionsDe(v){
   return (v.__nf=n);
 }
 
+// ── CARBURANTS VÉRIFIÉS ──
+//
+// Énergies corrigées à la main, sur relecture du libellé de la finition. Comme RELEVES_VERIFIES,
+// cette table est PORTÉE DANS data.js **et** rejouée au démarrage : si la base est un jour
+// régénérée depuis le classeur des prix — qui ne dit rien de la mécanique — la correction tient
+// quand même. Chaque entrée porte son motif ; l'énergie n'est pas une opinion, elle se lit sur la
+// désignation commerciale du moteur.
+//
+// Pourquoi cela compte, et pas qu'un peu : `fuelClass` rend « essence » par défaut. Un diesel
+// rangé en essence est donc traité comme un essence de bout en bout — coefficient F_carburant,
+// fiscalité, et surtout INDICE DE PRIX, qui se calcule par énergie sur des médianes de modèles
+// appariés : une finition mal rangée fausse l'indice des DEUX énergies à la fois.
+const CARBURANTS_VERIFIES = {
+  // ── 29 diesels renseignés « essence » (relevé du 29.09.2026) ──
+  // Chez BMW, le « d » du nom commercial désigne le diesel depuis toujours (318d, X3 2.0d) ;
+  // chez Jaguar et Land Rover, le « D » de la gamme Ingenium ; chez Toyota, « D-4D » est le nom
+  // de la famille diesel à rampe commune. Aucun de ces moteurs n'a de version essence homonyme.
+  'BMW X1': { fuel: '⛽ Diesel', motif: 'désignation BMW « d » = diesel',
+    finitions: ['1.8d sDrive Access', '1.8d xDrive Confort', '1.8d sDrive Confort xLine',
+      '1.8d sDrive Access BVA', '1.8d sDrive Confort Sport Line', '1.8d xDrive Confort BVA',
+      '1.8d sDrive Confort xLine BVA', '1.8d sDrive Confort Sport Line BVA',
+      '1.8d sDrive Exclusive xLine', '1.8d xDrive Exclusive BVA', '1.8d sDrive Exclusive xLine BVA'] },
+  'BMW X3': { fuel: '⛽ Diesel', motif: 'désignation BMW « d » = diesel',
+    finitions: ['2.0d xDrive Access', '2.0d xDrive Access BVA', '2.0d xDrive Confort',
+      '2.0d xDrive Confort BVA', '2.0d xDrive Confort Plus', '2.0d xDrive Confort Plus BVA',
+      '2.0d xDrive Exclusive', '2.0d xDrive Exclusive BVA'] },
+  'Jaguar E-Pace': { fuel: '⛽ Diesel', motif: 'Ingenium « D » = diesel', finitions: ['2.0 D 163 R-Dynamic S'] },
+  'Jaguar F-Pace': { fuel: '⛽ Diesel', motif: 'Ingenium « d » = diesel', finitions: ['2.0 d Pure'] },
+  'Jaguar XE': { fuel: '⛽ Diesel', motif: 'Ingenium « D » = diesel', finitions: ['2.0 D Pure BVA'] },
+  'Jaguar XF': { fuel: '⛽ Diesel', motif: 'Ingenium « D » = diesel', finitions: ['2.0 D Pure BVA'] },
+  'Land Rover Range Rover Velar': { fuel: '⛽ Diesel', motif: 'Ingenium « d » = diesel',
+    finitions: ['2.0d 180', '2.0 d 180 R-Dynamic S'] },
+  'Toyota Corolla Sedan': { fuel: '⛽ Diesel', motif: 'D-4D = diesel à rampe commune Toyota',
+    finitions: ['1.4 L D-4D'] },
+  'Toyota Fortuner': { fuel: '⛽ Diesel', motif: 'D-4D = diesel à rampe commune Toyota',
+    finitions: ['2.4 L D-4D 7 places BVA'] },
+  'Toyota Hilux Double Cabine': { fuel: '⛽ Diesel', motif: 'D-4D = diesel à rampe commune Toyota',
+    finitions: ['2.5 L D-4D 4X2 Double Cabine', '2.5 L D-4D Double Cabine'] },
+
+  // ── 11 libellés non canoniques, introduits par la fusion du classeur le 29.09.2026 ──
+  // L'énergie était JUSTE — `fuelClass` reconnaît « rech » et « hybr » — mais le libellé ne
+  // suivait pas les cinq valeurs de la base (⛽ Ess., ⛽ Diesel, ⚡ Élec., 🔌 PHEV, 🌿 HEV), et
+  // s'affichait donc différemment des autres finitions du même modèle. Corrigé à la source dans
+  // integrer_prix.js pour qu'une refusion ne les réintroduise pas.
+  'Cupra Terramar VZ Hybride': { fuel: '🔌 PHEV', motif: 'libellé ramené à la valeur canonique', finitions: ['1.5 TSI PHEV'] },
+  'Honda HR-V Hybride': { fuel: '🌿 HEV', motif: 'libellé ramené à la valeur canonique', finitions: ['1.5 L e-HEV'] },
+  'KIA Sportage PHEV': { fuel: '🔌 PHEV', motif: 'libellé ramené à la valeur canonique',
+    finitions: ['1.6 T-GDI 4WD GT-Line', '1.6 T-GDI 2WD Prestige', '1.6 T-GDI 2WD GT-Line'] },
+  'Land Rover Range Rover Sport': { fuel: '🔌 PHEV', motif: 'libellé ramené à la valeur canonique',
+    finitions: ['3.0 L P460 PHEV Autobiography'] },
+  'Porsche Cayenne E-Hybrid Coupé': { fuel: '🔌 PHEV', motif: 'libellé ramené à la valeur canonique',
+    finitions: ['Cayenne E-Hybrid Coupé Black Edition'] },
+  // Volvo T8 : hybride rechargeable, confirmé par Yassine Hadiji le 29.09.2026.
+  'Volvo XC60': { fuel: '🔌 PHEV', motif: 'désignation Volvo T8 = hybride rechargeable',
+    finitions: ['2.0 l T8 AWD Ultra Dark', '2.0 l T8 AWD Ultra Black Edition'] },
+  'Volvo XC90': { fuel: '🔌 PHEV', motif: 'désignation Volvo T8 = hybride rechargeable',
+    finitions: ['2.0 l T8 AWD Ultra Black Edition', '2.0 l T8 AWD Ultra Bright'] },
+};
+
+// Rejeu de la table sur la base chargée. Idempotent : une correction déjà portée dans data.js ne
+// produit rien. Rend le compte de ce qui a réellement été changé, pour que le contrôle puisse
+// vérifier que la table et la base ne divergent pas en silence.
+function appliquerCarburantsVerifies(){
+  let corrigees=0, absentes=[];
+  for(const modele of Object.keys(CARBURANTS_VERIFIES)){
+    const c=CARBURANTS_VERIFIES[modele];
+    let liste=null;
+    for(const b of Object.keys(DB)) if(DB[b][modele]) liste=DB[b][modele];
+    if(!liste){ absentes.push(modele); continue; }
+    for(const nom of c.finitions){
+      const f=liste.find(x=>x.v===nom);
+      if(!f){ absentes.push(modele+' · '+nom); continue; }
+      f.eg = f.eg || {};
+      if(f.eg.fuel!==c.fuel){ f.eg.fuel=c.fuel; corrigees++; }
+    }
+  }
+  if(absentes.length) console.warn('CARBURANTS_VERIFIES : '+absentes.length+' entrée(s) sans correspondance dans la base — '+absentes.slice(0,5).join(' | '));
+  return {corrigees, absentes};
+}
+
 // Marque et modèle auxquels appartient cette finition. Les objets de data.js ne les portent pas :
 // on les retrouve une fois et on mémorise, comme `finitionsDe`.
 function origineDe(v){
@@ -3585,6 +3665,9 @@ function init(){
 
   majBarreMarque(null);
   marquerPopulaires();
+  // AVANT l'indice : celui-ci se calcule PAR ÉNERGIE, sur des médianes de modèles appariés. Une
+  // finition rangée dans la mauvaise énergie fausse donc l'indice des deux énergies à la fois.
+  appliquerCarburantsVerifies();
   INDEX = calculerIndice();
   const IX = indice();
   ANNEE_DONNEES = IX.derniere;

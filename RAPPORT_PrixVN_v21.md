@@ -1827,14 +1827,34 @@ Le malus est **constant avec l'âge**, sur arbitrage de l'expert : le défaut ne
 
 La première version bornait le malus au millésime 2020 pour Opel et 2013 pour Peugeot. `audit3.js` a signalé aussitôt une **inversion d'âge** : Opel Corsa `1.2 L Edition Plus`, **37 400 DT en MEC 2019 contre 35 300 en 2020** — le millésime le plus ancien ressortait au-dessus, parce qu'il échappait au malus. Une borne posée au milieu de la vie d'une finition produit toujours cet effet. Deux corrections : le millésime est **ramené au début de la série de la finition** (le moteur est le même sur toute la série), et la borne Peugeot / Citroën / DS passe à **2012**, l'année d'apparition de l'EB2. Après quoi : 0 inversion.
 
+### 40 énergies corrigées, dont 29 diesels rangés en essence
+
+Défaut trouvé en cherchant à identifier les BMW N47, et corrigé le 29.09.2026 : **29 finitions dont le libellé dit diesel étaient renseignées « ⛽ Ess. »**.
+
+| marque | finitions | pourquoi c'est un diesel |
+|---|---|---|
+| BMW | X1 `1.8d` (11), X3 `2.0d` (8) | le « d » du nom commercial BMW désigne le diesel depuis toujours |
+| Jaguar | E-Pace, F-Pace, XE, XF `2.0 D` (4) | le « D » de la gamme Ingenium |
+| Land Rover | Range Rover Velar `2.0d 180` (2) | idem |
+| Toyota | Corolla Sedan, Fortuner, Hilux `D-4D` (4) | « D-4D » est le nom de la famille diesel à rampe commune |
+
+Aucun de ces moteurs n'a de version essence homonyme : la lecture ne prête pas à discussion.
+
+**Onze autres libellés ont été ramenés aux cinq valeurs de la base** (`⛽ Ess.`, `⛽ Diesel`, `⚡ Élec.`, `🔌 PHEV`, `🌿 HEV`). Ceux-là venaient de ma propre fusion du 29.09 : `energieDuNom` écrivait « 🔌 Hybride rechargeable » et « 🌿 Hybride ». L'énergie était **juste** — `fuelClass` cherche « rech » et « hybr » dans le texte — mais onze finitions s'affichaient autrement que leurs voisines du même modèle. Le défaut est corrigé **à la source** dans `integrer_prix.js` : une refusion depuis le classeur ne les réintroduit plus, ce qui a été vérifié.
+
+Pourquoi cela ne pouvait pas attendre : `fuelClass` rend « essence » par défaut. Un diesel rangé en essence est traité comme un essence de bout en bout — coefficient `F_carburant`, fiscalité, et surtout **indice de prix**, qui se calcule par énergie sur des médianes de modèles appariés. Une finition mal rangée fausse donc l'indice des **deux** énergies à la fois.
+
+Comme les relevés vérifiés de la v51, ces corrections sont **portées dans `data.js` et rejouées au démarrage** par la table `CARBURANTS_VERIFIES` d'index.html, chacune avec son motif : si la base est un jour régénérée depuis le classeur des prix — qui ne dit rien de la mécanique — la correction tient quand même. `corriger_carburant.js` lit cette table dans index.html plutôt que d'en garder une copie, pour que les deux ne puissent pas divergier.
+
 ### Résultat mesuré
 
 | indicateur | v55 | **v56** |
 |---|---|---|
-| biais médian, 152 annonces du 28.09 | +2,7 % | **-2,8 %** |
-| écart absolu médian | 10,8 % | **9,7 %** |
-| annonces à moins de 20 % | 110/152 | **112/152** |
-| biais par gamme (gp / hg / premium) | +1,6 / +5,6 / +6,6 % | **-5,1 / +0,3 / +1,2 %** |
+| biais médian, 152 annonces du 28.09 | +2,7 % | **-3,0 %** |
+| écart absolu médian | 10,8 % | **10,0 %** |
+| annonces à moins de 20 % | 110/152 | **111/152** |
+| biais par gamme (gp / hg / premium) | +1,6 / +5,6 / +6,6 % | **-5,2 / +0,3 / +1,2 %** |
+| répartition des énergies (essence / diesel / PHEV / HEV) | 1 914 / 340 / 84 / 59 | **1 885 / 369 / 94 / 60** |
 | annonces où le modèle est au-dessus du marché | 58 % | **43 %** |
 | Opel Corsa 1.2 L 2022, 90 000 km | 43 300 DT | **37 000 DT** |
 
@@ -1844,7 +1864,7 @@ Le modèle se situe désormais **sous** les prix demandés, ce qu'impose la déf
 
 | script | résultat |
 |---|---|
-| `test_vv.js` | **385 assertions au vert**, dont 16 nouvelles (section 18) ; aucune des 369 précédentes n'a eu besoin d'être adaptée |
+| `test_vv.js` | **393 assertions au vert**, dont 24 nouvelles (sections 18 et 19) ; aucune des 369 précédentes n'a eu besoin d'être adaptée |
 | `audit3.js` | **0 inversion d'âge** (+ 3 dues à la bascule d'incessibilité des populaires, voulues) |
 | `check_neuf.js` | 0 valeur vénale au-dessus du prix neuf du jour (6 310 cas) |
 | `check_pop.js` | 0 populaire au-dessus de sa jumelle (391 couples) |
@@ -1853,8 +1873,7 @@ Le modèle se situe désormais **sous** les prix demandés, ce qu'impose la déf
 
 1. **Un malus par famille de défaut.** Sept autres familles sont documentées et recensées dans la base — Renault 1.2 TCe H5Ft (2), VW 1.4 TSI EA111 (2), boîte DSG 7 DQ200 (13), Mercedes OM651 (2) — mais **pas appliquées** : l'échantillon n'en contient pas assez pour mesurer un coefficient. Un moteur qui casse ne décote pas comme une boîte qui broute.
 2. **Les boîtes CVT et les DSG ne sont pas identifiables** : la base nomme toutes les boîtes « BVA ». Il faudrait une table modèle par modèle.
-3. **29 finitions diesel sont renseignées « essence »** — BMW X1 `1.8d` (11), X3 `2.0d` (8), Jaguar et Land Rover `2.0 D`. Le carburant commande `F_carburant`, l'indice par énergie et la fiscalité : à corriger indépendamment de la décote. C'est aussi ce qui empêche d'identifier les BMW N47.
-4. **L'abattement de 5 % reste une estimation**, pas une mesure : c'est le paramètre le plus fragile de la v56.
+3. **L'abattement de 5 % reste une estimation**, pas une mesure : c'est le paramètre le plus fragile de la v56.
 5. **Le reliquat sur la Corsa** : 37 000 DT contre une cible sous 34 000. Il vient de la surévaluation générale des véhicules de 4 ans — le marché implique 11,2 %/an à 1-2 ans et 5,8 % à 9-10 ans, quand le modèle applique 5,80 % partout — et non du moteur. Y toucher demande une courbe de décote par morceaux, recalée sur les premières années, donc un échantillon élargi.
 6. **Le Hyundai Tucson reste à +34,7 %** et n'a rien à voir avec les motorisations : le Theta II GDI ne concerne pas le catalogue tunisien, qui est en 1.6 GDI / T-GDI. Vraisemblablement un effet de l'éventail de finitions, le plus large de l'échantillon.
 7. **L'hypothèse d'un biais lié au renchérissement du neuf est écartée** : la corrélation entre le rapport valeur à neuf du jour / tarif du millésime et l'erreur du modèle est de **r = -0,31**, soit de signe inverse. La méthode B n'est pas en cause.
@@ -1871,3 +1890,4 @@ Le modèle se situe désormais **sous** les prix demandés, ce qu'impose la déf
 | `diag_puretech.js` | identification PureTech, malus implicite, effet sur les deux cas de référence |
 | `diag_jeux.js` | jeux combinés R1-R4 sur trois épreuves |
 | `malus_moteurs.js` | recensement des huit familles de défauts dans la base, avec périodes et exclusions |
+| `corriger_carburant.js` | porte les énergies vérifiées dans `data.js` en rejouant la table d'index.html, et contrôle qu'il n'en reste aucune |

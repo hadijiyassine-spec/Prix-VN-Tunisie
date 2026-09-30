@@ -106,22 +106,31 @@ function marqueDeData(marqueClasseur, modele, DB, modeleVersMarque) {
 // une électrique passerait pour un thermique, sans module batterie, sans décote VE, sans TVA 7 %.
 // On ne renseigne donc QUE ce qui se lit sans ambiguïté, et on liste le reste.
 const MARQUES_TOUT_ELECTRIQUE = ['Xpeng', 'IM Motors'];
+// LES CINQ SEULES VALEURS QUE LA BASE CONNAÎT. Ma première version écrivait « 🔌 Hybride
+// rechargeable » et « 🛢️ Diesel », que `fuelClass` classe pourtant correctement — il cherche
+// « rech », « hybr », « diesel » dans le texte. Le calcul était donc juste, mais onze finitions
+// portaient un libellé étranger à la base et s'affichaient autrement que leurs voisines du même
+// modèle. Corrigé le 29.09.2026 ; les onze sont reprises par CARBURANTS_VERIFIES dans index.html.
+const ESS = '⛽ Ess.', DIESEL = '⛽ Diesel', ELEC = '⚡ Élec.', PHEV = '🔌 PHEV', HEV = '🌿 HEV';
 function energieDuNom(marque, modele, version) {
   const t = (modele + ' ' + version);
-  if (/\bphev\b|hybride rechargeable|plug-?in/i.test(t)) return { fuel: '🔌 Hybride rechargeable', regle: 'mention PHEV / rechargeable' };
-  if (/\d{2,3}e\b/.test(t) && /bmw|mercedes/i.test(marque)) return { fuel: '🔌 Hybride rechargeable', regle: 'désignation constructeur (330e, 530e…)' };
-  if (/\breev\b|range extender|prolongateur/i.test(t)) return { fuel: '🔌 Hybride rechargeable', regle: 'prolongateur d\'autonomie (REEV)' };
-  if (/e-hybrid/i.test(t)) return { fuel: '🔌 Hybride rechargeable', regle: 'désignation E-Hybrid (Porsche)' };
+  if (/\bphev\b|hybride rechargeable|plug-?in/i.test(t)) return { fuel: PHEV, regle: 'mention PHEV / rechargeable' };
+  if (/\d{2,3}e\b/.test(t) && /bmw|mercedes/i.test(marque)) return { fuel: PHEV, regle: 'désignation constructeur (330e, 530e…)' };
+  if (/\breev\b|range extender|prolongateur/i.test(t)) return { fuel: PHEV, regle: 'prolongateur d\'autonomie (REEV)' };
+  if (/e-hybrid/i.test(t)) return { fuel: PHEV, regle: 'désignation E-Hybrid (Porsche)' };
   // Volvo réserve la désignation T8 à sa chaîne hybride rechargeable (Twin Engine / Recharge) :
   // confirmé par Yassine Hadiji le 29.09.2026. Sans cette règle, quatre XC60 / XC90 T8 entraient
   // sans énergie, donc traités comme essence — pas de module batterie, pas de décote VE, TVA
   // ordinaire. La règle est bornée à Volvo : « T8 » ne veut pas dire cela ailleurs.
-  if (/volvo/i.test(marque) && /\bT8\b/.test(t)) return { fuel: '🔌 Hybride rechargeable', regle: 'désignation Volvo T8 (hybride rechargeable)' };
-  if (/e:?-?hev|\bhev\b|hybride|hybrid\b/i.test(t)) return { fuel: '🌿 Hybride', regle: 'mention hybride / HEV' };
-  if (/\bkwh\b/i.test(t)) return { fuel: '⚡ Élec.', regle: 'capacité en kWh dans le nom' };
-  if (/\be-?tron\b|\bev\b|électrique|electrique/i.test(t)) return { fuel: '⚡ Élec.', regle: 'mention électrique / EV / e-tron' };
-  if (MARQUES_TOUT_ELECTRIQUE.includes(marque)) return { fuel: '⚡ Élec.', regle: 'marque intégralement électrique' };
-  if (/diesel|\bdci\b|\bhdi\b|\btdi\b|\bcrdi\b|\bd-?4d\b/i.test(t)) return { fuel: '🛢️ Diesel', regle: 'désignation diesel' };
+  if (/volvo/i.test(marque) && /\bT8\b/.test(t)) return { fuel: PHEV, regle: 'désignation Volvo T8 (hybride rechargeable)' };
+  if (/e:?-?hev|\bhev\b|hybride|hybrid\b/i.test(t)) return { fuel: HEV, regle: 'mention hybride / HEV' };
+  if (/\bkwh\b/i.test(t)) return { fuel: ELEC, regle: 'capacité en kWh dans le nom' };
+  if (/\be-?tron\b|\bev\b|électrique|electrique/i.test(t)) return { fuel: ELEC, regle: 'mention électrique / EV / e-tron' };
+  if (MARQUES_TOUT_ELECTRIQUE.includes(marque)) return { fuel: ELEC, regle: 'marque intégralement électrique' };
+  // « d » de fin chez BMW, Jaguar et Land Rover, « D-4D » chez Toyota : ce sont des diesels, et
+  // c'est ce qui manquait à 29 finitions de la base (voir CARBURANTS_VERIFIES).
+  if (/diesel|\bdci\b|\bhdi\b|\bbluehdi\b|\btdi\b|\bcrdi\b|\bcdi\b|\bd-?4d\b|\bmultijet\b|\bdi-d\b/i.test(t)) return { fuel: DIESEL, regle: 'désignation diesel' };
+  if (/\d[.,]\d\s*d\b/.test(t) && /bmw|jaguar|land rover/i.test(marque)) return { fuel: DIESEL, regle: 'désignation constructeur « d » (BMW, Ingenium)' };
   return null;
 }
 

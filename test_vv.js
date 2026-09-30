@@ -1838,6 +1838,52 @@ setTimeout(() => {
       setFY(2019);
     }
 
+    // ── 19. Énergies vérifiées (v56) ──
+    // 29 diesels étaient renseignés « essence » — BMW X1 1.8d, X3 2.0d, Jaguar et Land Rover
+    // 2.0 D, Toyota D-4D — et 11 libellés introduits par la fusion sortaient des cinq valeurs de
+    // la base. Le carburant commande F_carburant, la fiscalité et surtout l'INDICE DE PRIX, qui
+    // se calcule par énergie : une finition mal rangée fausse l'indice des deux énergies.
+    console.log('\n19. Énergies vérifiées :');
+    {
+      const CANON = ['⛽ Ess.', '⛽ Diesel', '⚡ Élec.', '🔌 PHEV', '🌿 HEV'];
+      const dieselNom = /\b(\d[.,]\d\s*d\b|dci|hdi|bluehdi|tdi|crdi|cdi|d-4d|multijet|diesel|di-d|bitdi)\b/i;
+      const restants = [], horsCanon = [];
+      for (const b of Object.keys(win.DB)) for (const mo of Object.keys(win.DB[b])) for (const f of win.DB[b][mo]) {
+        const fuel = (f.eg && f.eg.fuel) || '';
+        if (dieselNom.test(mo + ' ' + f.v) && /Ess\./i.test(fuel)) restants.push(mo + ' · ' + f.v);
+        if (fuel && CANON.indexOf(fuel) === -1) horsCanon.push(mo + ' · ' + f.v + ' [' + fuel + ']');
+      }
+      check('aucune finition au libellé diesel n\'est rangée en essence',
+        restants.length === 0, restants.slice(0, 3).join(' | '));
+      check('tous les libellés d\'énergie sont l\'une des cinq valeurs de la base',
+        horsCanon.length === 0, horsCanon.slice(0, 3).join(' | '));
+
+      // La table d'index.html et la base ne doivent pas divergier : le rejeu au démarrage ne
+      // corrige donc plus rien, puisque tout est déjà porté dans data.js.
+      const CV = win.eval('CARBURANTS_VERIFIES');
+      check('la table des énergies vérifiées est déclarée et motivée',
+        CV && Object.keys(CV).length >= 17 &&
+        Object.keys(CV).every(m => CV[m].fuel && CANON.indexOf(CV[m].fuel) !== -1 &&
+          CV[m].motif && CV[m].motif.length > 8 && Array.isArray(CV[m].finitions) && CV[m].finitions.length),
+        Object.keys(CV || {}).length + ' modèles');
+      const rejeu = win.appliquerCarburantsVerifies();
+      check('la table est déjà portée dans la base — le rejeu ne corrige rien',
+        rejeu.corrigees === 0, rejeu.corrigees + ' correction(s)');
+      check('et chaque entrée de la table trouve sa finition',
+        rejeu.absentes.length === 0, rejeu.absentes.slice(0, 3).join(' | '));
+
+      // Cas nommés : le calcul doit réellement les traiter en diesel, pas seulement l'affichage.
+      const x3 = win.DB.BMW['BMW X3'].find(f => /^2\.0d xDrive Access$/.test(f.v));
+      check('la BMW X3 2.0d est classée diesel par le calcul',
+        !!x3 && win.fuelClass(x3.eg && x3.eg.fuel) === 'diesel', x3 && x3.eg && x3.eg.fuel);
+      const hilux = win.DB.Toyota['Toyota Hilux Double Cabine'].find(f => /D-4D Double Cabine$/.test(f.v));
+      check('le Toyota Hilux D-4D aussi', !!hilux && win.fuelClass(hilux.eg && hilux.eg.fuel) === 'diesel',
+        hilux && hilux.eg && hilux.eg.fuel);
+      const t8 = win.DB.Volvo['Volvo XC60'].find(f => /T8 AWD Ultra Dark/.test(f.v));
+      check('et la Volvo T8 est bien un hybride rechargeable',
+        !!t8 && win.fuelClass(t8.eg && t8.eg.fuel) === 'phev', t8 && t8.eg && t8.eg.fuel);
+    }
+
     console.log('\n' + (fails === 0 ? '=== TOUS LES TESTS PASSENT ===' : '=== ' + fails + ' ÉCHEC(S) ==='));
   } catch (e) {
     console.log('EXCEPTION:', e.message);

@@ -130,8 +130,16 @@ cas de loin le plus fréquent.
 
 Leur libellé dit `d` ou `D` — donc diesel — et leur fiche dit « ⛽ Ess. ». Ce n'est pas cosmétique :
 le carburant commande le coefficient `F_carburant`, l'indice de prix par énergie, et la fiscalité.
-**C'est à corriger indépendamment de toute question de décote.** L'inverse n'existe pas : aucune
-essence n'est renseignée en diesel.
+L'inverse n'existe pas : aucune essence n'est renseignée en diesel.
+
+> **Corrigé le 29.09.2026.** Le compte exact est de **29 finitions** : BMW X1 `1.8d` (11) et X3
+> `2.0d` (8), Jaguar E-Pace, F-Pace, XE et XF `2.0 D` (4), Land Rover Velar `2.0d 180` (2), Toyota
+> Corolla Sedan, Fortuner et Hilux `D-4D` (4). S'y ajoutent **11 libellés** que ma propre fusion
+> avait écrits hors des cinq valeurs de la base (« 🔌 Hybride rechargeable » au lieu de « 🔌 PHEV ») :
+> l'énergie était juste, l'affichage non. Soit **40 corrections**, portées dans `data.js` et
+> rejouées au démarrage par la table `CARBURANTS_VERIFIES` d'index.html, chacune avec son motif.
+> `integrer_prix.js` a été corrigé à la source, et une refusion depuis le classeur ne réintroduit
+> plus rien — vérifié.
 
 ---
 
@@ -250,7 +258,7 @@ Le modèle est désormais **sous** les prix demandés, ce qu'impose la définiti
 
 | contrôle | résultat |
 |---|---|
-| `test_vv.js` | **385 assertions au vert**, dont 16 nouvelles (section 18) ; aucune des 369 précédentes n'a eu besoin d'être adaptée |
+| `test_vv.js` | **393 assertions au vert**, dont 24 nouvelles (sections 18 et 19) ; aucune des 369 précédentes n'a eu besoin d'être adaptée |
 | `audit3.js` | **0 inversion d'âge** (+ 3 dues à la bascule d'incessibilité des populaires, voulues) |
 | `check_neuf.js` | 0 valeur vénale au-dessus du prix neuf du jour (6 310 cas) |
 | `check_pop.js` | 0 populaire au-dessus de sa jumelle (391 couples) |
