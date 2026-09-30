@@ -1786,3 +1786,88 @@ L'ordre des usages reste : particulier > société > location > taxi, à kilomé
 | `diag_agya.js`, `diag_agya2.js` | décomposition facteur par facteur du cas signalé |
 | `diag_taux.js` | taux par bande de valeur à neuf selon la fenêtre d'âge, pente kilométrique |
 | `diag_simul.js` | simulation des jeux de paramètres et cas de référence |
+
+---
+
+## Version 56 (29/09/2026) — la valeur vénale passe sous la valeur marchande, et les motorisations à défaut connu sont sanctionnées
+
+Deux faits apportés par Yassine Hadiji le 29.09.2026, et qui commandent tout ce qui suit :
+
+1. **la valeur vénale est par définition LÉGÈREMENT INFÉRIEURE à la valeur marchande**, laquelle suit le marché ;
+2. **les véhicules à motorisation PureTech décotent plus que les autres**, à cause des défauts de consommation d'huile de cette motorisation.
+
+Le cas qui a déclenché la révision : une **Opel Corsa de 2022** vaut 34 à 38 000 DT sur le marché, et l'application en annonçait **43 300** pour la finition d'entrée de gamme — et jusqu'à 58 900 pour la plus haute.
+
+### Ce qui était faux
+
+Le modèle était calibré face à des **prix demandés** sur les annonces, et visait un biais nul. Il rendait donc une valeur **marchande**, pas une valeur **vénale** : il manquait la différence que la définition impose. Et il ignorait le moteur : deux véhicules identiques par ailleurs y valaient le même prix, que leur motorisation ait ou non un défaut connu du marché.
+
+### Ce qui change
+
+| paramètre | valeur | origine |
+|---|---|---|
+| abattement valeur marchande → valeur vénale | **×0,95** | définition de la valeur vénale ; 5 % est une estimation, les prix de transaction ne sont pas publics |
+| malus PureTech, **constant avec l'âge** | **×0,90** | mesuré : les 15 annonces PureTech de l'échantillon du 28.09 ressortaient à +10,8 % contre +2,7 % pour les autres motorisations |
+
+Les deux facteurs sont **hors de la cotation** que l'expert peut reprendre au curseur : le défaut de motorisation est attaché au moteur, comme la gamme est attachée à la finition, et l'abattement n'est pas une caractéristique du véhicule mais la définition du résultat.
+
+    VV = VEN × F_âge × cotation × F_moteur × abattement marchand
+
+Le malus est **constant avec l'âge**, sur arbitrage de l'expert : le défaut ne s'éteint pas parce que le véhicule a survécu, la casse pouvant survenir à tout moment.
+
+### La reconnaissance du moteur, et ses bornes
+
+115 finitions de la base sont reconnues PureTech — Peugeot (55), Citroën (33), Opel (24), DS (12) — par une règle écrite : essence 1.0 ou 1.2 des marques Stellantis, millésimes 2012 à 2024, **hors diesel, hors électrique, hors hybride**. Trois bornes méritent d'être dites :
+
+- **Opel n'entre qu'en 2020** : ses 1.0 et 1.2 d'avant sont des moteurs Opel (ecoFLEX, Twinport), pas des EB2 ;
+- **la Peugeot 108 et la Citroën C1 sont exclues nominativement** : leur 1.0 est un moteur Toyota, partagé avec l'Aygo ;
+- la période s'arrête à **2024** : la courroie humide cède la place à une chaîne en 2023, mal calée jusqu'au 17.02.2024.
+
+### Un défaut d'implémentation, trouvé par les contrôles
+
+La première version bornait le malus au millésime 2020 pour Opel et 2013 pour Peugeot. `audit3.js` a signalé aussitôt une **inversion d'âge** : Opel Corsa `1.2 L Edition Plus`, **37 400 DT en MEC 2019 contre 35 300 en 2020** — le millésime le plus ancien ressortait au-dessus, parce qu'il échappait au malus. Une borne posée au milieu de la vie d'une finition produit toujours cet effet. Deux corrections : le millésime est **ramené au début de la série de la finition** (le moteur est le même sur toute la série), et la borne Peugeot / Citroën / DS passe à **2012**, l'année d'apparition de l'EB2. Après quoi : 0 inversion.
+
+### Résultat mesuré
+
+| indicateur | v55 | **v56** |
+|---|---|---|
+| biais médian, 152 annonces du 28.09 | +2,7 % | **-2,8 %** |
+| écart absolu médian | 10,8 % | **9,7 %** |
+| annonces à moins de 20 % | 110/152 | **112/152** |
+| biais par gamme (gp / hg / premium) | +1,6 / +5,6 / +6,6 % | **-5,1 / +0,3 / +1,2 %** |
+| annonces où le modèle est au-dessus du marché | 58 % | **43 %** |
+| Opel Corsa 1.2 L 2022, 90 000 km | 43 300 DT | **37 000 DT** |
+
+Le modèle se situe désormais **sous** les prix demandés, ce qu'impose la définition de la valeur vénale.
+
+### Contrôles
+
+| script | résultat |
+|---|---|
+| `test_vv.js` | **385 assertions au vert**, dont 16 nouvelles (section 18) ; aucune des 369 précédentes n'a eu besoin d'être adaptée |
+| `audit3.js` | **0 inversion d'âge** (+ 3 dues à la bascule d'incessibilité des populaires, voulues) |
+| `check_neuf.js` | 0 valeur vénale au-dessus du prix neuf du jour (6 310 cas) |
+| `check_pop.js` | 0 populaire au-dessus de sa jumelle (391 couples) |
+
+### Ce qui reste ouvert
+
+1. **Un malus par famille de défaut.** Sept autres familles sont documentées et recensées dans la base — Renault 1.2 TCe H5Ft (2), VW 1.4 TSI EA111 (2), boîte DSG 7 DQ200 (13), Mercedes OM651 (2) — mais **pas appliquées** : l'échantillon n'en contient pas assez pour mesurer un coefficient. Un moteur qui casse ne décote pas comme une boîte qui broute.
+2. **Les boîtes CVT et les DSG ne sont pas identifiables** : la base nomme toutes les boîtes « BVA ». Il faudrait une table modèle par modèle.
+3. **29 finitions diesel sont renseignées « essence »** — BMW X1 `1.8d` (11), X3 `2.0d` (8), Jaguar et Land Rover `2.0 D`. Le carburant commande `F_carburant`, l'indice par énergie et la fiscalité : à corriger indépendamment de la décote. C'est aussi ce qui empêche d'identifier les BMW N47.
+4. **L'abattement de 5 % reste une estimation**, pas une mesure : c'est le paramètre le plus fragile de la v56.
+5. **Le reliquat sur la Corsa** : 37 000 DT contre une cible sous 34 000. Il vient de la surévaluation générale des véhicules de 4 ans — le marché implique 11,2 %/an à 1-2 ans et 5,8 % à 9-10 ans, quand le modèle applique 5,80 % partout — et non du moteur. Y toucher demande une courbe de décote par morceaux, recalée sur les premières années, donc un échantillon élargi.
+6. **Le Hyundai Tucson reste à +34,7 %** et n'a rien à voir avec les motorisations : le Theta II GDI ne concerne pas le catalogue tunisien, qui est en 1.6 GDI / T-GDI. Vraisemblablement un effet de l'éventail de finitions, le plus large de l'échantillon.
+7. **L'hypothèse d'un biais lié au renchérissement du neuf est écartée** : la corrélation entre le rapport valeur à neuf du jour / tarif du millésime et l'erreur du modèle est de **r = -0,31**, soit de signe inverse. La méthode B n'est pas en cause.
+
+### Fichiers ajoutés
+
+| fichier | rôle |
+|---|---|
+| `DECOTE_MOTORISATIONS_29092026.md` | diagnostic complet, table des défauts sourcée, jeux candidats, ce qui a été appliqué |
+| `diag_corsa.js` | le cas signalé, finition par finition, avec sensibilité au taux |
+| `diag_courbe.js` | le taux que le marché implique à chaque âge, par gamme et par convention de finition |
+| `diag_ancrage.js` | test — et rejet — de l'hypothèse d'un biais lié au renchérissement du neuf |
+| `diag_courbe2.js` | courbes de décote par morceaux et abattements, jeux Q1-Q4 |
+| `diag_puretech.js` | identification PureTech, malus implicite, effet sur les deux cas de référence |
+| `diag_jeux.js` | jeux combinés R1-R4 sur trois épreuves |
+| `malus_moteurs.js` | recensement des huit familles de défauts dans la base, avec périodes et exclusions |

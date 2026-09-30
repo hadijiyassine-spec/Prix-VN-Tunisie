@@ -1015,9 +1015,9 @@ let FY  = null;
 let FM  = null;
 // ── Version de l'application ──
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
-const VERSION = 'v55';
-const VERSION_DATE = '28/09/2026';
-const VERSION_NOTES = 'niveau de la valeur vénale révisé (jeu P5, validé par Yassine Hadiji le 28.09.2026) : taux de décote 5,80 / 7,50 / 9,50 %/an par gamme au lieu de 4,27 / 6,98 / 8,33, pente kilométrique 0,91 %/10 000 km au lieu de 0,70 — les anciens taux étaient ajustés sur une fenêtre de vingt ans, aplatie par les vieux véhicules, puis appliqués aux véhicules récents ; biais médian face au marché ramené de +13,6 % à +2,8 % sur 152 annonces relevées le 28.09.2026 · âge du véhicule affiché sous le montant de la valeur vénale, avec les deux dates qui le produisent · affichage corrigé sur écran 11 pouces en paysage : la grille débordait de l\'écran et la fiche était coupée · âge compté au MOIS PRÈS, de la mise en circulation à la date du sinistre : mois d\'évaluation ajouté au module, vétusté et repère kilométrique fins, délais des régimes douaniers comptés depuis la date réelle ; tant qu\'un mois manque, l\'âge reste l\'entier d\'avant et aucune valeur ne bouge · mois de 1ère mise en circulation, facultatif : il lève l\'ambiguïté des millésimes à cheval sur un changement de génération et affine le tri des finitions ; sans mois, le calcul rend exactement le même chiffre qu\'avant · version signalée BÊTA dans le bandeau · méthode B : la valeur vénale part de la VALEUR À NEUF de la finition — tarif du jour, ou valeur de fin de série de sa génération — actualisée à la date d\'évaluation ; le millésime ne commande plus que la génération retenue et l\'âge · quatre changements de génération vérifiés ajoutés (Peugeot 208 en 2021, Hyundai i20 en 2016 et 2021, Opel Corsa en 2021, Suzuki Swift en 2025) · avertissement en tête de fiche sur les séries tarifaires discontinues, dont le calcul dépend désormais · effet 3D retiré · affichage accéléré : saisie de l\'année sans recalcul à chaque chiffre, graphique construit à son entrée à l\'écran, listes sans animation ni reconstruction inutile, tiroir mobile construit à l\'ouverture · tri des listes réparé : les modèles actifs à la MEC remontent enfin en tête · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
+const VERSION = 'v56';
+const VERSION_DATE = '29/09/2026';
+const VERSION_NOTES = 'la valeur vénale se situe désormais SOUS la valeur marchande, comme sa définition l\'exige : abattement de 5 % (jeu R2, validé par Yassine Hadiji le 29.09.2026) · malus de 10 % sur les motorisations PureTech de Stellantis, dont le marché sanctionne la consommation d\'huile et la courroie de distribution humide — 115 finitions de la base, reconnues par période de production, malus constant avec l\'âge ; biais face aux 152 annonces du 28.09 ramené de +2,7 % à -2,8 % et écart absolu médian de 10,8 à 9,6 % · base de prix neufs fusionnée avec le classeur 2011-24.09.2026 : 749 modèles, 2 553 finitions, 10 682 relevés, 37 prix du jour actualisés, les 6 retraits du contrôle catalogue respectés à l\'import · niveau de la valeur vénale révisé (jeu P5, validé par Yassine Hadiji le 28.09.2026) : taux de décote 5,80 / 7,50 / 9,50 %/an par gamme au lieu de 4,27 / 6,98 / 8,33, pente kilométrique 0,91 %/10 000 km au lieu de 0,70 — les anciens taux étaient ajustés sur une fenêtre de vingt ans, aplatie par les vieux véhicules, puis appliqués aux véhicules récents ; biais médian face au marché ramené de +13,6 % à +2,8 % sur 152 annonces relevées le 28.09.2026 · âge du véhicule affiché sous le montant de la valeur vénale, avec les deux dates qui le produisent · affichage corrigé sur écran 11 pouces en paysage : la grille débordait de l\'écran et la fiche était coupée · âge compté au MOIS PRÈS, de la mise en circulation à la date du sinistre : mois d\'évaluation ajouté au module, vétusté et repère kilométrique fins, délais des régimes douaniers comptés depuis la date réelle ; tant qu\'un mois manque, l\'âge reste l\'entier d\'avant et aucune valeur ne bouge · mois de 1ère mise en circulation, facultatif : il lève l\'ambiguïté des millésimes à cheval sur un changement de génération et affine le tri des finitions ; sans mois, le calcul rend exactement le même chiffre qu\'avant · version signalée BÊTA dans le bandeau · méthode B : la valeur vénale part de la VALEUR À NEUF de la finition — tarif du jour, ou valeur de fin de série de sa génération — actualisée à la date d\'évaluation ; le millésime ne commande plus que la génération retenue et l\'âge · quatre changements de génération vérifiés ajoutés (Peugeot 208 en 2021, Hyundai i20 en 2016 et 2021, Opel Corsa en 2021, Suzuki Swift en 2025) · avertissement en tête de fiche sur les séries tarifaires discontinues, dont le calcul dépend désormais · effet 3D retiré · affichage accéléré : saisie de l\'année sans recalcul à chaque chiffre, graphique construit à son entrée à l\'écran, listes sans animation ni reconstruction inutile, tiroir mobile construit à l\'ouverture · tri des listes réparé : les modèles actifs à la MEC remontent enfin en tête · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -1389,6 +1389,61 @@ const VVPARAMS = {
   // Il est conservé comme garde-fou, sans effet mesurable sur les valeurs.
   plafondMalusKm: 0.45,    // au-delà, le kilométrage ne pénalise plus davantage
   plafondBonusKm: 0.15,    // un kilométrage très bas valorise, mais de façon limitée
+
+  // ── Abattement « valeur marchande → valeur vénale » ──
+  //
+  // RÈGLE DE DÉFINITION, posée par Yassine Hadiji le 29.09.2026 : la valeur vénale est par
+  // définition LÉGÈREMENT INFÉRIEURE à la valeur marchande, qui est celle du marché. Jusqu'ici
+  // le modèle était calibré face à des PRIX DEMANDÉS sur les annonces, et visait un biais nul :
+  // il rendait donc une valeur marchande, pas une valeur vénale. Cet abattement fait la
+  // différence, et il est séparé de la décote d'âge pour qu'on ne les confonde jamais — c'est
+  // précisément ce mélange qui avait envoyé le jeu P3 beaucoup trop bas en v55.
+  //
+  // 5 % est une ESTIMATION, pas une mesure : les prix de transaction ne sont pas publics en
+  // Tunisie. Mesuré sur les 152 annonces du 28.09.2026, l'abattement place le modèle à −2,8 %
+  // des prix demandés (contre +2,7 % sans lui), et ramène l'écart absolu médian de 10,8 à 9,6 %.
+  abattementMarchand: 0.95,
+
+  // ── Malus de motorisation à défaut connu ──
+  //
+  // Deux véhicules identiques par ailleurs ne valent pas le même prix si l'un porte un moteur
+  // dont le marché connaît le défaut. Fait apporté par Yassine Hadiji le 29.09.2026 et vérifié
+  // sur la presse spécialisée : les PureTech de Stellantis décotent davantage, à cause de la
+  // consommation d'huile et de la courroie de distribution HUMIDE qui se délite dans l'huile,
+  // colmate la crépine de pompe à huile et détruit le moteur.
+  //
+  // Trois principes, qui commandent la forme de cette table :
+  //   · le malus suit la PÉRIODE DE PRODUCTION du défaut, pas le modèle — le même modèle change
+  //     de moteur, et un défaut corrigé ne doit plus peser sur les millésimes suivants ;
+  //   · il est CONSTANT avec l'âge (arbitrage de Yassine Hadiji du 29.09.2026) : le défaut ne
+  //     s'éteint pas parce que le véhicule a survécu, la casse pouvant survenir à tout moment ;
+  //   · la reconnaissance est explicite et ses exclusions sont nommées. Un malus posé sur un
+  //     moteur mal reconnu est pire que pas de malus : il déplace la valeur du mauvais véhicule.
+  //
+  // Le coefficient de 0,90 est MESURÉ : les 15 annonces PureTech de l'échantillon du 28.09.2026
+  // ressortaient à +10,8 % contre +2,7 % pour les autres motorisations, soit ×0,902 pour annuler
+  // l'écart. Le cas de l'Opel Corsa 2022 en réclamerait ×0,80, mais il cumule ce malus avec la
+  // surévaluation générale des véhicules de quatre ans, qui est un autre sujet (voir
+  // DECOTE_MOTORISATIONS_29092026.md) : forcer 0,80 ici enverrait les PureTech de l'échantillon
+  // à −17 %. Les autres familles de défauts recensées (Renault 1.2 TCe, VW 1.4 TSI EA111, boîte
+  // DSG 7 DQ200, Mercedes OM651) n'ont pas assez d'annonces dans l'échantillon pour être
+  // mesurées : elles sont documentées dans le rapport, pas appliquées.
+  moteursRisque: [
+    {
+      nom: 'PureTech',
+      libelle: 'moteur PureTech (courroie humide, consommation d\'huile)',
+      coef: 0.90,
+      millesimes: [2012, 2024],   // courroie humide dès 2012 ; chaîne en 2023, mal calée jusqu'au 17.02.2024
+      // Opel n'entre qu'en 2020 : ses 1.0 et 1.2 d'avant sont des moteurs Opel (ecoFLEX, Twinport).
+      // Pour Peugeot, Citroën et DS la borne est 2012, l'année d'apparition de l'EB2 sur la 208 —
+      // et non 2013 : une borne posée au milieu de la vie d'une finition crée une INVERSION D'ÂGE
+      // (un millésime plus ancien sans malus ressort au-dessus du suivant, qui l'a). Avant 2012
+      // ces marques n'avaient aucune essence de 1,2 litre, la borne ne coupe donc rien.
+      marques: {'Peugeot':2012, 'Citroën':2012, 'DS':2012, 'Opel':2020, 'Vauxhall':2020},
+      // La 108 et la C1 partagent leur moteur avec la Toyota Aygo : 1.0 VVT-i Toyota, pas un EB2.
+      exclus: [/peugeot 108/i, /citro[eë]n c1/i],
+    },
+  ],
 
   // ── F_usage : décote professionnelle ──
   // Indépendante du kilométrage : à compteur égal, un ex-taxi ou ex-location vaut moins
@@ -2714,6 +2769,59 @@ function finitionsDe(v){
   return (v.__nf=n);
 }
 
+// Marque et modèle auxquels appartient cette finition. Les objets de data.js ne les portent pas :
+// on les retrouve une fois et on mémorise, comme `finitionsDe`.
+function origineDe(v){
+  if(v.__or!==undefined) return v.__or;
+  let o=null;
+  for(const b of Object.keys(DB)) for(const m of Object.keys(DB[b]))
+    if(DB[b][m].indexOf(v)!==-1) o={marque:b, modele:m};
+  return (v.__or=o);
+}
+
+// Malus de motorisation à défaut connu (voir VVPARAMS.moteursRisque). Rend {nom, libelle, coef}
+// ou null. Le millésime compte : le défaut est borné à la période de production fautive.
+//
+// La reconnaissance est volontairement CONSERVATRICE sur le carburant : un diesel, une électrique
+// ou une hybride n'est jamais un PureTech, et ces trois cas sortent avant toute autre règle.
+// Elle est en revanche LARGE sur la cylindrée, parce qu'il n'existe pas d'autre essence de 1,2 litre
+// au catalogue Stellantis sur la période — un « 1.2 L » sans autre mention EST un EB2.
+function malusMoteur(v, millesime){
+  if(v.__mr!==undefined && v.__mr && v.__mr.mil===millesime) return v.__mr.res;
+  const o=origineDe(v);
+  let res=null;
+  // Millésime ramené au DÉBUT DE LA SÉRIE de la finition. Une Corsa « 1.2 L Edition Plus » n'existe
+  // au catalogue qu'à partir de 2021 : l'évaluer à une MEC de 2019 est déjà une extrapolation, et
+  // lui refuser le malus à 2019 pour l'appliquer à 2020 produisait une inversion d'âge — 37 400 DT
+  // en 2019 contre 35 300 en 2020, relevée par audit3.js. Le moteur est une propriété de la
+  // finition : sur toute sa série, il est le même.
+  const H0=tarifsCatalogue(v);
+  const debutSerie=H0.length?yOf(H0[0].d):null;
+  const mil=(millesime!=null && debutSerie!=null) ? Math.max(millesime, debutSerie) : millesime;
+  if(o){
+    const t=(o.marque+' '+o.modele+' '+v.v+' '+
+             ((v.eg&&(v.eg.motor||v.eg.moteur||v.eg.fuel))||'')+' '+
+             ((v.sp&&(v.sp.moteur||v.sp.carburant))||''));
+    const fuel=(v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant)||'';
+    const diesel=/diesel|hdi|bluehdi|\bdci\b|\btdi\b|\bcrdi\b|\bcdi\b|d-4d|🛢/i.test(t);
+    const electrifie=/⚡|🔌|🌿|élec|electr|hybride/i.test(fuel);
+    for(const fam of VVPARAMS.moteursRisque){
+      const debut=fam.marques[o.marque];
+      if(debut==null) continue;
+      if(fam.exclus.some(r=>r.test(o.modele))) continue;
+      if(mil!=null && (mil<Math.max(fam.millesimes[0],debut) || mil>fam.millesimes[1])) continue;
+      if(fam.nom==='PureTech'){
+        if(diesel || electrifie) continue;
+        if(!/puretech|pure tech/i.test(t) && !/(^|[^0-9.])1[.,]2(\s|$|[^0-9])/.test(t)) continue;
+      }
+      res={nom:fam.nom, libelle:fam.libelle, coef:fam.coef};
+      break;
+    }
+  }
+  v.__mr={mil:millesime, res};
+  return res;
+}
+
 // Valeur à neuf servant à CLASSER la finition en gamme. Toujours celle du millésime le plus
 // récent de la série, quel que soit le millésime évalué : la gamme d'un véhicule ne change pas
 // avec son année. Mémorisée par finition, année d'évaluation et régime.
@@ -2821,7 +2929,17 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh, regime
   const relatif = fEtat*fKm*fCarb*fUsage*fBat;
   const ajuste = coteAjustee!=null && isFinite(coteAjustee) && Math.abs(coteAjustee-relatif)>0.001;
   const relatifEff = ajuste ? coteAjustee : relatif;
-  const ratio = fAge*relatifEff;                      // part de la VEN conservée
+  // ── Deux facteurs SUBIS, qui restent hors de `relatif` ──
+  // `relatif` est ce qui est propre au véhicule et que l'expert peut reprendre au curseur de
+  // cotation. Le défaut de motorisation ne s'y prête pas : il ne dépend pas de l'entretien ni du
+  // jugement, il est attaché au moteur — comme la gamme est attachée à la finition. Et
+  // l'abattement marchand n'est pas une caractéristique du véhicule : c'est la définition même de
+  // la valeur vénale. Les mettre dans `relatif` fausserait la lecture du curseur, qui dirait
+  // qu'un véhicule est « mal coté pour son âge » alors qu'il est simplement équipé de ce moteur.
+  const mr = malusMoteur(v, FY);
+  const fMoteur = mr ? mr.coef : 1;
+  const fMarchand = VVPARAMS.abattementMarchand;
+  const ratio = fAge*relatifEff*fMoteur*fMarchand;    // part de la VEN conservée
   // ── Borne haute : le prix neuf du jour ──
   // Une occasion ne peut pas valoir davantage que le même véhicule neuf disponible en
   // concession. Le plafond sur la valeur à neuf ne suffit pas : sur un véhicule quasi neuf,
@@ -2836,7 +2954,8 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh, regime
   // `relatif` isole ce qui est propre À CE véhicule : état, kilométrage, usage, énergie —
   // hors âge et hors gamme, qui sont des caractéristiques subies. C'est cette part qui dit
   // si le véhicule est bien ou mal coté POUR SON ÂGE.
-  return {vv, ven, fAge, fEtat, fKm, fCarb, fUsage, fBat, ratio, relatif, relatifEff, ajuste,
+  return {vv, ven, fAge, fEtat, fKm, fCarb, fUsage, fBat, fMoteur, moteurRisque:mr, fMarchand,
+          ratio, relatif, relatifEff, ajuste,
           gamme, tauxDepr, surcout, baseVE, age, ageMois, mecPosterieure, moisMec:MM||null, moisEval:ME||null,
           ecartKm, kmRef, etat, usage, km, anneeEval:AE,
           vvPlafonnee, borneNeuf, partBat, bat, garantieBat};
@@ -3068,6 +3187,11 @@ function renderVVOutput(v){
         '<span class="vv-prix-note">estimation — hors barème compagnie</span></div>'+
       coteGaugeHtml(base.relatif, courant)+
       '<div id="vvConf"></div>'+
+      // Zone d'alerte HORS du bloc replié. Les avertissements de #vvNotices sont à l'intérieur du
+      // <details>, ce qui convient aux explications de tarif mais pas à un fait qui change la
+      // valeur : le malus de motorisation doit se lire d'emblée, comme l'âge depuis la v54, pour
+      // que l'expert puisse le confirmer ou l'écarter sur le véhicule qu'il a devant lui.
+      '<div id="vvAlerte"></div>'+
       '<details class="vv-details"><summary>Détail du calcul et règles appliquées</summary>'+
         '<div class="vv-chips" id="vvChips"></div>'+
         '<div id="vvBat"></div>'+
@@ -3263,7 +3387,26 @@ function refreshVVValues(v){
           ? Math.round(r.bat.soh*100)+' % mesurés vs '+Math.round(r.bat.attendu*100)+' % attendus, pesant '+Math.round(r.partBat.part*100)+' % de la valeur'
           : 'état de santé non mesuré — facteur neutre')+') : <b>×'+r.fBat.toFixed(3)+'</b></div>':'')+
       '<div style="margin-top:3px;padding-top:4px;border-top:1px solid var(--bd)">Cotation retenue : <b>×'+r.relatifEff.toFixed(3)+'</b>'+
-        (r.ajuste?' <span style="color:var(--warn)">(ajustée ; conseil ×'+r.relatif.toFixed(3)+')</span>':' (conseil du calcul)')+'</div>';
+        (r.ajuste?' <span style="color:var(--warn)">(ajustée ; conseil ×'+r.relatif.toFixed(3)+')</span>':' (conseil du calcul)')+'</div>'+
+      // Les deux facteurs subis viennent APRÈS la cotation, et hors d'elle : le curseur de
+      // cotation ne les touche pas, et la fiche doit le montrer plutôt que de les fondre dans
+      // le total — un expert doit pouvoir dire d'où vient chaque dinar.
+      (r.moteurRisque?'<div>Motorisation à défaut connu ('+r.moteurRisque.libelle+') : <b>×'+r.fMoteur.toFixed(3)+'</b></div>':'')+
+      '<div>Abattement valeur marchande → valeur vénale : <b>×'+r.fMarchand.toFixed(3)+'</b> <span style="opacity:.75">(la valeur vénale se situe sous le prix de marché)</span></div>';
+  }
+
+  // Le malus de motorisation se lit SANS déplier le détail : c'est un fait opposable dans un
+  // rapport, et l'expert doit pouvoir le confirmer ou l'écarter sur le véhicule qu'il a devant
+  // lui — un moteur déjà remplacé, par exemple, ne porte plus le défaut.
+  const az=document.getElementById('vvAlerte');
+  if(az){
+    az.innerHTML = r.moteurRisque
+      ? '<div class="notice warn" style="margin-top:8px">⚠️ <b>'+
+          r.moteurRisque.libelle.charAt(0).toUpperCase()+r.moteurRisque.libelle.slice(1)+
+          '</b> — le marché sanctionne cette motorisation : un malus de <b>'+
+          Math.round((1-r.fMoteur)*100)+' %</b> est appliqué. À écarter si le moteur a été remplacé '+
+          'ou si la réparation est documentée.</div>'
+      : '';
   }
 
   const nz=document.getElementById('vvNotices');

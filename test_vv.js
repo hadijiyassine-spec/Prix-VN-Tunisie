@@ -1738,6 +1738,106 @@ setTimeout(() => {
     }
     setFY(2019);
 
+    // ── 18. Abattement marchand et malus de motorisation (v56) ──
+    // Deux facteurs SUBIS, ajoutés le 29.09.2026 : la valeur vénale se situe sous la valeur
+    // marchande (abattement), et les motorisations à défaut connu décotent davantage (malus).
+    console.log('\n18. Abattement marchand et malus de motorisation :');
+    {
+      const P = win.eval('VVPARAMS');
+      check('l\'abattement valeur marchande → valeur vénale existe et abaisse la valeur',
+        P.abattementMarchand > 0.80 && P.abattementMarchand < 1, '×' + P.abattementMarchand);
+      check('la table des motorisations à défaut connu est déclarée',
+        Array.isArray(P.moteursRisque) && P.moteursRisque.length >= 1 &&
+        P.moteursRisque.every(f => f.coef > 0.5 && f.coef < 1 && Array.isArray(f.millesimes) && f.marques && f.libelle),
+        P.moteursRisque.map(f => f.nom + ' ×' + f.coef).join(', '));
+
+      // Une PureTech reconnue : Peugeot 208 essence 1.2.
+      const p208 = win.DB.Peugeot['Peugeot 208'].find(f => /1\.2/.test(f.v) && !/hdi/i.test(f.v));
+      setFY(2019);
+      const mr = win.malusMoteur(p208, 2019);
+      check('une essence 1.2 Stellantis de la période est reconnue PureTech',
+        !!mr && mr.coef === 0.90, p208.v + (mr ? ' → ×' + mr.coef : ' → AUCUN'));
+      const rp = win.computeVV(p208, 90000, 'normal', 'particulier', null, 2026, null, 'aucun');
+      check('…et le malus entre dans le calcul', rp && Math.abs(rp.fMoteur - 0.90) < 1e-9, '×' + (rp && rp.fMoteur));
+      check('…hors de la cotation, que l\'expert peut reprendre au curseur',
+        rp && Math.abs(rp.relatif - rp.fEtat * rp.fKm * rp.fCarb * rp.fUsage * rp.fBat) < 1e-9);
+      check('…et l\'abattement marchand aussi',
+        rp && Math.abs(rp.ratio - rp.fAge * rp.relatifEff * rp.fMoteur * rp.fMarchand) < 1e-9);
+
+      // LE MALUS EST CONSTANT AVEC L'ÂGE — arbitrage de Yassine Hadiji du 29.09.2026 : le défaut
+      // ne s'éteint pas parce que le véhicule a survécu, la casse pouvant survenir à tout moment.
+      setFY(2014);
+      const vieux = win.computeVV(p208, 200000, 'normal', 'particulier', null, 2026, null, 'aucun');
+      check('le malus ne s\'éteint pas avec l\'âge',
+        vieux && Math.abs(vieux.fMoteur - rp.fMoteur) < 1e-9,
+        'MEC 2014 ×' + (vieux && vieux.fMoteur) + ' · MEC 2019 ×' + rp.fMoteur);
+
+      // Exclusions nominatives : la 108 partage son 1.0 avec la Toyota Aygo, ce n'est pas un EB2.
+      if (win.DB.Peugeot['Peugeot 108']) {
+        const p108 = win.DB.Peugeot['Peugeot 108'][0];
+        check('la Peugeot 108 est exclue — son 1.0 est un moteur Toyota, pas un EB2',
+          win.malusMoteur(p108, 2016) === null, p108.v);
+      }
+      // Un diesel du même constructeur n'est jamais un PureTech.
+      const hdi = win.DB.Peugeot['Peugeot 208'].find(f => /hdi/i.test(f.v));
+      if (hdi) check('un diesel HDi de la même marque n\'est pas maligné',
+        win.malusMoteur(hdi, 2016) === null, hdi.v);
+      // Une marque hors périmètre non plus.
+      const clio = win.DB.Renault['Renault Clio'][0];
+      check('une marque hors du périmètre PureTech n\'est pas maligné',
+        win.malusMoteur(clio, 2019) === null, clio.v);
+
+      // PAS D'INVERSION D'ÂGE À LA BORNE DE MILLÉSIME. Opel n'entre dans le périmètre qu'en 2020 :
+      // sans la remise du millésime au début de la série, la Corsa 2019 ressortait AU-DESSUS de la
+      // 2020 (37 400 contre 35 300 DT) — inversion relevée par audit3.js le 29.09.2026.
+      const corsa = win.DB.Opel['Opel Corsa'].find(f => /Edition Plus/.test(f.v));
+      if (corsa) {
+        setFY(2019); const c19 = win.computeVV(corsa, 90000, 'normal', 'particulier', null, 2026, null, 'aucun');
+        setFY(2020); const c20 = win.computeVV(corsa, 90000, 'normal', 'particulier', null, 2026, null, 'aucun');
+        check('la borne de millésime ne crée pas d\'inversion d\'âge',
+          c19 && c20 && c20.vv >= c19.vv, 'MEC 2019 ' + (c19 && c19.vv) + ' ≤ MEC 2020 ' + (c20 && c20.vv));
+        check('…parce que le millésime est ramené au début de la série de la finition',
+          c19 && c20 && Math.abs(c19.fMoteur - c20.fMoteur) < 1e-9, '×' + (c19 && c19.fMoteur));
+      }
+
+      // La fiche doit dire les deux, et le malus doit se lire SANS déplier le détail.
+      // On passe par l'interface, comme un utilisateur : le détail n'est rempli que par
+      // refreshVVValues, pas par renderVVBlock. On clique la marque, le modèle, puis chaque
+      // finition jusqu'à en trouver une qui porte le malus — la 208 a aussi des diesels HDi,
+      // qui n'en portent pas, et l'ordre de la liste n'est pas garanti.
+      const clic = (listeId, filtre) => {
+        const l = doc.getElementById(listeId);
+        if (!l) return false;
+        for (const el of l.children) if (filtre(el.textContent)) { el.dispatchEvent(new win.Event('click', { bubbles: true })); return true; }
+        return false;
+      };
+      setFY(2019);
+      const atteint = clic('listB', t => /^\s*Peugeot/.test(t)) &&
+        clic('listM', t => /208/.test(t) && !/2008|3P|Populaire|Energie|GT/i.test(t));
+      check('la Peugeot 208 est atteignable par l\'interface', atteint);
+      let det = null, trouve = false;
+      if (atteint) {
+        const fins = doc.getElementById('listV');
+        for (const el of (fins ? Array.from(fins.children) : [])) {
+          el.dispatchEvent(new win.Event('click', { bubbles: true }));
+          det = doc.getElementById('vvDetail');
+          if (det && /Motorisation à défaut connu/i.test(det.innerHTML)) { trouve = true; break; }
+        }
+      }
+      check('le détail du calcul annonce le malus de motorisation', trouve,
+        trouve && /PureTech/i.test(det.innerHTML) ? 'PureTech nommé dans la fiche' : '');
+      check('…et l\'abattement valeur marchande → valeur vénale',
+        !!det && /Abattement valeur marchande/i.test(det.innerHTML));
+      // #vvNotices est À L'INTÉRIEUR du <details> : il convient aux explications de tarif, pas à un
+      // fait qui change la valeur. Le malus a donc sa propre zone, hors du bloc replié.
+      const az = doc.getElementById('vvAlerte');
+      check('le malus est signalé hors du bloc replié, avec la façon de l\'écarter',
+        !!az && /PureTech/i.test(az.innerHTML) && /remplac/i.test(az.innerHTML) && !az.closest('details'),
+        az && az.textContent.trim().slice(0, 80));
+      doc.getElementById('mecClr').click();
+      setFY(2019);
+    }
+
     console.log('\n' + (fails === 0 ? '=== TOUS LES TESTS PASSENT ===' : '=== ' + fails + ' ÉCHEC(S) ==='));
   } catch (e) {
     console.log('EXCEPTION:', e.message);
