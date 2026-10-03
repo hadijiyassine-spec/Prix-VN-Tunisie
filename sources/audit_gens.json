@@ -1,0 +1,1994 @@
+[
+ {
+  "marque": "BMW",
+  "modele": "BMW Série 3",
+  "gen": {
+   "gen": "F30",
+   "y0": 2012,
+   "y1": 2019,
+   "info": "6e gén. · EfficientDynamics · facelift 2015"
+  },
+  "genPrec": {
+   "gen": "E90",
+   "y0": 2005,
+   "y1": 2012,
+   "info": "5e gén."
+  },
+  "date": "07.03.2013",
+  "netMax": 0,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 7,
+  "traversantes": [
+   {
+    "v": "316i Access",
+    "imp": 0.08520433306954489
+   },
+   {
+    "v": "316i Access BVA",
+    "imp": 0.07990967877030108
+   },
+   {
+    "v": "318d Confort Modern Line",
+    "imp": 0.09367658454109606
+   },
+   {
+    "v": "316i Confort Luxury Line BVA",
+    "imp": 0.0898070723183193
+   },
+   {
+    "v": "316i Sport Line BVA",
+    "imp": 0.033146409019904066
+   },
+   {
+    "v": "318d Confort Modern Line BVA",
+    "imp": 0.08116652304481331
+   },
+   {
+    "v": "318d Confort Plus Modern Line BVA",
+    "imp": 0.043820441875788374
+   },
+   {
+    "v": "320i Access",
+    "imp": 0.20885564303807969
+   }
+  ],
+  "impact": 0.20885564303807969,
+  "exemples": [
+   {
+    "v": "316i Access",
+    "p0": 70500,
+    "p1": 72600,
+    "d0": "05.11.2012",
+    "net": -0.03890134833644554,
+    "trou": 1
+   },
+   {
+    "v": "316i Access Plus Modern Line BVA",
+    "p0": 82500,
+    "p1": 85400,
+    "d0": "05.11.2012",
+    "net": -0.033894874017737275,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Skoda",
+  "modele": "Skoda Octavia",
+  "gen": {
+   "gen": "5E",
+   "y0": 2012,
+   "y1": 2020,
+   "info": "3e gén. · MQB"
+  },
+  "genPrec": {
+   "gen": "1Z",
+   "y0": 2004,
+   "y1": 2013,
+   "info": "2e gén."
+  },
+  "date": "16.05.2016",
+  "netMax": 0.06030244051009581,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "1.4 TSI Ambition DSG",
+    "imp": 0.25791477291769804
+   },
+   {
+    "v": "1.4 TSI Style DSG",
+    "imp": 0.2835587073558581
+   }
+  ],
+  "impact": 0.2835587073558581,
+  "exemples": [
+   {
+    "v": "1.4 TSI Ambition DSG",
+    "p0": 49980,
+    "p1": 54980,
+    "d0": "17.03.2015",
+    "net": 0.05161206538860008,
+    "trou": 1
+   },
+   {
+    "v": "1.4 TSI Style DSG",
+    "p0": 54980,
+    "p1": 60980,
+    "d0": "17.03.2015",
+    "net": 0.06030244051009581,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "KIA",
+  "modele": "KIA Picanto",
+  "gen": {
+   "gen": "JA",
+   "y0": 2017,
+   "y1": null,
+   "info": "3e gén. · facelift 2020"
+  },
+  "genPrec": {
+   "gen": "TA",
+   "y0": 2011,
+   "y1": 2017,
+   "info": "2e gén."
+  },
+  "date": "04.04.2022",
+  "netMax": 0,
+  "trouMax": 2,
+  "nees": 0,
+  "mortes": 3,
+  "traversantes": [
+   {
+    "v": "1.2 L LX",
+    "imp": 0.07679982135628571
+   },
+   {
+    "v": "1.2 L LX BVA",
+    "imp": 0.07067120390403447
+   },
+   {
+    "v": "1.2 L GT-Line BVA",
+    "imp": 0.1687152452235141
+   }
+  ],
+  "impact": 0.1687152452235141,
+  "exemples": [
+   {
+    "v": "1.2 L LX",
+    "p0": 39980,
+    "p1": 41980,
+    "d0": "07.12.2020",
+    "net": -0.05785626301507141,
+    "trou": 2
+   },
+   {
+    "v": "1.2 L LX BVA",
+    "p0": 43980,
+    "p1": 46480,
+    "d0": "07.12.2020",
+    "net": -0.05173785142035969,
+    "trou": 2
+   }
+  ]
+ },
+ {
+  "marque": "Land Rover",
+  "modele": "Land Rover Defender 110",
+  "gen": {
+   "gen": "L663",
+   "y0": 2020,
+   "y1": null,
+   "info": "Nouveau · MLA"
+  },
+  "genPrec": {
+   "gen": "L316",
+   "y0": 1983,
+   "y1": 2016,
+   "info": "Classique"
+  },
+  "date": "04.03.2025",
+  "netMax": 0.48270181219110375,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 1,
+  "traversantes": [
+   {
+    "v": "3.0 L P400 S",
+    "imp": 0.48270181219110375
+   }
+  ],
+  "impact": 0.48270181219110375,
+  "exemples": [
+   {
+    "v": "3.0 L P400 S",
+    "p0": 364200,
+    "p1": 540000,
+    "d0": "24.01.2024",
+    "net": 0.48270181219110375,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "BMW",
+  "modele": "BMW Série 3",
+  "gen": {
+   "gen": "G20",
+   "y0": 2019,
+   "y1": null,
+   "info": "7e gén. · CLAR · 48V"
+  },
+  "genPrec": {
+   "gen": "F30",
+   "y0": 2012,
+   "y1": 2019,
+   "info": "6e gén. · EfficientDynamics · facelift 2015"
+  },
+  "date": "08.01.2019",
+  "netMax": 0,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 3,
+  "traversantes": [
+   {
+    "v": "318i Exclusive Edition BVA",
+    "imp": 0.03364632771373177
+   },
+   {
+    "v": "320i Access",
+    "imp": 0.22460106284713666
+   }
+  ],
+  "impact": 0.22460106284713666,
+  "exemples": [
+   {
+    "v": "318i Exclusive Edition BVA",
+    "p0": 142900,
+    "p1": 147500,
+    "d0": "28.11.2018",
+    "net": -0.017636383132890177,
+    "trou": 1
+   },
+   {
+    "v": "318i Sport Line BVA",
+    "p0": 180200,
+    "p1": 177300,
+    "d0": "10.10.2018",
+    "net": -0.06358917215297644,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Mercedes-Benz",
+  "modele": "Mercedes-Benz Classe E",
+  "gen": {
+   "gen": "W213",
+   "y0": 2016,
+   "y1": null,
+   "info": "6e gén. · facelift 2020"
+  },
+  "genPrec": {
+   "gen": "W212",
+   "y0": 2009,
+   "y1": 2016,
+   "info": "5e gén. · facelift 2013"
+  },
+  "date": "22.11.2023",
+  "netMax": 0.12857170892915915,
+  "trouMax": 7,
+  "nees": 1,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "200 Avantgarde",
+    "imp": 0.2177224091288288
+   },
+   {
+    "v": "200 Exclusive",
+    "imp": 0.06055337936306793
+   }
+  ],
+  "impact": 0.2177224091288288,
+  "exemples": [
+   {
+    "v": "200 Avantgarde",
+    "p0": 162000,
+    "p1": 284000,
+    "d0": "04.08.2016",
+    "net": 0.12857170892915915,
+    "trou": 7
+   },
+   {
+    "v": "200 Exclusive",
+    "p0": 165000,
+    "p1": 289000,
+    "d0": "04.08.2016",
+    "net": 0.1275601849902981,
+    "trou": 7
+   }
+  ]
+ },
+ {
+  "marque": "Mercedes-Benz",
+  "modele": "Mercedes-Benz Classe C",
+  "gen": {
+   "gen": "W205",
+   "y0": 2014,
+   "y1": 2021,
+   "info": "4e gén. · MRA · allégé · facelift 2018"
+  },
+  "genPrec": {
+   "gen": "W204",
+   "y0": 2007,
+   "y1": 2014,
+   "info": "3e gén. · Kompressor/CGI · facelift 2011"
+  },
+  "date": "08.01.2018",
+  "netMax": 0,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "180 Business",
+    "imp": 0.06635079116038667
+   },
+   {
+    "v": "180 Exclusive",
+    "imp": 0.03550466630943516
+   },
+   {
+    "v": "180 Avantgarde",
+    "imp": 0.10876594478279822
+   },
+   {
+    "v": "180 AMG",
+    "imp": 0.07332911301746048
+   }
+  ],
+  "impact": 0.10876594478279822,
+  "exemples": [
+   {
+    "v": "160 Business Advanced BVA",
+    "p0": 119000,
+    "p1": 126000,
+    "d0": "22.08.2017",
+    "net": -0.1169326030007144,
+    "trou": 1
+   },
+   {
+    "v": "180 Exclusive",
+    "p0": 143000,
+    "p1": 146000,
+    "d0": "22.08.2017",
+    "net": -0.1484952294668893,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Peugeot",
+  "modele": "Peugeot 3008",
+  "gen": {
+   "gen": "II",
+   "y0": 2016,
+   "y1": null,
+   "info": "SUV · i-Cockpit · facelift 2020"
+  },
+  "genPrec": {
+   "gen": "I",
+   "y0": 2009,
+   "y1": 2016,
+   "info": "Monospace"
+  },
+  "date": "19.01.2018",
+  "netMax": 0.16859852476290826,
+  "trouMax": 0,
+  "nees": 0,
+  "mortes": 2,
+  "traversantes": [
+   {
+    "v": "1.6L THP S&S Active EAT6",
+    "imp": 0.16859852476290826
+   },
+   {
+    "v": "1.6 L THP S&S Allure EAT6",
+    "imp": 0.12490378352960052
+   }
+  ],
+  "impact": 0.16859852476290826,
+  "exemples": [
+   {
+    "v": "1.6L THP S&S Active EAT6",
+    "p0": 94900,
+    "p1": 110900,
+    "d0": "08.01.2018",
+    "net": 0.16859852476290826,
+    "trou": 0
+   },
+   {
+    "v": "1.6 L THP S&S Allure EAT6",
+    "p0": 103500,
+    "p1": 120900,
+    "d0": "08.01.2018",
+    "net": 0.1681159420289855,
+    "trou": 0
+   }
+  ]
+ },
+ {
+  "marque": "Land Rover",
+  "modele": "Land Rover Range Rover Evoque",
+  "gen": {
+   "gen": "L551",
+   "y0": 2019,
+   "y1": null,
+   "info": "2e gén. · MHEV"
+  },
+  "genPrec": {
+   "gen": "L538",
+   "y0": 2011,
+   "y1": 2019,
+   "info": "1ère gén."
+  },
+  "date": "15.04.2019",
+  "netMax": 0.16766920549808217,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "TD4 150 Pure BVA",
+    "imp": 0.06507897015356123
+   },
+   {
+    "v": "Si4 Pure BVA",
+    "imp": 0.16766920549808217
+   }
+  ],
+  "impact": 0.16766920549808217,
+  "exemples": [
+   {
+    "v": "TD4 150 Pure BVA",
+    "p0": 222500,
+    "p1": 249000,
+    "d0": "10.10.2018",
+    "net": 0.06507897015356123,
+    "trou": 1
+   },
+   {
+    "v": "Si4 Pure BVA",
+    "p0": 204500,
+    "p1": 250900,
+    "d0": "26.07.2018",
+    "net": 0.16766920549808217,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Seat",
+  "modele": "Seat Leon",
+  "gen": {
+   "gen": "KL",
+   "y0": 2020,
+   "y1": null,
+   "info": "4e gén. · MQB Evo"
+  },
+  "genPrec": {
+   "gen": "5F",
+   "y0": 2012,
+   "y1": 2020,
+   "info": "3e gén. · MQB"
+  },
+  "date": "29.03.2023",
+  "netMax": 0.008890630825997947,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "1.4 TSI Dynamic",
+    "imp": 0.12584264527544597
+   },
+   {
+    "v": "1.4 TSI Emotion",
+    "imp": 0.15001120990948746
+   }
+  ],
+  "impact": 0.15001120990948746,
+  "exemples": [
+   {
+    "v": "1.4 TSI Dynamic",
+    "p0": 93980,
+    "p1": 95980,
+    "d0": "27.05.2022",
+    "net": 0.0027570736107098703,
+    "trou": 1
+   },
+   {
+    "v": "1.4 TSI Xcellence",
+    "p0": 108980,
+    "p1": 111980,
+    "d0": "24.05.2022",
+    "net": 0.008890630825997947,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Opel",
+  "modele": "Opel Astra",
+  "gen": {
+   "gen": "L",
+   "y0": 2021,
+   "y1": null,
+   "info": "7e gén. · STLA"
+  },
+  "genPrec": {
+   "gen": "K",
+   "y0": 2015,
+   "y1": 2021,
+   "info": "6e gén. · PSA"
+  },
+  "date": "09.06.2023",
+  "netMax": 0.32445185897236084,
+  "trouMax": 1,
+  "nees": 1,
+  "mortes": 2,
+  "traversantes": [
+   {
+    "v": "1.2 L Elegance",
+    "imp": 0.2999022415678685
+   }
+  ],
+  "impact": 0.2999022415678685,
+  "exemples": [
+   {
+    "v": "1.2 L Elegance",
+    "p0": 79990,
+    "p1": 107900,
+    "d0": "10.03.2022",
+    "net": 0.32445185897236084,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Porsche",
+  "modele": "Porsche Cayenne",
+  "gen": {
+   "gen": "Mk3",
+   "y0": 2017,
+   "y1": null,
+   "info": "3e gén. · facelift 2022"
+  },
+  "genPrec": {
+   "gen": "Mk2",
+   "y0": 2010,
+   "y1": 2017,
+   "info": "2e gén."
+  },
+  "date": "17.04.2018",
+  "netMax": 0.08987061604926994,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "Diesel",
+    "imp": 0.08987061604927016
+   },
+   {
+    "v": "S",
+    "imp": 0.04353722502542823
+   },
+   {
+    "v": "GTS",
+    "imp": 0.046395252344909155
+   }
+  ],
+  "impact": 0.08987061604927016,
+  "exemples": [
+   {
+    "v": "3.0 l V6",
+    "p0": 335000,
+    "p1": 419000,
+    "d0": "02.10.2017",
+    "net": 0.043132515559852536,
+    "trou": 1
+   },
+   {
+    "v": "Diesel",
+    "p0": 378000,
+    "p1": 480000,
+    "d0": "22.08.2017",
+    "net": 0.08987061604926994,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Mercedes-Benz",
+  "modele": "Mercedes-Benz CLA",
+  "gen": {
+   "gen": "C118",
+   "y0": 2019,
+   "y1": null,
+   "info": "2e gén. · MBUX"
+  },
+  "genPrec": {
+   "gen": "C117",
+   "y0": 2013,
+   "y1": 2019,
+   "info": "1ère gén."
+  },
+  "date": "25.11.2020",
+  "netMax": 0.027400703187025144,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 3,
+  "traversantes": [
+   {
+    "v": "180 Progressive",
+    "imp": 0.11354001383292012
+   },
+   {
+    "v": "180 AMG",
+    "imp": 0.09596799366777997
+   }
+  ],
+  "impact": 0.11354001383292012,
+  "exemples": [
+   {
+    "v": "180 Progressive",
+    "p0": 150000,
+    "p1": 152000,
+    "d0": "16.12.2019",
+    "net": 0.027400703187025144,
+    "trou": 1
+   },
+   {
+    "v": "180 AMG",
+    "p0": 163000,
+    "p1": 165000,
+    "d0": "16.12.2019",
+    "net": 0.026322546168827454,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Dacia",
+  "modele": "Dacia Duster",
+  "gen": {
+   "gen": "II",
+   "y0": 2017,
+   "y1": 2023,
+   "info": "2e gén."
+  },
+  "genPrec": {
+   "gen": "I",
+   "y0": 2010,
+   "y1": 2017,
+   "info": "1ère gén."
+  },
+  "date": "08.01.2018",
+  "netMax": 0,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 1,
+  "traversantes": [
+   {
+    "v": "1.6 L 4x2 Laureate",
+    "imp": 0.043553675132622205
+   },
+   {
+    "v": "1.5 L dci 4x2 Laureate",
+    "imp": 0.11032498667625701
+   }
+  ],
+  "impact": 0.11032498667625701,
+  "exemples": [
+   {
+    "v": "1.6 L 4x2 Laureate",
+    "p0": 49950,
+    "p1": 56500,
+    "d0": "02.10.2017",
+    "net": -0.05662747768010912,
+    "trou": 1
+   },
+   {
+    "v": "1.5 L dci 4x2 Laureate",
+    "p0": 52950,
+    "p1": 59500,
+    "d0": "02.10.2017",
+    "net": -0.03555712836149938,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Ssangyong",
+  "modele": "Ssangyong Tivoli",
+  "gen": {
+   "gen": "Mk2",
+   "y0": 2019,
+   "y1": null,
+   "info": "2e gén. · Armada"
+  },
+  "genPrec": {
+   "gen": "Mk1",
+   "y0": 2015,
+   "y1": 2019,
+   "info": "1ère gén."
+  },
+  "date": "12.01.2022",
+  "netMax": 0,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 5,
+  "traversantes": [
+   {
+    "v": "1.2 T Classy",
+    "imp": 0.10955968497787039
+   },
+   {
+    "v": "1.2 T Classy Secure",
+    "imp": 0.08826100218535782
+   }
+  ],
+  "impact": 0.10955968497787039,
+  "exemples": [
+   {
+    "v": "1.2 T Classy",
+    "p0": 66800,
+    "p1": 69900,
+    "d0": "31.07.2021",
+    "net": -0.02809245639156477,
+    "trou": 1
+   },
+   {
+    "v": "1.2 T Classy Secure",
+    "p0": 71900,
+    "p1": 74900,
+    "d0": "17.05.2021",
+    "net": -0.03244164600592614,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Mercedes-Benz",
+  "modele": "Mercedes-Benz GLE",
+  "gen": {
+   "gen": "V167",
+   "y0": 2019,
+   "y1": null,
+   "info": "2e gén. · 48V"
+  },
+  "genPrec": {
+   "gen": "W166",
+   "y0": 2015,
+   "y1": 2019,
+   "info": "1ère gén. GLE"
+  },
+  "date": "03.02.2025",
+  "netMax": 0.20914961730009352,
+  "trouMax": 2,
+  "nees": 0,
+  "mortes": 1,
+  "traversantes": [
+   {
+    "v": "300d 4Matic AMG",
+    "imp": 0.20914961730009374
+   }
+  ],
+  "impact": 0.20914961730009374,
+  "exemples": [
+   {
+    "v": "300d 4Matic AMG",
+    "p0": 468000,
+    "p1": 592000,
+    "d0": "04.09.2023",
+    "net": 0.20914961730009352,
+    "trou": 2
+   }
+  ]
+ },
+ {
+  "marque": "BMW",
+  "modele": "BMW X1",
+  "gen": {
+   "gen": "F48",
+   "y0": 2015,
+   "y1": 2022,
+   "info": "2e gén. · UKL2"
+  },
+  "genPrec": {
+   "gen": "E84",
+   "y0": 2009,
+   "y1": 2015,
+   "info": "1ère gén."
+  },
+  "date": "08.06.2018",
+  "netMax": 0.12689943945431215,
+  "trouMax": 2,
+  "nees": 0,
+  "mortes": 4,
+  "traversantes": [
+   {
+    "v": "18i Business Line",
+    "imp": 0.20266794570280844
+   }
+  ],
+  "impact": 0.20266794570280844,
+  "exemples": [
+   {
+    "v": "18i xLine BVA",
+    "p0": 124000,
+    "p1": 163800,
+    "d0": "25.11.2016",
+    "net": 0.00034565001101150017,
+    "trou": 2
+   },
+   {
+    "v": "18i Business Line",
+    "p0": 113900,
+    "p1": 153900,
+    "d0": "12.05.2017",
+    "net": 0.12689943945431215,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Fiat",
+  "modele": "Fiat 500",
+  "gen": {
+   "gen": "Mk4",
+   "y0": 2020,
+   "y1": null,
+   "info": "Électrique"
+  },
+  "genPrec": {
+   "gen": "Mk3",
+   "y0": 2007,
+   "y1": 2019,
+   "info": "Classique"
+  },
+  "date": "25.06.2020",
+  "netMax": 0.05730183136999112,
+  "trouMax": 6,
+  "nees": 0,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "1.2 L BVA",
+    "imp": 0.1914489869696152
+   }
+  ],
+  "impact": 0.1914489869696152,
+  "exemples": [
+   {
+    "v": "1.2 L Dolcevita",
+    "p0": 41900,
+    "p1": 52500,
+    "d0": "02.10.2017",
+    "net": 0.008359873705261478,
+    "trou": 3
+   },
+   {
+    "v": "1.2 L BVA",
+    "p0": 34900,
+    "p1": 54500,
+    "d0": "01.07.2014",
+    "net": 0.05730183136999112,
+    "trou": 6
+   }
+  ]
+ },
+ {
+  "marque": "Audi",
+  "modele": "Audi A4",
+  "gen": {
+   "gen": "B9",
+   "y0": 2015,
+   "y1": null,
+   "info": "B9 · MLB Evo · 48V"
+  },
+  "genPrec": {
+   "gen": "B8",
+   "y0": 2007,
+   "y1": 2015,
+   "info": "B8 · TFSI"
+  },
+  "date": "12.05.2017",
+  "netMax": 0,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 2,
+  "traversantes": [
+   {
+    "v": "1.4 L TFSI Design",
+    "imp": 0.04195441871908123
+   },
+   {
+    "v": "1.4 L TFSI Design Plus",
+    "imp": 0.03863453612023693
+   },
+   {
+    "v": "35 TFSI Design Luxe S-tronic",
+    "imp": 0.0623262423503248
+   }
+  ],
+  "impact": 0.0623262423503248,
+  "exemples": [
+   {
+    "v": "1.4 L TFSI Design",
+    "p0": 91990,
+    "p1": 89990,
+    "d0": "04.08.2016",
+    "net": -0.11173767637836718,
+    "trou": 1
+   },
+   {
+    "v": "1.4 L TFSI Design Plus",
+    "p0": 98490,
+    "p1": 99990,
+    "d0": "23.12.2016",
+    "net": -0.07816744899500394,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Mazda",
+  "modele": "Mazda 3",
+  "gen": {
+   "gen": "BP",
+   "y0": 2018,
+   "y1": null,
+   "info": "4e gén. · SKYACTIV-X"
+  },
+  "genPrec": {
+   "gen": "BM",
+   "y0": 2013,
+   "y1": 2018,
+   "info": "3e gén."
+  },
+  "date": "16.01.2019",
+  "netMax": 0.03713860689059967,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "1.5 L Skyactiv-G Core+ Grade",
+    "imp": 0.17813522795807968
+   }
+  ],
+  "impact": 0.17813522795807968,
+  "exemples": [
+   {
+    "v": "1.5 L Skyactiv-G High Grade",
+    "p0": 79500,
+    "p1": 85700,
+    "d0": "28.11.2018",
+    "net": 0.02594994178629717,
+    "trou": 1
+   },
+   {
+    "v": "1.5 L Skyactiv-G Core+ Grade",
+    "p0": 70200,
+    "p1": 76500,
+    "d0": "28.11.2018",
+    "net": 0.03713860689059967,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "BMW",
+  "modele": "BMW Série 1",
+  "gen": {
+   "gen": "F20",
+   "y0": 2011,
+   "y1": 2019,
+   "info": "2e gén. · propulsion · facelift 2015"
+  },
+  "genPrec": {
+   "gen": "E87",
+   "y0": 2004,
+   "y1": 2011,
+   "info": "1ère gén. · propulsion"
+  },
+  "date": "28.03.2013",
+  "netMax": 0,
+  "trouMax": 1,
+  "nees": 4,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "116i Urban Line",
+    "imp": 0.04195747209783751
+   },
+   {
+    "v": "116i Sport Line BVA",
+    "imp": 0.0682325074837673
+   }
+  ],
+  "impact": 0.0682325074837673,
+  "exemples": [
+   {
+    "v": "116i Access",
+    "p0": 61300,
+    "p1": 63700,
+    "d0": "11.05.2012",
+    "net": -0.030161496361372775,
+    "trou": 1
+   },
+   {
+    "v": "116i Access Ecran",
+    "p0": 62400,
+    "p1": 64900,
+    "d0": "11.05.2012",
+    "net": -0.02930996464778668,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Volkswagen",
+  "modele": "Volkswagen Passat",
+  "gen": {
+   "gen": "B8",
+   "y0": 2014,
+   "y1": null,
+   "info": "B8 · MQB"
+  },
+  "genPrec": {
+   "gen": "B7",
+   "y0": 2010,
+   "y1": 2014,
+   "info": "B7"
+  },
+  "date": "08.02.2017",
+  "netMax": 0,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "1.4 l TSI Trendline",
+    "imp": 0.06717368184562522
+   },
+   {
+    "v": "1.4 l TSI Design",
+    "imp": 0.041342234727658855
+   }
+  ],
+  "impact": 0.06717368184562522,
+  "exemples": [
+   {
+    "v": "1.4 l TSI Trendline",
+    "p0": 65980,
+    "p1": 66980,
+    "d0": "04.08.2016",
+    "net": -0.07823451839131645,
+    "trou": 1
+   },
+   {
+    "v": "1.4 l TSI Confortline DSG",
+    "p0": 92980,
+    "p1": 94980,
+    "d0": "04.08.2016",
+    "net": -0.07246515904044426,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "BMW",
+  "modele": "BMW Série 1",
+  "gen": {
+   "gen": "F40",
+   "y0": 2019,
+   "y1": null,
+   "info": "3e gén. · traction UKL2"
+  },
+  "genPrec": {
+   "gen": "F20",
+   "y0": 2011,
+   "y1": 2019,
+   "info": "2e gén. · propulsion · facelift 2015"
+  },
+  "date": "08.02.2023",
+  "netMax": 0.024729101751602034,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 5,
+  "traversantes": [
+   {
+    "v": "118i Lounge",
+    "imp": 0.12335585845754005
+   }
+  ],
+  "impact": 0.12335585845754005,
+  "exemples": [
+   {
+    "v": "116i Lounge",
+    "p0": 144300,
+    "p1": 150600,
+    "d0": "13.03.2022",
+    "net": 0.024729101751602034,
+    "trou": 1
+   },
+   {
+    "v": "116i Pack M",
+    "p0": 165100,
+    "p1": 168200,
+    "d0": "16.08.2022",
+    "net": 0.0002978780689713023,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Mazda",
+  "modele": "Mazda CX-5",
+  "gen": {
+   "gen": "KF",
+   "y0": 2016,
+   "y1": null,
+   "info": "2e gén. · KODO2"
+  },
+  "genPrec": {
+   "gen": "KE",
+   "y0": 2012,
+   "y1": 2016,
+   "info": "1ère gén."
+  },
+  "date": "16.01.2019",
+  "netMax": 0.060691954803878456,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 1,
+  "traversantes": [
+   {
+    "v": "2 L Skyactiv Core Plus Grade",
+    "imp": 0.060691954803878456
+   },
+   {
+    "v": "2 L Skyactiv High Grade",
+    "imp": 0.042118137850940096
+   }
+  ],
+  "impact": 0.060691954803878456,
+  "exemples": [
+   {
+    "v": "2 L Skyactiv Core Plus Grade",
+    "p0": 124900,
+    "p1": 139200,
+    "d0": "07.09.2018",
+    "net": 0.060691954803878456,
+    "trou": 1
+   },
+   {
+    "v": "2 L Skyactiv High Grade",
+    "p0": 154250,
+    "p1": 168900,
+    "d0": "28.11.2018",
+    "net": 0.042118137850940096,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Seat",
+  "modele": "Seat Leon",
+  "gen": {
+   "gen": "5F",
+   "y0": 2012,
+   "y1": 2020,
+   "info": "3e gén. · MQB"
+  },
+  "genPrec": {
+   "gen": "1P",
+   "y0": 2005,
+   "y1": 2012,
+   "info": "2e gén."
+  },
+  "date": "18.01.2014",
+  "netMax": 0.00546329947308033,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 3,
+  "traversantes": [
+   {
+    "v": "1.2 TSI Style",
+    "imp": 0.11089886904644741
+   }
+  ],
+  "impact": 0.11089886904644741,
+  "exemples": [
+   {
+    "v": "1.2 TSI Référence",
+    "p0": 39980,
+    "p1": 41780,
+    "d0": "25.05.2013",
+    "net": 0.00546329947308033,
+    "trou": 1
+   },
+   {
+    "v": "1.2 TSI Style",
+    "p0": 43980,
+    "p1": 45780,
+    "d0": "08.08.2013",
+    "net": 0.0015234914637138885,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Toyota",
+  "modele": "Toyota C-HR",
+  "gen": {
+   "gen": "Mk2",
+   "y0": 2023,
+   "y1": null,
+   "info": "2e gén."
+  },
+  "genPrec": {
+   "gen": "Mk1",
+   "y0": 2016,
+   "y1": 2023,
+   "info": "1ère gén."
+  },
+  "date": "22.05.2023",
+  "netMax": 0.0029999878793802726,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "1.2 L BVM",
+    "imp": 0.054788185356819286
+   },
+   {
+    "v": "1.2 L BVA",
+    "imp": 0.03353889272912691
+   }
+  ],
+  "impact": 0.054788185356819286,
+  "exemples": [
+   {
+    "v": "1.2 L BVM",
+    "p0": 92900,
+    "p1": 94900,
+    "d0": "17.11.2022",
+    "net": 0.0029999878793802726,
+    "trou": 1
+   },
+   {
+    "v": "1.2 L BVA",
+    "p0": 96900,
+    "p1": 98900,
+    "d0": "17.11.2022",
+    "net": 0.002127416577555552,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "BMW",
+  "modele": "BMW X1",
+  "gen": {
+   "gen": "U11",
+   "y0": 2022,
+   "y1": null,
+   "info": "3e gén. · FAAR"
+  },
+  "genPrec": {
+   "gen": "F48",
+   "y0": 2015,
+   "y1": 2022,
+   "info": "2e gén. · UKL2"
+  },
+  "date": "10.09.2025",
+  "netMax": 0.05823186871360497,
+  "trouMax": 1,
+  "nees": 1,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "18i sDrive xLine",
+    "imp": 0.05142589995324909
+   },
+   {
+    "v": "18i sDrive Pack Sport M",
+    "imp": 0.05025125628140703
+   }
+  ],
+  "impact": 0.05142589995324909,
+  "exemples": [
+   {
+    "v": "18i sDrive Lounge",
+    "p0": 188900,
+    "p1": 199900,
+    "d0": "18.01.2024",
+    "net": 0.05823186871360497,
+    "trou": 1
+   },
+   {
+    "v": "18i sDrive xLine",
+    "p0": 213900,
+    "p1": 224900,
+    "d0": "18.01.2024",
+    "net": 0.05142589995324909,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "KIA",
+  "modele": "KIA Sorento",
+  "gen": {
+   "gen": "UM",
+   "y0": 2014,
+   "y1": 2020,
+   "info": "3e gén."
+  },
+  "genPrec": {
+   "gen": "XM",
+   "y0": 2009,
+   "y1": 2014,
+   "info": "2e gén."
+  },
+  "date": "31.03.2015",
+  "netMax": 0.17798624343947633,
+  "trouMax": 2,
+  "nees": 0,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "2.2 L BVA",
+    "imp": 0.10156967035003972
+   }
+  ],
+  "impact": 0.10156967035003972,
+  "exemples": [
+   {
+    "v": "2.2 L BVA",
+    "p0": 94980,
+    "p1": 119980,
+    "d0": "06.04.2013",
+    "net": 0.17798624343947633,
+    "trou": 2
+   }
+  ]
+ },
+ {
+  "marque": "Honda",
+  "modele": "Honda Civic",
+  "gen": {
+   "gen": "FC",
+   "y0": 2016,
+   "y1": 2021,
+   "info": "10e gén. · VTEC Turbo"
+  },
+  "genPrec": {
+   "gen": "FB",
+   "y0": 2011,
+   "y1": 2016,
+   "info": "9e gén."
+  },
+  "date": "10.10.2018",
+  "netMax": 0.1325910931174088,
+  "trouMax": 0,
+  "nees": 0,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "1.5 l Turbo RS BVA",
+    "imp": 0.09435163917696365
+   }
+  ],
+  "impact": 0.09435163917696365,
+  "exemples": [
+   {
+    "v": "1.5 l Turbo RS BVA",
+    "p0": 98800,
+    "p1": 111900,
+    "d0": "06.03.2018",
+    "net": 0.1325910931174088,
+    "trou": 0
+   }
+  ]
+ },
+ {
+  "marque": "Land Rover",
+  "modele": "Land Rover Discovery Sport",
+  "gen": {
+   "gen": "L550 FL",
+   "y0": 2019,
+   "y1": null,
+   "info": "Facelift · MHEV"
+  },
+  "genPrec": {
+   "gen": "L550",
+   "y0": 2014,
+   "y1": 2019,
+   "info": "1ère gén."
+  },
+  "date": "08.01.2019",
+  "netMax": 0.006243604186194407,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 1,
+  "traversantes": [
+   {
+    "v": "2 L TD4 150 Pure",
+    "imp": 0.08940423263133446
+   }
+  ],
+  "impact": 0.08940423263133446,
+  "exemples": [
+   {
+    "v": "2 L SI4 Pure",
+    "p0": 214900,
+    "p1": 225800,
+    "d0": "10.10.2018",
+    "net": 0,
+    "trou": 1
+   },
+   {
+    "v": "2 L TD4 150 Pure",
+    "p0": 206000,
+    "p1": 217800,
+    "d0": "10.10.2018",
+    "net": 0.006243604186194407,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Toyota",
+  "modele": "Toyota Corolla Sedan",
+  "gen": {
+   "gen": "E210",
+   "y0": 2018,
+   "y1": null,
+   "info": "12e gén. · TNGA"
+  },
+  "genPrec": {
+   "gen": "E170",
+   "y0": 2013,
+   "y1": 2018,
+   "info": "11e gén."
+  },
+  "date": "10.11.2021",
+  "netMax": 0.1939769969088212,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "1.6 L Active",
+    "imp": 0.0868767128976895
+   }
+  ],
+  "impact": 0.0868767128976895,
+  "exemples": [
+   {
+    "v": "1.6 L Active",
+    "p0": 89000,
+    "p1": 110000,
+    "d0": "02.03.2020",
+    "net": 0.1939769969088212,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Skoda",
+  "modele": "Skoda Kodiaq",
+  "gen": {
+   "gen": "Mk2",
+   "y0": 2023,
+   "y1": null,
+   "info": "2e gén. · MQB Evo"
+  },
+  "genPrec": {
+   "gen": "NS",
+   "y0": 2016,
+   "y1": 2023,
+   "info": "1ère gén. · MQB"
+  },
+  "date": "12.01.2023",
+  "netMax": 0.04562749868967475,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 2,
+  "traversantes": [
+   {
+    "v": "1.4 l TSI Ambition 7 places DSG",
+    "imp": 0.04323599160390135
+   },
+   {
+    "v": "1.4 l TSI Style 7 places DSG",
+    "imp": 0.036415895647547325
+   }
+  ],
+  "impact": 0.04323599160390135,
+  "exemples": [
+   {
+    "v": "1.4 l TSI Ambition 5 places DSG",
+    "p0": 153980,
+    "p1": 163980,
+    "d0": "01.03.2022",
+    "net": 0.04562749868967475,
+    "trou": 1
+   },
+   {
+    "v": "1.4 l TSI Ambition 7 places DSG",
+    "p0": 159980,
+    "p1": 169980,
+    "d0": "27.10.2022",
+    "net": 0.04323599160390135,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "BMW",
+  "modele": "BMW X3",
+  "gen": {
+   "gen": "G01",
+   "y0": 2017,
+   "y1": null,
+   "info": "3e gén. · CLAR"
+  },
+  "genPrec": {
+   "gen": "F25",
+   "y0": 2010,
+   "y1": 2017,
+   "info": "2e gén."
+  },
+  "date": "08.01.2019",
+  "netMax": 0.029425680072983962,
+  "trouMax": 1,
+  "nees": 1,
+  "mortes": 1,
+  "traversantes": [
+   {
+    "v": "20i Luxury Line",
+    "imp": 0.08519501322537404
+   }
+  ],
+  "impact": 0.08519501322537404,
+  "exemples": [
+   {
+    "v": "20i Business Line",
+    "p0": 264200,
+    "p1": 271500,
+    "d0": "10.10.2018",
+    "net": -0.021976030719943473,
+    "trou": 1
+   },
+   {
+    "v": "20i xLine",
+    "p0": 299600,
+    "p1": 293200,
+    "d0": "10.10.2018",
+    "net": -0.06860342872279668,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "BMW",
+  "modele": "BMW Série 7",
+  "gen": {
+   "gen": "G11",
+   "y0": 2015,
+   "y1": 2022,
+   "info": "6e gén."
+  },
+  "genPrec": {
+   "gen": "F01",
+   "y0": 2008,
+   "y1": 2015,
+   "info": "5e gén."
+  },
+  "date": "12.05.2017",
+  "netMax": 0,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 1,
+  "traversantes": [
+   {
+    "v": "730Li Pure Excellence BVA",
+    "imp": 0.07764038110683158
+   }
+  ],
+  "impact": 0.07764038110683158,
+  "exemples": [
+   {
+    "v": "730i Pure Excellence BVA",
+    "p0": 429400,
+    "p1": 425400,
+    "d0": "23.12.2016",
+    "net": -0.10045466835262318,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Dacia",
+  "modele": "Dacia Sandero",
+  "gen": {
+   "gen": "III",
+   "y0": 2020,
+   "y1": null,
+   "info": "3e gén. · CMF-B"
+  },
+  "genPrec": {
+   "gen": "II",
+   "y0": 2012,
+   "y1": 2020,
+   "info": "2e gén."
+  },
+  "date": "31.01.2023",
+  "netMax": 0.01969005714100014,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 1,
+  "traversantes": [
+   {
+    "v": "1.0 L TCE",
+    "imp": 0.07172875512405374
+   }
+  ],
+  "impact": 0.07172875512405374,
+  "exemples": [
+   {
+    "v": "1.0 L TCE",
+    "p0": 52950,
+    "p1": 54990,
+    "d0": "12.09.2022",
+    "net": 0.01969005714100014,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Mini",
+  "modele": "Mini Countryman",
+  "gen": {
+   "gen": "U25",
+   "y0": 2023,
+   "y1": null,
+   "info": "3e gén. · électrique"
+  },
+  "genPrec": {
+   "gen": "F60",
+   "y0": 2016,
+   "y1": 2023,
+   "info": "2e gén. · PHEV"
+  },
+  "date": "09.04.2026",
+  "netMax": 0,
+  "trouMax": 2,
+  "nees": 0,
+  "mortes": 1,
+  "traversantes": [
+   {
+    "v": "1.5 L Classic BVA",
+    "imp": 0.06855345911949695
+   }
+  ],
+  "impact": 0.06855345911949695,
+  "exemples": [
+   {
+    "v": "1.5 L Classic BVA",
+    "p0": 159000,
+    "p1": 149900,
+    "d0": "12.08.2024",
+    "net": -0.05723270440251571,
+    "trou": 2
+   },
+   {
+    "v": "1.5 L Favoured BVA",
+    "p0": 199900,
+    "p1": 179900,
+    "d0": "09.10.2025",
+    "net": -0.10005002501250626,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Skoda",
+  "modele": "Skoda Fabia",
+  "gen": {
+   "gen": "Mk4",
+   "y0": 2021,
+   "y1": null,
+   "info": "4e gén. · MQB A0 Evo"
+  },
+  "genPrec": {
+   "gen": "Mk3",
+   "y0": 2014,
+   "y1": 2021,
+   "info": "3e gén."
+  },
+  "date": "03.01.2025",
+  "netMax": 0.06668283220174587,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 1,
+  "traversantes": [
+   {
+    "v": "1.0 L MPI Monte Carlo",
+    "imp": 0.06668283220174587
+   }
+  ],
+  "impact": 0.06668283220174587,
+  "exemples": [
+   {
+    "v": "1.0 L MPI Essence",
+    "p0": 66980,
+    "p1": 68980,
+    "d0": "07.02.2024",
+    "net": 0.029859659599880573,
+    "trou": 1
+   },
+   {
+    "v": "1.0 L MPI Selection",
+    "p0": 71480,
+    "p1": 74980,
+    "d0": "07.02.2024",
+    "net": 0.04896474538332396,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Audi",
+  "modele": "Audi Q7",
+  "gen": {
+   "gen": "4M",
+   "y0": 2015,
+   "y1": null,
+   "info": "2e gén. · MLB Evo"
+  },
+  "genPrec": {
+   "gen": "4L",
+   "y0": 2005,
+   "y1": 2015,
+   "info": "1ère gén."
+  },
+  "date": "19.01.2018",
+  "netMax": 0.02413307223216532,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 0,
+  "traversantes": [
+   {
+    "v": "3.0 l V6 TDI Quattro BVA",
+    "imp": 0.06185840882444671
+   }
+  ],
+  "impact": 0.06185840882444671,
+  "exemples": [
+   {
+    "v": "2.0 l TFSI Quattro BVA",
+    "p0": 294990,
+    "p1": 338990,
+    "d0": "22.08.2017",
+    "net": -0.04159325787891244,
+    "trou": 1
+   },
+   {
+    "v": "3.0 l V6 TDI Quattro BVA",
+    "p0": 369990,
+    "p1": 441490,
+    "d0": "22.08.2017",
+    "net": 0.02413307223216532,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Citroën",
+  "modele": "Citroën C3",
+  "gen": {
+   "gen": "III",
+   "y0": 2016,
+   "y1": null,
+   "info": "3e gén. · CMP"
+  },
+  "genPrec": {
+   "gen": "II",
+   "y0": 2009,
+   "y1": 2016,
+   "info": "2e gén."
+  },
+  "date": "28.01.2019",
+  "netMax": 0.18445210980474092,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 3,
+  "traversantes": [
+   {
+    "v": "1.2 L Puretech 110 Live EAT6",
+    "imp": 0.048620445836307535
+   }
+  ],
+  "impact": 0.048620445836307535,
+  "exemples": [
+   {
+    "v": "1.2 L Puretech Live",
+    "p0": 44500,
+    "p1": 49750,
+    "d0": "06.03.2018",
+    "net": 0.06400961375782477,
+    "trou": 1
+   },
+   {
+    "v": "1.2 L Puretech 110 Live EAT6",
+    "p0": 52550,
+    "p1": 65400,
+    "d0": "06.03.2018",
+    "net": 0.18445210980474092,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Hyundai",
+  "modele": "Hyundai Tucson",
+  "gen": {
+   "gen": "NX4",
+   "y0": 2020,
+   "y1": null,
+   "info": "4e gén. · PHEV"
+  },
+  "genPrec": {
+   "gen": "TL",
+   "y0": 2015,
+   "y1": 2020,
+   "info": "2e gén."
+  },
+  "date": "04.01.2022",
+  "netMax": 0,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 2,
+  "traversantes": [
+   {
+    "v": "1.6 l T-GDI 7-DCT 4WD High Grade",
+    "imp": 0.048264714105969775
+   }
+  ],
+  "impact": 0.048264714105969775,
+  "exemples": [
+   {
+    "v": "1.6 l T-GDI 7-DCT 4WD High Grade",
+    "p0": 139950,
+    "p1": 145000,
+    "d0": "02.08.2021",
+    "net": -0.03768038274539043,
+    "trou": 1
+   },
+   {
+    "v": "1.6 l T-GDI 7-DCT 4WD Top Grade",
+    "p0": 159950,
+    "p1": 165000,
+    "d0": "02.08.2021",
+    "net": -0.04187110102341762,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "Peugeot",
+  "modele": "Peugeot 508",
+  "gen": {
+   "gen": "II",
+   "y0": 2018,
+   "y1": null,
+   "info": "2e gén. · fastback · PHEV"
+  },
+  "genPrec": {
+   "gen": "I",
+   "y0": 2011,
+   "y1": 2018,
+   "info": "1ère gén."
+  },
+  "date": "08.01.2018",
+  "netMax": 0.03747299027767048,
+  "trouMax": 1,
+  "nees": 1,
+  "mortes": 9,
+  "traversantes": [
+   {
+    "v": "1.6 L HDI 115 ch BVM",
+    "imp": 0.03747299027767048
+   }
+  ],
+  "impact": 0.03747299027767048,
+  "exemples": [
+   {
+    "v": "1.6 L THP 165 ch BVA",
+    "p0": 79900,
+    "p1": 96600,
+    "d0": "08.02.2017",
+    "net": 0.008325183807694758,
+    "trou": 1
+   },
+   {
+    "v": "1.6 L THP 165 ch Blanc Nacré BVA",
+    "p0": 80600,
+    "p1": 97500,
+    "d0": "08.02.2017",
+    "net": 0.00888076270079674,
+    "trou": 1
+   }
+  ]
+ },
+ {
+  "marque": "BMW",
+  "modele": "BMW Série 5",
+  "gen": {
+   "gen": "G30",
+   "y0": 2017,
+   "y1": null,
+   "info": "7e gén. · CLAR · 48V"
+  },
+  "genPrec": {
+   "gen": "F10",
+   "y0": 2010,
+   "y1": 2017,
+   "info": "6e gén. · facelift 2013"
+  },
+  "date": "08.01.2019",
+  "netMax": 0,
+  "trouMax": 1,
+  "nees": 0,
+  "mortes": 4,
+  "traversantes": [
+   {
+    "v": "520i Business Line BVA",
+    "imp": 0.03402917021478191
+   }
+  ],
+  "impact": 0.03402917021478191,
+  "exemples": [
+   {
+    "v": "520i Business Line BVA",
+    "p0": 208100,
+    "p1": 214500,
+    "d0": "10.10.2018",
+    "net": -0.019002966227400497,
+    "trou": 1
+   },
+   {
+    "v": "520d Luxury Line BVA",
+    "p0": 285500,
+    "p1": 245600,
+    "d0": "10.10.2018",
+    "net": -0.18128126653005705,
+    "trou": 1
+   }
+  ]
+ }
+]

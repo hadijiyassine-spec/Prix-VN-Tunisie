@@ -614,23 +614,6 @@
   ]
  },
  {
-  "modele": "Opel · Opel Astra",
-  "finitions": 1,
-  "impact": 0.2999022415678685,
-  "millesimes": 2,
-  "saut": {
-   "de": "10.03.2022",
-   "p0": 79990,
-   "a": "09.06.2023",
-   "p1": 107900,
-   "net": 0.32445185897236084,
-   "trou": 1
-  },
-  "detail": [
-   "1.2 L Elegance"
-  ]
- },
- {
   "modele": "Ssangyong · Ssangyong Rodius",
   "finitions": 2,
   "impact": 0.178470254957507,
@@ -1295,24 +1278,6 @@
   ]
  },
  {
-  "modele": "Mercedes-Benz · Mercedes-Benz Classe E",
-  "finitions": 2,
-  "impact": 0.2177224091288288,
-  "millesimes": 1,
-  "saut": {
-   "de": "04.08.2016",
-   "p0": 162000,
-   "a": "22.11.2023",
-   "p1": 284000,
-   "net": 0.12857170892915915,
-   "trou": 7
-  },
-  "detail": [
-   "200 Avantgarde",
-   "200 Exclusive"
-  ]
- },
- {
   "modele": "Dacia · Dacia Logan MCV",
   "finitions": 1,
   "impact": 0.09173001714515228,
@@ -1639,23 +1604,6 @@
   },
   "detail": [
    "300d 4Matic AMG"
-  ]
- },
- {
-  "modele": "KIA · KIA Sorento",
-  "finitions": 1,
-  "impact": 0.10156967035003972,
-  "millesimes": 2,
-  "saut": {
-   "de": "06.04.2013",
-   "p0": 94980,
-   "a": "31.03.2015",
-   "p1": 119980,
-   "net": 0.17798624343947633,
-   "trou": 2
-  },
-  "detail": [
-   "2.2 L BVA"
   ]
  },
  {

@@ -211,6 +211,50 @@ L'écart entre la dernière tarification de la W176 (08.01.2018) et la première
 au lieu de 185 398. Dès qu'un mois postérieur à janvier est saisi, la génération entrante est
 retenue. Pour ce modèle plus que pour d'autres, **le mois de MEC vaut 20 % de valeur**.
 
+---
+
+## 5 bis. Le croisement avec les générations connues, et ce qu'il vaut
+
+`window.GENS`, dans `data.js`, porte les générations de **117 modèles** et **223 générations**, avec
+leurs années de production mondiales — la même matière que donnerait Wikipédia. `audit_gens.js` les
+croise avec les séries tarifaires : pour chaque génération mondiale commençant l'année Y, il cherche
+une cassure dans la fenêtre Y à Y+4 (le délai d'importation), et ne retient que les modèles dont une
+**étiquette de finition traverse** la cassure.
+
+**42 propositions**, et c'est là qu'il faut être prudent : **une génération mondiale dit qu'une
+rupture existe, jamais qu'un saut de tarif tunisien EST cette rupture.** Vérification faite, la
+moitié sont des faux positifs :
+
+| proposition | ce que la vérification a montré |
+|---|---|
+| Land Rover Defender 110 « 3.0 L P400 S », +48 % | le **P400 n'existe que sur le L663** : les deux tarifs sont la même génération |
+| Mercedes GLE « 300d 4Matic AMG », +26 % | deux fois le V167 |
+| BMW X1 « 18i Business Line », +35 % | un X1 de 2017 est **déjà** un F48 |
+| Peugeot 3008, +17 % | le 3008 II était au catalogue dès mai 2017 ; le saut est celui du 19.01.2018, loi de finances |
+| Toyota Corolla Sedan, +24 % | la E210 était déjà là en 2019 |
+| Range Rover Evoque | série continue de 2011 à 2019 ; le Si4 appartient au L538 |
+
+**Trois ont résisté** et sont déclarées :
+
+| modèle | frontière | ce qui l'établit |
+|---|---|---|
+| **Mercedes-Benz Classe E** | **22.11.2023** | W214 présentée le **25 avril 2023** (Wikipédia), en remplacement de la W213 de 2016. Les finitions « 200 Avantgarde » et « 200 Exclusive » tiennent 162 000 et 165 000 DT depuis le 04.08.2016, puis reprennent à 284 000 et 289 000 DT le 22.11.2023 : **sept ans de silence et +75 %**, sept mois après la première mondiale. GENS ne connaissait que la rupture W212 → W213 — la table est incomplète. |
+| **Opel Astra** | **09.06.2023** | Astra L présentée le **13 juillet 2021** (Wikipédia), vendue en Europe à partir de 2022. La Tunisienne de décembre 2021 à 76 990 DT est donc encore une **Astra K** — STAFIM venait de ramener Opel en juin 2021. « 1.2 L Elegance » passe de 79 990 à 107 900 DT le 09.06.2023, +32 % net, une finition naît ce jour-là et deux s'éteignent. |
+| **KIA Sorento** | **31.03.2015** | UM lancée dans le monde en 2014 ; « 2.2 L BVA » passe de 94 980 à 119 980 DT le 31.03.2015, +26 % net. **La moins documentée des trois** : la date mondiale et le saut concordent, mais aucune annonce tunisienne datée n'a été retrouvée. |
+
+### Ce que cet exercice apprend sur la méthode
+
+Le croisement automatique **ne peut pas conclure seul**. Sur 42 propositions issues d'une source
+pourtant fiable, la moitié tombent dès qu'on regarde quelle motorisation porte quelle génération.
+Les trois questions qui tranchent, à chaque fois :
+
+1. **la motorisation du libellé appartient-elle aux deux générations ?** Un `P400` ou un `Si4` ne se
+   trouve que sur une seule : la série ne traverse rien ;
+2. **la génération entrante était-elle disponible à la date du premier tarif ?** L'Astra L n'existait
+   pas en décembre 2021, donc la Tunisienne de ce mois-là est une K ;
+3. **le saut tombe-t-il sur une date de marché ?** Le 19.01.2018 et le 06.03.2018 sont la loi de
+   finances, pas des renouvellements.
+
 ### Le premier cas instruit, qui a servi de patron
 
 **MG 3** : OIS Motors / Meninx a lancé la **troisième génération** en 2024, en trois finitions
