@@ -19,24 +19,6 @@
   ]
  },
  {
-  "modele": "MG · MG 3",
-  "finitions": 2,
-  "impact": 0.5336857673732955,
-  "millesimes": 3,
-  "saut": {
-   "de": "08.01.2018",
-   "p0": 35050,
-   "a": "15.11.2024",
-   "p1": 63950,
-   "net": 0.5336857673732955,
-   "trou": 6
-  },
-  "detail": [
-   "1.5 l Confort",
-   "1.5 L Confort Plus"
-  ]
- },
- {
   "modele": "Land Rover · Land Rover Range Rover Evoque",
   "finitions": 6,
   "impact": 0.16766920549808217,
@@ -456,24 +438,6 @@
   ]
  },
  {
-  "modele": "Ssangyong · Ssangyong Korando",
-  "finitions": 2,
-  "impact": 0.21697316671451206,
-  "millesimes": 2,
-  "saut": {
-   "de": "17.11.2016",
-   "p0": 92800,
-   "a": "16.05.2018",
-   "p1": 135000,
-   "net": 0.15698153173562734,
-   "trou": 2
-  },
-  "detail": [
-   "2 L Diesel",
-   "2.2 L Diesel e-XDI BVA"
-  ]
- },
- {
   "modele": "Haval · Haval H6",
   "finitions": 1,
   "impact": 0.37907637978261355,
@@ -633,23 +597,6 @@
   ]
  },
  {
-  "modele": "Mercedes-Benz · Mercedes-Benz Classe A",
-  "finitions": 1,
-  "impact": 0.20426436016372573,
-  "millesimes": 3,
-  "saut": {
-   "de": "04.08.2016",
-   "p0": 98000,
-   "a": "07.01.2019",
-   "p1": 148000,
-   "net": 0.08844375844887087,
-   "trou": 3
-  },
-  "detail": [
-   "180 AMG"
-  ]
- },
- {
   "modele": "Suzuki · Suzuki Celerio",
   "finitions": 1,
   "impact": 0.20070413068701476,
@@ -735,23 +682,6 @@
   "detail": [
    "1.5 Turbo CVT 5 places",
    "2.2 L Diesel LTZ"
-  ]
- },
- {
-  "modele": "Ssangyong · Ssangyong Rexton",
-  "finitions": 1,
-  "impact": 0.5497413563623297,
-  "millesimes": 1,
-  "saut": {
-   "de": "23.12.2016",
-   "p0": 112800,
-   "a": "16.05.2018",
-   "p1": 219800,
-   "net": 0.5497413563623297,
-   "trou": 2
-  },
-  "detail": [
-   "2.0 L e-XDI BVA"
   ]
  },
  {

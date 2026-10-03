@@ -170,7 +170,48 @@ subissent :
 
 Liste complète : `sources/audit_phases.json`.
 
-### Un cas déjà instruit, pour montrer que la méthode tient
+### Les candidats instruits sur internet, et ce qu'ils ont donné
+
+Chaque cas a été confronté à deux exigences : une **source tunisienne datée**, et un **prix de
+lancement qui se retrouve dans la base**. Quatre l'ont passée, cinq ont été écartés.
+
+#### Retenus
+
+| modèle | frontière | ce qui l'établit |
+|---|---|---|
+| **Mercedes-Benz Classe A** | **07.01.2019** | Quatrième génération (W177) présentée fin décembre 2018, tarifée en janvier 2019 par Le Moteur S.A. en A180 Business / Progressive / AMG-line et A200 AMG-line. La base ouvre « 180 Progressive » à 135 000 DT le 07.01.2019, et la finition « 180 AMG » — reprise d'une génération à l'autre — passe de 98 000 à **148 000 DT le même jour**, soit +51 %. |
+| **Ssangyong Rexton** | **19.01.2018** | Quatrième génération (Y400 « G4 ») annoncée par le **Groupe Zouari** le 19 janvier 2018. « 2.0 L e-XDI BVA » passe de 112 800 DT (déc. 2016) à 219 800 DT le 16.05.2018 : **+95 %**, et aucun tarif entre les deux. |
+| **Ssangyong Korando** | **19.01.2018** | Annoncé **le même jour** que le Rexton par le même importateur — ce qui explique le saut simultané dans les deux séries, et pourquoi le filtre « repricing d'importateur » ne les avait pas écartés : deux modèles, pas trois. « 2.2 L Diesel e-XDI BVA » passe de 92 800 à 135 000 DT, +45 %. |
+| **MG 3** | **15.11.2024** | Troisième génération entrée par **OIS Motors (Meninx)** : Standard 56 950, **Comfort 63 950**, Luxury 69 950, Hybrid+ 76 950 DT. La base porte 63 950 DT au 15.11.2024 sur « 1.5 l Confort », **au dinar près et trois jours avant l'article**, alors que cette finition en était restée à 35 050 DT en janvier 2018. |
+
+Effet mesuré, sur la finition dont l'étiquette traverse la frontière :
+
+| cas | millésime | valeur à neuf avant | après |
+|---|---|---|---|
+| Classe A « 180 AMG » | 2016 | 185 398 DT | **153 952 DT** |
+| Rexton « 2.0 L e-XDI BVA » | 2016 | 286 991 DT | **185 187 DT** |
+| Korando « 2.2 L Diesel e-XDI BVA » | 2016 | 185 408 DT | **152 352 DT** |
+| MG 3 « 1.5 l Confort » | 2017 | 63 950 DT | **41 697 DT** |
+
+#### Écartés, et pourquoi — pour qu'on ne les réinstruise pas
+
+| modèle | ce que la vérification a montré |
+|---|---|
+| **Skoda Fabia** (2022 → 2024) | Ennakl annonce un **facelift**, pas une génération. |
+| **Volkswagen Polo** (09.2019 → 02.2021) | Le tarif est **identique** de part et d'autre du trou, 48 980 DT. Une rupture d'approvisionnement ne fait pas une génération. |
+| **Volkswagen Polo Sedan** (12.2014 → 05.2016) | Le tarif **baisse** de 7 %. |
+| **Land Rover Range Rover Sport** (02.2015 → 10.2017) | Le L494 court de 2013 à 2022 ; le saut du 02.10.2017 est le repricing Jaguar Land Rover de cette date. |
+| **DS 4** (08.2016 → 03.2018) | Le saut tombe le **06.03.2018**, l'une des quatre dates où neuf modèles ou plus bondissent ensemble : la loi de finances 2018. |
+
+#### Un point de vigilance sur la Classe A
+
+L'écart entre la dernière tarification de la W176 (08.01.2018) et la première de la W177
+(07.01.2019) est de **douze mois tout juste** — exactement le seuil de la règle du § 3. Un millésime
+2019 **sans mois de mise en circulation** reste donc du côté sortant, à 153 952 DT de valeur à neuf
+au lieu de 185 398. Dès qu'un mois postérieur à janvier est saisi, la génération entrante est
+retenue. Pour ce modèle plus que pour d'autres, **le mois de MEC vaut 20 % de valeur**.
+
+### Le premier cas instruit, qui a servi de patron
 
 **MG 3** : OIS Motors / Meninx a lancé la **troisième génération** en 2024, en trois finitions
 essence et une hybride — **Standard 56 950 DT, Comfort 63 950 DT**. La base porte exactement
@@ -186,8 +227,10 @@ trancher les deux questions ensemble — raison de plus pour ne pas l'expédier.
 
 ## 6. Ce qui est en service, et ce qui attend votre arbitrage
 
-**Appliqué** : deux frontières de génération (Honda CR-V au 16.01.2025, Honda City au 16.10.2021),
-la règle du millésime à cheval corrigée, les sept énergies renseignées.
+**Appliqué** : **six frontières de génération** — Honda CR-V (16.01.2025), Honda City (16.10.2021),
+Mercedes-Benz Classe A (07.01.2019), Ssangyong Rexton et Korando (19.01.2018), MG 3 (15.11.2024) —
+la règle du millésime à cheval corrigée, les sept énergies renseignées. La table en compte
+désormais **onze**, contre cinq avant ce chantier.
 
 **Contrôles** : `test_vv.js` **399 assertions au vert** dont 6 nouvelles (section 20) ;
 `audit3.js` 0 inversion d'âge ; `check_neuf.js` 0 valeur vénale au-dessus du prix neuf du jour
@@ -195,13 +238,17 @@ la règle du millésime à cheval corrigée, les sept énergies renseignées.
 
 **À arbitrer** :
 
-1. **Les 102 modèles à 10 % ou plus.** Chacun demande une recherche datée et une décision —
-   génération, rupture d'approvisionnement, ou changement d'importateur. Je propose de les traiter
-   **par lots de dix**, en commençant par les 33 à trou de deux ans, et de ne déclarer que ce qui
-   est établi par une source datée ou par des prix de lancement qui se retrouvent dans la base.
-2. **La MG 3**, qui cumule frontière de génération et doublon de casse.
+1. **Le reste des modèles à 10 % ou plus.** Neuf candidats ont été instruits sur internet ; il en
+   reste une centaine. Chacun demande une recherche datée et une décision — génération, rupture
+   d'approvisionnement, repricing ou refonte fiscale. Le taux de confirmation observé sur ce
+   premier lot est de **quatre sur neuf** : il ne faut donc pas présumer que les autres en sont.
+2. **Le doublon de casse de la MG 3** (« 1.5 l Confort » et « 1.5 L Confort ») : c'est
+   vraisemblablement par lui que la liste de prix distinguait les deux générations. La frontière
+   est posée, le doublon reste à trancher.
 3. **La convention Volvo B5** : essence, ou hybride ?
 4. Les cinq doublons de casse du 29.09, toujours ouverts.
+5. **Le seuil de douze mois** de la règle du millésime à cheval : la Classe A tombe exactement
+   dessus. Faut-il le garder à douze mois, ou le descendre à six ?
 
 ---
 
