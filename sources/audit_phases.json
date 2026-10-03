@@ -1,0 +1,2550 @@
+[
+ {
+  "modele": "Land Rover · Land Rover Range Rover Sport",
+  "finitions": 3,
+  "impact": 0.3946775791827437,
+  "millesimes": 3,
+  "saut": {
+   "de": "03.02.2015",
+   "p0": 318000,
+   "a": "02.10.2017",
+   "p1": 397000,
+   "net": 0.0836725481817806,
+   "trou": 2
+  },
+  "detail": [
+   "3.0 SC HSE",
+   "3.0 TDV6 HSE",
+   "5.0 SCV8 HSE Dynamic"
+  ]
+ },
+ {
+  "modele": "MG · MG 3",
+  "finitions": 2,
+  "impact": 0.5336857673732955,
+  "millesimes": 3,
+  "saut": {
+   "de": "08.01.2018",
+   "p0": 35050,
+   "a": "15.11.2024",
+   "p1": 63950,
+   "net": 0.5336857673732955,
+   "trou": 6
+  },
+  "detail": [
+   "1.5 l Confort",
+   "1.5 L Confort Plus"
+  ]
+ },
+ {
+  "modele": "Land Rover · Land Rover Range Rover Evoque",
+  "finitions": 6,
+  "impact": 0.16766920549808217,
+  "millesimes": 8,
+  "saut": {
+   "de": "26.07.2018",
+   "p0": 204500,
+   "a": "15.04.2019",
+   "p1": 250900,
+   "net": 0.16766920549808217,
+   "trou": 1
+  },
+  "detail": [
+   "SD4 Prestige BVM",
+   "SD4 DYNAMIC BVM",
+   "SD4 Prestige BVA",
+   "SD4 DYNAMIC BVA",
+   "Si4 Pure BVA",
+   "2.0 l D150 S"
+  ]
+ },
+ {
+  "modele": "Volkswagen · Volkswagen Amarok",
+  "finitions": 3,
+  "impact": 0.2490856325512194,
+  "millesimes": 7,
+  "saut": {
+   "de": "06.03.2018",
+   "p0": 121980,
+   "a": "27.08.2018",
+   "p1": 149980,
+   "net": 0.22954582718478433,
+   "trou": 0
+  },
+  "detail": [
+   "2L 4x2 Double Cabine Start",
+   "2L 4x2 Double Cabine Trendline",
+   "2L 4x4 Highline Plus Double Cabine BVA"
+  ]
+ },
+ {
+  "modele": "BMW · BMW Série 5",
+  "finitions": 2,
+  "impact": 0.25263222734006474,
+  "millesimes": 4,
+  "saut": {
+   "de": "08.01.2019",
+   "p0": 220400,
+   "a": "27.01.2019",
+   "p1": 280000,
+   "net": 0.2704174228675136,
+   "trou": 0
+  },
+  "detail": [
+   "520i Business Line BVA",
+   "520i Pack M BVA"
+  ]
+ },
+ {
+  "modele": "BMW · BMW X3",
+  "finitions": 2,
+  "impact": 0.5534060375852627,
+  "millesimes": 3,
+  "saut": {
+   "de": "08.01.2018",
+   "p0": 178900,
+   "a": "10.10.2018",
+   "p1": 299600,
+   "net": 0.6746785913918389,
+   "trou": 0
+  },
+  "detail": [
+   "20i xLine",
+   "20i Luxury Line"
+  ]
+ },
+ {
+  "modele": "BMW · BMW Série 1",
+  "finitions": 3,
+  "impact": 0.22810460028689183,
+  "millesimes": 4,
+  "saut": {
+   "de": "19.01.2018",
+   "p0": 103400,
+   "a": "02.10.2019",
+   "p1": 132800,
+   "net": 0.22233434356759463,
+   "trou": 1
+  },
+  "detail": [
+   "116i Business Line",
+   "118i Business Line",
+   "118i Lounge"
+  ]
+ },
+ {
+  "modele": "Peugeot · Peugeot Boxer Double Cabine",
+  "finitions": 1,
+  "impact": 0.19720830017781488,
+  "millesimes": 9,
+  "saut": {
+   "de": "12.01.2023",
+   "p0": 94900,
+   "a": "09.08.2023",
+   "p1": 109900,
+   "net": 0.15806111696522662,
+   "trou": 0
+  },
+  "detail": [
+   "Plateau 350 L2"
+  ]
+ },
+ {
+  "modele": "Suzuki · Suzuki Dzire",
+  "finitions": 3,
+  "impact": 0.216097891231539,
+  "millesimes": 4,
+  "saut": {
+   "de": "26.07.2021",
+   "p0": 45900,
+   "a": "04.11.2022",
+   "p1": 56900,
+   "net": 0.15139362508288357,
+   "trou": 1
+  },
+  "detail": [
+   "1.2 L GL",
+   "1.2 L GLX Pack",
+   "1.2 L GLX"
+  ]
+ },
+ {
+  "modele": "Ford · Ford Ranger",
+  "finitions": 4,
+  "impact": 0.6088368200634968,
+  "millesimes": 1,
+  "saut": {
+   "de": "22.12.2011",
+   "p0": 43100,
+   "a": "27.03.2013",
+   "p1": 66850,
+   "net": 0.40114946502366533,
+   "trou": 2
+  },
+  "detail": [
+   "4x2 Double Cabine",
+   "4x4 Double Cabine XLT",
+   "4x4 Double Cabine Limited",
+   "4x4 Double Cabine Limited BVA"
+  ]
+ },
+ {
+  "modele": "Mahindra · Mahindra Pick-up SC",
+  "finitions": 1,
+  "impact": 0.1515094232623202,
+  "millesimes": 10,
+  "saut": {
+   "de": "07.08.2023",
+   "p0": 50900,
+   "a": "04.01.2024",
+   "p1": 61900,
+   "net": 0.17011020585622183,
+   "trou": 1
+  },
+  "detail": [
+   "2.2 l Diesel 4x2 Plateau Simple"
+  ]
+ },
+ {
+  "modele": "Seat · Seat Leon",
+  "finitions": 3,
+  "impact": 0.09685434464630616,
+  "millesimes": 6,
+  "saut": {
+   "de": "08.01.2018",
+   "p0": 65980,
+   "a": "13.03.2019",
+   "p1": 77980,
+   "net": 0.12482095253386216,
+   "trou": 1
+  },
+  "detail": [
+   "1.2 TSI Style",
+   "1.4 TSI Dynamic",
+   "1.4 TSI Emotion"
+  ]
+ },
+ {
+  "modele": "Mini · Mini 3 portes",
+  "finitions": 1,
+  "impact": 0.6513084789435539,
+  "millesimes": 2,
+  "saut": {
+   "de": "19.01.2018",
+   "p0": 77000,
+   "a": "10.10.2018",
+   "p1": 110600,
+   "net": 0.4363636363636363,
+   "trou": 0
+  },
+  "detail": [
+   "1.5 One Pack Salt"
+  ]
+ },
+ {
+  "modele": "Fiat · Fiat Doblo Combi",
+  "finitions": 2,
+  "impact": 0.24380576474909765,
+  "millesimes": 3,
+  "saut": {
+   "de": "08.09.2021",
+   "p0": 58000,
+   "a": "15.02.2022",
+   "p1": 77500,
+   "net": 0.2410747751124438,
+   "trou": 1
+  },
+  "detail": [
+   "1.4 L",
+   "1.2 L Diesel Maxi"
+  ]
+ },
+ {
+  "modele": "BMW · BMW Série 3",
+  "finitions": 2,
+  "impact": 0.1550775387693848,
+  "millesimes": 5,
+  "saut": {
+   "de": "09.04.2026",
+   "p0": 199900,
+   "a": "20.05.2026",
+   "p1": 230900,
+   "net": 0.1550775387693848,
+   "trou": 0
+  },
+  "detail": [
+   "320i Access",
+   "320i Lounge"
+  ]
+ },
+ {
+  "modele": "Suzuki · Suzuki Celerio Populaire",
+  "finitions": 1,
+  "impact": 0.2423199539800629,
+  "millesimes": 5,
+  "saut": {
+   "de": "16.06.2021",
+   "p0": 20656,
+   "a": "19.09.2022",
+   "p1": 28585,
+   "net": 0.28533463800390657,
+   "trou": 1
+  },
+  "detail": [
+   "1.0 L GL"
+  ]
+ },
+ {
+  "modele": "Fiat · Fiat 500",
+  "finitions": 4,
+  "impact": 0.1950166928631598,
+  "millesimes": 2,
+  "saut": {
+   "de": "02.01.2019",
+   "p0": 43100,
+   "a": "28.01.2019",
+   "p1": 49400,
+   "net": 0.14617169373549888,
+   "trou": 0
+  },
+  "detail": [
+   "1.2 L Lounge BVA",
+   "1.2 L Pop",
+   "1.2 L Dolcevita",
+   "1.2 L BVA"
+  ]
+ },
+ {
+  "modele": "Suzuki · Suzuki Jimny",
+  "finitions": 2,
+  "impact": 0.16080483567405657,
+  "millesimes": 4,
+  "saut": {
+   "de": "07.03.2022",
+   "p0": 84500,
+   "a": "16.01.2023",
+   "p1": 102000,
+   "net": 0.18520613852606393,
+   "trou": 1
+  },
+  "detail": [
+   "1.5 L 4x4 GL",
+   "1.5 L 4x4 GL BVA"
+  ]
+ },
+ {
+  "modele": "Peugeot · Peugeot Landtrek Simple Cabine",
+  "finitions": 2,
+  "impact": 0.08634335875665555,
+  "millesimes": 6,
+  "saut": {
+   "de": "05.06.2026",
+   "p0": 69490,
+   "a": "23.06.2026",
+   "p1": 79490,
+   "net": 0.14390559792775948,
+   "trou": 0
+  },
+  "detail": [
+   "1.9 L Diesel 4x2 Benne tôle pliée",
+   "1.9 L Diesel 4x2"
+  ]
+ },
+ {
+  "modele": "Ford · Ford Fusion",
+  "finitions": 3,
+  "impact": 0.13981249103942184,
+  "millesimes": 4,
+  "saut": {
+   "de": "17.04.2018",
+   "p0": 109200,
+   "a": "04.04.2019",
+   "p1": 144600,
+   "net": 0.26025413912924966,
+   "trou": 1
+  },
+  "detail": [
+   "1.5 L EcoBoost SE",
+   "1.5 L EcoBoost SE BVA",
+   "1.5 L EcoBoost Titanium BVA"
+  ]
+ },
+ {
+  "modele": "Porsche · Porsche 911",
+  "finitions": 1,
+  "impact": 0.18535643562389992,
+  "millesimes": 5,
+  "saut": {
+   "de": "04.02.2020",
+   "p0": 621000,
+   "a": "28.09.2020",
+   "p1": 780600,
+   "net": 0.2570048309178743,
+   "trou": 0
+  },
+  "detail": [
+   "Carrera"
+  ]
+ },
+ {
+  "modele": "Fiat · Fiat Tipo 5 portes",
+  "finitions": 1,
+  "impact": 0.23003819036427742,
+  "millesimes": 4,
+  "saut": {
+   "de": "04.01.2021",
+   "p0": 55500,
+   "a": "17.11.2021",
+   "p1": 63000,
+   "net": 0.1351351351351351,
+   "trou": 0
+  },
+  "detail": [
+   "1.4l Entry"
+  ]
+ },
+ {
+  "modele": "Volkswagen · Volkswagen Jetta",
+  "finitions": 1,
+  "impact": 0.13022066411199784,
+  "millesimes": 7,
+  "saut": {
+   "de": "16.05.2018",
+   "p0": 79980,
+   "a": "24.01.2019",
+   "p1": 94980,
+   "net": 0.13022066411199784,
+   "trou": 1
+  },
+  "detail": [
+   "1.4 TSI Trendline"
+  ]
+ },
+ {
+  "modele": "DS · DS 4",
+  "finitions": 1,
+  "impact": 0.14628901123757143,
+  "millesimes": 6,
+  "saut": {
+   "de": "28.08.2016",
+   "p0": 62100,
+   "a": "06.03.2018",
+   "p1": 94000,
+   "net": 0.1462890112375712,
+   "trou": 2
+  },
+  "detail": [
+   "VTi 120 ch So Chic BVA"
+  ]
+ },
+ {
+  "modele": "Peugeot · Peugeot 301",
+  "finitions": 2,
+  "impact": 0.1689048254601535,
+  "millesimes": 4,
+  "saut": {
+   "de": "16.05.2016",
+   "p0": 27500,
+   "a": "23.12.2016",
+   "p1": 30800,
+   "net": 0.1200000000000001,
+   "trou": 0
+  },
+  "detail": [
+   "1.2 L Access",
+   "1.2 L Active"
+  ]
+ },
+ {
+  "modele": "Ssangyong · Ssangyong Korando",
+  "finitions": 2,
+  "impact": 0.21697316671451206,
+  "millesimes": 2,
+  "saut": {
+   "de": "17.11.2016",
+   "p0": 92800,
+   "a": "16.05.2018",
+   "p1": 135000,
+   "net": 0.15698153173562734,
+   "trou": 2
+  },
+  "detail": [
+   "2 L Diesel",
+   "2.2 L Diesel e-XDI BVA"
+  ]
+ },
+ {
+  "modele": "Haval · Haval H6",
+  "finitions": 1,
+  "impact": 0.37907637978261355,
+  "millesimes": 2,
+  "saut": {
+   "de": "06.03.2018",
+   "p0": 69900,
+   "a": "21.02.2019",
+   "p1": 96900,
+   "net": 0.31934713769259115,
+   "trou": 1
+  },
+  "detail": [
+   "1.5 T Luxury BVA"
+  ]
+ },
+ {
+  "modele": "Volkswagen · Volkswagen Crafter",
+  "finitions": 3,
+  "impact": 0.08697164724299888,
+  "millesimes": 6,
+  "saut": {
+   "de": "10.01.2024",
+   "p0": 114980,
+   "a": "13.03.2026",
+   "p1": 124980,
+   "net": 0.08697164724299888,
+   "trou": 2
+  },
+  "detail": [
+   "16.4 m3 L5H3",
+   "14.4 m3 L4H3",
+   "11.3 m3 L3H3"
+  ]
+ },
+ {
+  "modele": "Fiat · Fiat Tipo Berline",
+  "finitions": 1,
+  "impact": 0.3483446778339623,
+  "millesimes": 2,
+  "saut": {
+   "de": "15.02.2021",
+   "p0": 52500,
+   "a": "15.02.2022",
+   "p1": 66200,
+   "net": 0.17117805383022788,
+   "trou": 1
+  },
+  "detail": [
+   "1.4 L Entry Plus"
+  ]
+ },
+ {
+  "modele": "BMW · BMW Série 2 Gran Coupé",
+  "finitions": 2,
+  "impact": 0.18296169239565474,
+  "millesimes": 2,
+  "saut": {
+   "de": "09.04.2026",
+   "p0": 174900,
+   "a": "15.06.2026",
+   "p1": 206900,
+   "net": 0.18296169239565474,
+   "trou": 0
+  },
+  "detail": [
+   "218 Lounge",
+   "218 Pack M"
+  ]
+ },
+ {
+  "modele": "Peugeot · Peugeot 508 GT Line",
+  "finitions": 1,
+  "impact": 0.23093072078376498,
+  "millesimes": 3,
+  "saut": {
+   "de": "13.01.2021",
+   "p0": 142900,
+   "a": "09.03.2021",
+   "p1": 175900,
+   "net": 0.23093072078376498,
+   "trou": 0
+  },
+  "detail": [
+   "1.6 THP EAT6"
+  ]
+ },
+ {
+  "modele": "Bako · Bako Bee",
+  "finitions": 2,
+  "impact": 0.1643078059333396,
+  "millesimes": 2,
+  "saut": {
+   "de": "16.12.2025",
+   "p0": 19990,
+   "a": "01.06.2026",
+   "p1": 21500,
+   "net": 0.16430780593333982,
+   "trou": 1
+  },
+  "detail": [
+   "Wave",
+   "Horizons"
+  ]
+ },
+ {
+  "modele": "Volkswagen · Volkswagen Polo Sedan",
+  "finitions": 2,
+  "impact": 0.16172079292006059,
+  "millesimes": 2,
+  "saut": {
+   "de": "05.12.2014",
+   "p0": 33980,
+   "a": "04.08.2016",
+   "p1": 33980,
+   "net": -0.07344751365108215,
+   "trou": 2
+  },
+  "detail": [
+   "1.4 L Trendline",
+   "1.4 L Highline"
+  ]
+ },
+ {
+  "modele": "Volkswagen · Volkswagen Caddy",
+  "finitions": 2,
+  "impact": 0.057197410992863684,
+  "millesimes": 6,
+  "saut": {
+   "de": "06.03.2018",
+   "p0": 54980,
+   "a": "16.01.2019",
+   "p1": 67480,
+   "net": 0.132735492121284,
+   "trou": 1
+  },
+  "detail": [
+   "Profi 1.6 L TDI",
+   "Maxi 2 L TDI"
+  ]
+ },
+ {
+  "modele": "Citroën · Citroën Berlingo Utilitaire",
+  "finitions": 1,
+  "impact": 0.15529025901825388,
+  "millesimes": 4,
+  "saut": {
+   "de": "16.05.2016",
+   "p0": 31100,
+   "a": "23.12.2016",
+   "p1": 35100,
+   "net": 0.1286173633440515,
+   "trou": 0
+  },
+  "detail": [
+   "1.6 L HDI Club"
+  ]
+ },
+ {
+  "modele": "Mercedes-Benz · Mercedes-Benz Classe A",
+  "finitions": 1,
+  "impact": 0.20426436016372573,
+  "millesimes": 3,
+  "saut": {
+   "de": "04.08.2016",
+   "p0": 98000,
+   "a": "07.01.2019",
+   "p1": 148000,
+   "net": 0.08844375844887087,
+   "trou": 3
+  },
+  "detail": [
+   "180 AMG"
+  ]
+ },
+ {
+  "modele": "Suzuki · Suzuki Celerio",
+  "finitions": 1,
+  "impact": 0.20070413068701476,
+  "millesimes": 3,
+  "saut": {
+   "de": "21.05.2021",
+   "p0": 37900,
+   "a": "28.06.2022",
+   "p1": 47400,
+   "net": 0.16161810255821973,
+   "trou": 1
+  },
+  "detail": [
+   "1.0 L GL BVA"
+  ]
+ },
+ {
+  "modele": "Opel · Opel Astra",
+  "finitions": 1,
+  "impact": 0.2999022415678685,
+  "millesimes": 2,
+  "saut": {
+   "de": "10.03.2022",
+   "p0": 79990,
+   "a": "09.06.2023",
+   "p1": 107900,
+   "net": 0.32445185897236084,
+   "trou": 1
+  },
+  "detail": [
+   "1.2 L Elegance"
+  ]
+ },
+ {
+  "modele": "Ssangyong · Ssangyong Rodius",
+  "finitions": 2,
+  "impact": 0.178470254957507,
+  "millesimes": 3,
+  "saut": {
+   "de": "16.05.2016",
+   "p0": 105900,
+   "a": "23.12.2016",
+   "p1": 124800,
+   "net": 0.178470254957507,
+   "trou": 0
+  },
+  "detail": [
+   "e-XDI 200 9 places BVA",
+   "e-XDI 200 7 places BVA"
+  ]
+ },
+ {
+  "modele": "Peugeot · Peugeot 3008",
+  "finitions": 2,
+  "impact": 0.16859852476290826,
+  "millesimes": 2,
+  "saut": {
+   "de": "08.01.2018",
+   "p0": 94900,
+   "a": "19.01.2018",
+   "p1": 110900,
+   "net": 0.16859852476290826,
+   "trou": 0
+  },
+  "detail": [
+   "1.6L THP S&S Active EAT6",
+   "1.6 L THP S&S Allure EAT6"
+  ]
+ },
+ {
+  "modele": "Chevrolet · Chevrolet Captiva",
+  "finitions": 2,
+  "impact": 0.42297341784563436,
+  "millesimes": 1,
+  "saut": {
+   "de": "16.05.2012",
+   "p0": 71333,
+   "a": "06.04.2013",
+   "p1": 100500,
+   "net": 0.30652663233873545,
+   "trou": 1
+  },
+  "detail": [
+   "1.5 Turbo CVT 5 places",
+   "2.2 L Diesel LTZ"
+  ]
+ },
+ {
+  "modele": "Ssangyong · Ssangyong Rexton",
+  "finitions": 1,
+  "impact": 0.5497413563623297,
+  "millesimes": 1,
+  "saut": {
+   "de": "23.12.2016",
+   "p0": 112800,
+   "a": "16.05.2018",
+   "p1": 219800,
+   "net": 0.5497413563623297,
+   "trou": 2
+  },
+  "detail": [
+   "2.0 L e-XDI BVA"
+  ]
+ },
+ {
+  "modele": "Porsche · Porsche Cayenne",
+  "finitions": 2,
+  "impact": 0.3163878761080918,
+  "millesimes": 1,
+  "saut": {
+   "de": "05.01.2016",
+   "p0": 290000,
+   "a": "04.08.2016",
+   "p1": 336000,
+   "net": 0.1586206896551725,
+   "trou": 0
+  },
+  "detail": [
+   "Diesel",
+   "S"
+  ]
+ },
+ {
+  "modele": "Mini · Mini 5 portes",
+  "finitions": 1,
+  "impact": 0.27215262369496585,
+  "millesimes": 2,
+  "saut": {
+   "de": "19.01.2018",
+   "p0": 89700,
+   "a": "10.10.2018",
+   "p1": 114700,
+   "net": 0.278706800445931,
+   "trou": 0
+  },
+  "detail": [
+   "1.5 L One Pack Salt BVA"
+  ]
+ },
+ {
+  "modele": "Fiat · Fiat Qubo",
+  "finitions": 1,
+  "impact": 0.1785406819367068,
+  "millesimes": 3,
+  "saut": {
+   "de": "06.03.2018",
+   "p0": 42800,
+   "a": "30.05.2018",
+   "p1": 47980,
+   "net": 0.12102803738317758,
+   "trou": 0
+  },
+  "detail": [
+   "1.4 L"
+  ]
+ },
+ {
+  "modele": "Mini · Mini Clubman",
+  "finitions": 1,
+  "impact": 0.2646897596255098,
+  "millesimes": 2,
+  "saut": {
+   "de": "17.04.2018",
+   "p0": 118600,
+   "a": "08.01.2019",
+   "p1": 146400,
+   "net": 0.17481333000745347,
+   "trou": 1
+  },
+  "detail": [
+   "1.2 L One Pack Salt BVA"
+  ]
+ },
+ {
+  "modele": "Fiat · Fiat Fiorino",
+  "finitions": 1,
+  "impact": 0.13178532708412005,
+  "millesimes": 4,
+  "saut": {
+   "de": "04.03.2019",
+   "p0": 38000,
+   "a": "04.01.2021",
+   "p1": 38500,
+   "net": -0.021335686424991507,
+   "trou": 2
+  },
+  "detail": [
+   "1.3 L Multijet"
+  ]
+ },
+ {
+  "modele": "Hyundai · Hyundai Grand i10 Sedan",
+  "finitions": 1,
+  "impact": 0.10369197686984388,
+  "millesimes": 5,
+  "saut": {
+   "de": "30.11.2020",
+   "p0": 44950,
+   "a": "04.01.2022",
+   "p1": 47650,
+   "net": -0.048846238177972845,
+   "trou": 2
+  },
+  "detail": [
+   "1.2 L"
+  ]
+ },
+ {
+  "modele": "Renault · Renault Trafic",
+  "finitions": 1,
+  "impact": 0.17058823529411749,
+  "millesimes": 3,
+  "saut": {
+   "de": "06.03.2018",
+   "p0": 85000,
+   "a": "26.07.2018",
+   "p1": 99500,
+   "net": 0.1705882352941177,
+   "trou": 0
+  },
+  "detail": [
+   "1.6 l Diesel"
+  ]
+ },
+ {
+  "modele": "Peugeot · Peugeot Boxer",
+  "finitions": 3,
+  "impact": 0.03093907899215309,
+  "millesimes": 10,
+  "saut": {
+   "de": "04.09.2023",
+   "p0": 93900,
+   "a": "21.04.2025",
+   "p1": 92400,
+   "net": -0.02697884679392304,
+   "trou": 2
+  },
+  "detail": [
+   "335 L1H1 Fourgon",
+   "335 L2H2 Fourgon",
+   "335 L3H2 Fourgon"
+  ]
+ },
+ {
+  "modele": "Land Rover · Land Rover Defender 110",
+  "finitions": 1,
+  "impact": 0.48270181219110375,
+  "millesimes": 1,
+  "saut": {
+   "de": "24.01.2024",
+   "p0": 364200,
+   "a": "04.03.2025",
+   "p1": 540000,
+   "net": 0.48270181219110375,
+   "trou": 1
+  },
+  "detail": [
+   "3.0 L P400 S"
+  ]
+ },
+ {
+  "modele": "Fiat · Fiat Doblo",
+  "finitions": 1,
+  "impact": 0.0763767307488199,
+  "millesimes": 6,
+  "saut": {
+   "de": "22.09.2021",
+   "p0": 48500,
+   "a": "09.01.2023",
+   "p1": 58100,
+   "net": 0.07637673074882012,
+   "trou": 2
+  },
+  "detail": [
+   "1.3 L MultiJet 3 places"
+  ]
+ },
+ {
+  "modele": "Nissan · Nissan Micra",
+  "finitions": 1,
+  "impact": 0.09125858287260757,
+  "millesimes": 5,
+  "saut": {
+   "de": "08.02.2017",
+   "p0": 27950,
+   "a": "12.05.2017",
+   "p1": 32500,
+   "net": 0.16279069767441867,
+   "trou": 0
+  },
+  "detail": [
+   "1.2 L Acenta BVM"
+  ]
+ },
+ {
+  "modele": "Mini · Mini Countryman",
+  "finitions": 2,
+  "impact": 0.12366498032602591,
+  "millesimes": 3,
+  "saut": {
+   "de": "30.04.2026",
+   "p0": 177900,
+   "a": "03.07.2026",
+   "p1": 199900,
+   "net": 0.12366498032602591,
+   "trou": 0
+  },
+  "detail": [
+   "1.5 L Classic BVA",
+   "1.5 L Favoured BVA"
+  ]
+ },
+ {
+  "modele": "Haval · Haval H2",
+  "finitions": 1,
+  "impact": 0.21474445139327103,
+  "millesimes": 2,
+  "saut": {
+   "de": "06.03.2018",
+   "p0": 62600,
+   "a": "22.02.2019",
+   "p1": 79900,
+   "net": 0.21474445139327103,
+   "trou": 1
+  },
+  "detail": [
+   "1.5 T Luxury BVA"
+  ]
+ },
+ {
+  "modele": "Renault · Renault Symbol",
+  "finitions": 2,
+  "impact": 0.10813588742552982,
+  "millesimes": 3,
+  "saut": {
+   "de": "01.07.2014",
+   "p0": 25250,
+   "a": "16.05.2016",
+   "p1": 25700,
+   "net": -0.05693469706268561,
+   "trou": 2
+  },
+  "detail": [
+   "1.2 Confort",
+   "1.2 Elegance"
+  ]
+ },
+ {
+  "modele": "Great Wall · Great Wall Wingle 5 Double Cabine",
+  "finitions": 1,
+  "impact": 0.40789782030465727,
+  "millesimes": 1,
+  "saut": {
+   "de": "10.10.2018",
+   "p0": 47900,
+   "a": "14.02.2020",
+   "p1": 59500,
+   "net": 0.1664407422866656,
+   "trou": 2
+  },
+  "detail": [
+   "2.0 L Diesel 4x2"
+  ]
+ },
+ {
+  "modele": "Mazda · Mazda 3",
+  "finitions": 1,
+  "impact": 0.13594771241830061,
+  "millesimes": 3,
+  "saut": {
+   "de": "16.01.2019",
+   "p0": 76500,
+   "a": "19.12.2019",
+   "p1": 86900,
+   "net": 0.13594771241830061,
+   "trou": 0
+  },
+  "detail": [
+   "1.5 L Skyactiv-G Core+ Grade"
+  ]
+ },
+ {
+  "modele": "Mazda · Mazda 3 sedan",
+  "finitions": 1,
+  "impact": 0.13123359580052485,
+  "millesimes": 3,
+  "saut": {
+   "de": "16.01.2019",
+   "p0": 76200,
+   "a": "26.12.2019",
+   "p1": 86200,
+   "net": 0.13123359580052485,
+   "trou": 0
+  },
+  "detail": [
+   "1.5 L Skyactiv-G Core+ Grade"
+  ]
+ },
+ {
+  "modele": "Volkswagen · Volkswagen Touareg",
+  "finitions": 2,
+  "impact": 0.25024995934005134,
+  "millesimes": 1,
+  "saut": {
+   "de": "14.10.2011",
+   "p0": 130000,
+   "a": "13.12.2011",
+   "p1": 174980,
+   "net": 0.3460000000000001,
+   "trou": 0
+  },
+  "detail": [
+   "3.0 L TDI Pack Luxe BVA",
+   "3.0 L V6 TDI 4Motion"
+  ]
+ },
+ {
+  "modele": "Peugeot · Peugeot Landtrek Double Cabine",
+  "finitions": 1,
+  "impact": 0.061736016792196535,
+  "millesimes": 6,
+  "saut": {
+   "de": "05.06.2026",
+   "p0": 80990,
+   "a": "23.06.2026",
+   "p1": 92990,
+   "net": 0.14816644030127168,
+   "trou": 0
+  },
+  "detail": [
+   "1.9 L Diesel 4x2"
+  ]
+ },
+ {
+  "modele": "Skoda · Skoda Fabia",
+  "finitions": 2,
+  "impact": 0.18669318290922554,
+  "millesimes": 1,
+  "saut": {
+   "de": "25.08.2022",
+   "p0": 71980,
+   "a": "07.02.2024",
+   "p1": 82480,
+   "net": 0.11250799870826245,
+   "trou": 2
+  },
+  "detail": [
+   "1.6 L MPI Design",
+   "1.0 L MPI Monte Carlo"
+  ]
+ },
+ {
+  "modele": "KIA · KIA Picanto",
+  "finitions": 3,
+  "impact": 0.07222638701743778,
+  "millesimes": 3,
+  "saut": {
+   "de": "31.10.2022",
+   "p0": 57480,
+   "a": "09.08.2024",
+   "p1": 61980,
+   "net": 0.04689022475332072,
+   "trou": 2
+  },
+  "detail": [
+   "1.2 L LX",
+   "1.2 L LX BVA",
+   "1.2 L GT-Line BVA"
+  ]
+ },
+ {
+  "modele": "Mercedes-Benz · Mercedes-Benz CLA",
+  "finitions": 1,
+  "impact": 0.1816552898939443,
+  "millesimes": 2,
+  "saut": {
+   "de": "19.01.2014",
+   "p0": 85900,
+   "a": "01.05.2014",
+   "p1": 100000,
+   "net": 0.1641443538998837,
+   "trou": 0
+  },
+  "detail": [
+   "180 Urban BVA"
+  ]
+ },
+ {
+  "modele": "Land Rover · Land Rover Range Rover Velar",
+  "finitions": 1,
+  "impact": 0.1203026481715006,
+  "millesimes": 3,
+  "saut": {
+   "de": "23.01.2024",
+   "p0": 396500,
+   "a": "04.03.2025",
+   "p1": 444200,
+   "net": 0.1203026481715006,
+   "trou": 1
+  },
+  "detail": [
+   "2.0 l P250 S"
+  ]
+ },
+ {
+  "modele": "BMW · BMW X1",
+  "finitions": 1,
+  "impact": 0.11340974196297826,
+  "millesimes": 3,
+  "saut": {
+   "de": "19.08.2019",
+   "p0": 155000,
+   "a": "14.11.2019",
+   "p1": 175600,
+   "net": 0.13290322580645153,
+   "trou": 0
+  },
+  "detail": [
+   "18i Business Line"
+  ]
+ },
+ {
+  "modele": "Tata · Tata Xenon X2 Simple Cabine",
+  "finitions": 1,
+  "impact": 0.16716068983169396,
+  "millesimes": 2,
+  "saut": {
+   "de": "08.05.2023",
+   "p0": 49900,
+   "a": "06.10.2023",
+   "p1": 56900,
+   "net": 0.1402805611222444,
+   "trou": 0
+  },
+  "detail": [
+   "2.2l Turbo"
+  ]
+ },
+ {
+  "modele": "Volkswagen · Volkswagen Polo",
+  "finitions": 3,
+  "impact": 0.0794310599139636,
+  "millesimes": 2,
+  "saut": {
+   "de": "20.09.2019",
+   "p0": 48980,
+   "a": "02.02.2021",
+   "p1": 48980,
+   "net": -0.020553291689775044,
+   "trou": 2
+  },
+  "detail": [
+   "1.0 L Energy",
+   "1.0 L Ambition",
+   "1.0 L TSI Life"
+  ]
+ },
+ {
+  "modele": "Skoda · Skoda Kodiaq",
+  "finitions": 2,
+  "impact": 0.1737252324161891,
+  "millesimes": 1,
+  "saut": {
+   "de": "16.01.2019",
+   "p0": 212980,
+   "a": "24.01.2019",
+   "p1": 249980,
+   "net": 0.1737252324161893,
+   "trou": 0
+  },
+  "detail": [
+   "2.0 L TDI 7 Places Ambition BVA",
+   "2.0 L TDI 7 Places Style BVA"
+  ]
+ },
+ {
+  "modele": "Tata · Tata Xenon X2 Double Cabine 4x2",
+  "finitions": 2,
+  "impact": 0.17647058823529416,
+  "millesimes": 1,
+  "saut": {
+   "de": "08.01.2018",
+   "p0": 54400,
+   "a": "01.06.2018",
+   "p1": 64000,
+   "net": 0.17647058823529416,
+   "trou": 0
+  },
+  "detail": [
+   "2.2l 4X4",
+   "2.2 l 4X2"
+  ]
+ },
+ {
+  "modele": "Volkswagen · Volkswagen Multivan 6.1",
+  "finitions": 1,
+  "impact": 0.32020806908992405,
+  "millesimes": 1,
+  "saut": {
+   "de": "11.05.2012",
+   "p0": 111980,
+   "a": "06.03.2018",
+   "p1": 209980,
+   "net": 0.20159159098136947,
+   "trou": 6
+  },
+  "detail": [
+   "2.0 L TDI Highline"
+  ]
+ },
+ {
+  "modele": "Jeep · Jeep Renegade",
+  "finitions": 1,
+  "impact": 0.07923145739949566,
+  "millesimes": 4,
+  "saut": {
+   "de": "05.05.2022",
+   "p0": 113800,
+   "a": "11.08.2022",
+   "p1": 128000,
+   "net": 0.12478031634446407,
+   "trou": 0
+  },
+  "detail": [
+   "1.4 Turbo 4x2 Limited BVA"
+  ]
+ },
+ {
+  "modele": "Audi · Audi A7 Sportback",
+  "finitions": 1,
+  "impact": 0.30624035932580695,
+  "millesimes": 1,
+  "saut": {
+   "de": "05.04.2013",
+   "p0": 214980,
+   "a": "16.05.2016",
+   "p1": 315000,
+   "net": 0.3062403593258072,
+   "trou": 3
+  },
+  "detail": [
+   "3.0 L V6 Quattro BVA"
+  ]
+ },
+ {
+  "modele": "Audi · Audi A3 Sportback",
+  "finitions": 1,
+  "impact": 0.14823976152955254,
+  "millesimes": 2,
+  "saut": {
+   "de": "08.03.2023",
+   "p0": 155000,
+   "a": "21.09.2023",
+   "p1": 177000,
+   "net": 0.14193548387096766,
+   "trou": 0
+  },
+  "detail": [
+   "35 TFSI S-Line"
+  ]
+ },
+ {
+  "modele": "Hyundai · Hyundai Grand i10",
+  "finitions": 3,
+  "impact": 0.10730931062417914,
+  "millesimes": 1,
+  "saut": {
+   "de": "30.11.2020",
+   "p0": 47950,
+   "a": "04.01.2022",
+   "p1": 49950,
+   "net": -0.06531687471086378,
+   "trou": 2
+  },
+  "detail": [
+   "1.2 L GLS",
+   "1.2 L High Grade",
+   "1.2 L High Grade BVA"
+  ]
+ },
+ {
+  "modele": "Honda · Honda Civic",
+  "finitions": 1,
+  "impact": 0.09435163917696365,
+  "millesimes": 3,
+  "saut": {
+   "de": "06.03.2018",
+   "p0": 98800,
+   "a": "10.10.2018",
+   "p1": 111900,
+   "net": 0.1325910931174088,
+   "trou": 0
+  },
+  "detail": [
+   "1.5 l Turbo RS BVA"
+  ]
+ },
+ {
+  "modele": "Volvo · Volvo XC90",
+  "finitions": 1,
+  "impact": 0.27839543341924977,
+  "millesimes": 1,
+  "saut": {
+   "de": "22.12.2025",
+   "p0": 359900,
+   "a": "20.04.2026",
+   "p1": 349900,
+   "net": 0.27839543341924977,
+   "trou": 1
+  },
+  "detail": [
+   "2.0 l Recharge Ultra Black Edition"
+  ]
+ },
+ {
+  "modele": "Mercedes-Benz · Mercedes-Benz Classe E",
+  "finitions": 2,
+  "impact": 0.2177224091288288,
+  "millesimes": 1,
+  "saut": {
+   "de": "04.08.2016",
+   "p0": 162000,
+   "a": "22.11.2023",
+   "p1": 284000,
+   "net": 0.12857170892915915,
+   "trou": 7
+  },
+  "detail": [
+   "200 Avantgarde",
+   "200 Exclusive"
+  ]
+ },
+ {
+  "modele": "Dacia · Dacia Logan MCV",
+  "finitions": 1,
+  "impact": 0.09173001714515228,
+  "millesimes": 3,
+  "saut": {
+   "de": "05.12.2014",
+   "p0": 26900,
+   "a": "16.05.2016",
+   "p1": 28500,
+   "net": -0.01833658509501268,
+   "trou": 2
+  },
+  "detail": [
+   "1.2 L"
+  ]
+ },
+ {
+  "modele": "Ford · Ford Focus",
+  "finitions": 2,
+  "impact": 0.1695527252231832,
+  "millesimes": 1,
+  "saut": {
+   "de": "22.12.2011",
+   "p0": 35300,
+   "a": "06.05.2012",
+   "p1": 44850,
+   "net": 0.22978049781227616,
+   "trou": 1
+  },
+  "detail": [
+   "1.6 L Trend Sport",
+   "1.6 L Titanium"
+  ]
+ },
+ {
+  "modele": "Citroën · Citroën C1",
+  "finitions": 1,
+  "impact": 0.1368770051457544,
+  "millesimes": 2,
+  "saut": {
+   "de": "19.05.2013",
+   "p0": 19290,
+   "a": "03.10.2016",
+   "p1": 24600,
+   "net": 0.13687700514575485,
+   "trou": 3
+  },
+  "detail": [
+   "1.0 L 68ch"
+  ]
+ },
+ {
+  "modele": "Citroën · Citroën C-Elysée",
+  "finitions": 1,
+  "impact": 0.1351474597384621,
+  "millesimes": 2,
+  "saut": {
+   "de": "06.03.2018",
+   "p0": 37700,
+   "a": "28.01.2019",
+   "p1": 46850,
+   "net": 0.18271668315191714,
+   "trou": 1
+  },
+  "detail": [
+   "1.2 VTi Live"
+  ]
+ },
+ {
+  "modele": "Mercedes-Benz · Mercedes-Benz Classe C",
+  "finitions": 2,
+  "impact": 0.06635079116038667,
+  "millesimes": 3,
+  "saut": {
+   "de": "04.08.2016",
+   "p0": 113000,
+   "a": "19.01.2018",
+   "p1": 148000,
+   "net": -0.008161076587999472,
+   "trou": 2
+  },
+  "detail": [
+   "180 Business",
+   "180 Avantgarde"
+  ]
+ },
+ {
+  "modele": "DFSK · DFSK K02S",
+  "finitions": 2,
+  "impact": 0.06316409033177406,
+  "millesimes": 3,
+  "saut": {
+   "de": "27.04.2023",
+   "p0": 39900,
+   "a": "17.02.2025",
+   "p1": 42900,
+   "net": 0.06316409033177428,
+   "trou": 2
+  },
+  "detail": [
+   "1.0 l Double Cabine STD",
+   "1.0 l Double Cabine DLX"
+  ]
+ },
+ {
+  "modele": "Hyundai · Hyundai Accent",
+  "finitions": 1,
+  "impact": 0.13342228152101399,
+  "millesimes": 2,
+  "saut": {
+   "de": "03.06.2022",
+   "p0": 74950,
+   "a": "16.08.2022",
+   "p1": 84950,
+   "net": 0.13342228152101399,
+   "trou": 0
+  },
+  "detail": [
+   "1.4 L"
+  ]
+ },
+ {
+  "modele": "Volvo · Volvo XC60",
+  "finitions": 1,
+  "impact": 0.2643377101889304,
+  "millesimes": 1,
+  "saut": {
+   "de": "22.12.2025",
+   "p0": 259900,
+   "a": "20.04.2026",
+   "p1": 249900,
+   "net": 0.2643377101889304,
+   "trou": 1
+  },
+  "detail": [
+   "2.0 l T8 Recharge Ultra Black Edition"
+  ]
+ },
+ {
+  "modele": "Peugeot · Peugeot Expert Tepee",
+  "finitions": 1,
+  "impact": 0.13113583868030498,
+  "millesimes": 2,
+  "saut": {
+   "de": "28.03.2013",
+   "p0": 60500,
+   "a": "16.05.2016",
+   "p1": 79000,
+   "net": 0.13450862041423517,
+   "trou": 3
+  },
+  "detail": [
+   "HDI"
+  ]
+ },
+ {
+  "modele": "Soueast · Soueast DX3",
+  "finitions": 2,
+  "impact": 0.1373645875300562,
+  "millesimes": 1,
+  "saut": {
+   "de": "26.04.2021",
+   "p0": 67772,
+   "a": "27.01.2022",
+   "p1": 85680,
+   "net": 0.17423060440505123,
+   "trou": 1
+  },
+  "detail": [
+   "1.5 L",
+   "1.5 T BVA"
+  ]
+ },
+ {
+  "modele": "Dongfeng · Dongfeng AX4",
+  "finitions": 1,
+  "impact": 0.12519561815336466,
+  "millesimes": 2,
+  "saut": {
+   "de": "07.05.2022",
+   "p0": 63900,
+   "a": "06.09.2022",
+   "p1": 71900,
+   "net": 0.12519561815336466,
+   "trou": 0
+  },
+  "detail": [
+   "1.6 L"
+  ]
+ },
+ {
+  "modele": "Suzuki · Suzuki Baleno",
+  "finitions": 1,
+  "impact": 0.06021374910465682,
+  "millesimes": 4,
+  "saut": {
+   "de": "12.03.2020",
+   "p0": 63900,
+   "a": "09.11.2022",
+   "p1": 75900,
+   "net": 0.06575760097904149,
+   "trou": 2
+  },
+  "detail": [
+   "1.4 L GLX BVA"
+  ]
+ },
+ {
+  "modele": "Mazda · Mazda BT-50 Pro",
+  "finitions": 3,
+  "impact": 0.1093382523725277,
+  "millesimes": 1,
+  "saut": {
+   "de": "13.08.2013",
+   "p0": 53980,
+   "a": "16.05.2016",
+   "p1": 62900,
+   "net": 0.0387914541523624,
+   "trou": 3
+  },
+  "detail": [
+   "4x4 Simple cabine",
+   "4x4 Double Cabine Mid",
+   "4x4 Double cabine HI"
+  ]
+ },
+ {
+  "modele": "Great Wall · Great Wall M4",
+  "finitions": 1,
+  "impact": 0.11004298726253436,
+  "millesimes": 2,
+  "saut": {
+   "de": "16.05.2018",
+   "p0": 39900,
+   "a": "19.03.2019",
+   "p1": 47900,
+   "net": 0.1425496868832843,
+   "trou": 1
+  },
+  "detail": [
+   "1.5 L"
+  ]
+ },
+ {
+  "modele": "Changan · Changan Star Truck Double Cabine",
+  "finitions": 1,
+  "impact": 0.2194521152902571,
+  "millesimes": 1,
+  "saut": {
+   "de": "22.02.2021",
+   "p0": 36900,
+   "a": "13.12.2021",
+   "p1": 44480,
+   "net": 0.205420054200542,
+   "trou": 0
+  },
+  "detail": [
+   "1.2 L"
+  ]
+ },
+ {
+  "modele": "Seat · Seat Arona",
+  "finitions": 1,
+  "impact": 0.10961939618021832,
+  "millesimes": 2,
+  "saut": {
+   "de": "07.01.2019",
+   "p0": 71480,
+   "a": "06.01.2021",
+   "p1": 78980,
+   "net": 0.08221461978653566,
+   "trou": 2
+  },
+  "detail": [
+   "1.6 L Style"
+  ]
+ },
+ {
+  "modele": "Changan · Changan Star Truck Simple Cabine",
+  "finitions": 1,
+  "impact": 0.21519756838905768,
+  "millesimes": 1,
+  "saut": {
+   "de": "22.02.2021",
+   "p0": 32900,
+   "a": "13.12.2021",
+   "p1": 39980,
+   "net": 0.21519756838905768,
+   "trou": 0
+  },
+  "detail": [
+   "1.2 L"
+  ]
+ },
+ {
+  "modele": "Land Rover · Land Rover Range Rover",
+  "finitions": 1,
+  "impact": 0.20936059148533293,
+  "millesimes": 1,
+  "saut": {
+   "de": "02.11.2013",
+   "p0": 310800,
+   "a": "10.10.2018",
+   "p1": 570000,
+   "net": 0.2381188172412636,
+   "trou": 5
+  },
+  "detail": [
+   "3.0 L Supercharged HSE"
+  ]
+ },
+ {
+  "modele": "Mercedes-Benz · Mercedes-Benz GLE",
+  "finitions": 1,
+  "impact": 0.20914961730009374,
+  "millesimes": 1,
+  "saut": {
+   "de": "04.09.2023",
+   "p0": 468000,
+   "a": "03.02.2025",
+   "p1": 592000,
+   "net": 0.20914961730009352,
+   "trou": 2
+  },
+  "detail": [
+   "300d 4Matic AMG"
+  ]
+ },
+ {
+  "modele": "KIA · KIA Sorento",
+  "finitions": 1,
+  "impact": 0.10156967035003972,
+  "millesimes": 2,
+  "saut": {
+   "de": "06.04.2013",
+   "p0": 94980,
+   "a": "31.03.2015",
+   "p1": 119980,
+   "net": 0.17798624343947633,
+   "trou": 2
+  },
+  "detail": [
+   "2.2 L BVA"
+  ]
+ },
+ {
+  "modele": "DFSK · DFSK K01H",
+  "finitions": 2,
+  "impact": 0.08271419872933583,
+  "millesimes": 2,
+  "saut": {
+   "de": "15.04.2021",
+   "p0": 29900,
+   "a": "28.07.2022",
+   "p1": 37900,
+   "net": 0.17731387232805007,
+   "trou": 1
+  },
+  "detail": [
+   "Large Cabine 1.1 l STD",
+   "Large Cabine 1.1 l DLX"
+  ]
+ },
+ {
+  "modele": "Peugeot · Peugeot 208 Populaire",
+  "finitions": 1,
+  "impact": 0.09992603906687947,
+  "millesimes": 2,
+  "saut": {
+   "de": "29.01.2020",
+   "p0": 28380,
+   "a": "19.04.2022",
+   "p1": 32220,
+   "net": 0.018663314288443367,
+   "trou": 2
+  },
+  "detail": [
+   "1.2 L Like"
+  ]
+ },
+ {
+  "modele": "Mercedes-Benz · Mercedes-Benz GLE Coupé",
+  "finitions": 1,
+  "impact": 0.19876978839659798,
+  "millesimes": 1,
+  "saut": {
+   "de": "04.09.2023",
+   "p0": 488000,
+   "a": "03.02.2025",
+   "p1": 612000,
+   "net": 0.19876978839659798,
+   "trou": 2
+  },
+  "detail": [
+   "300d 4Matic AMG"
+  ]
+ },
+ {
+  "modele": "BMW · BMW Série 4 Coupé",
+  "finitions": 2,
+  "impact": 0.1095466024028291,
+  "millesimes": 1,
+  "saut": {
+   "de": "30.12.2014",
+   "p0": 120000,
+   "a": "04.08.2016",
+   "p1": 143700,
+   "net": 0.1095466024028291,
+   "trou": 2
+  },
+  "detail": [
+   "420i Business Line BVA",
+   "420i Pack Sport M BVA"
+  ]
+ },
+ {
+  "modele": "Citroën · Citroën Jumpy Fourgon",
+  "finitions": 1,
+  "impact": 0.0949551789327372,
+  "millesimes": 2,
+  "saut": {
+   "de": "04.02.2014",
+   "p0": 40800,
+   "a": "08.01.2018",
+   "p1": 56100,
+   "net": -0.03398957936653879,
+   "trou": 4
+  },
+  "detail": [
+   "1.6 L HDI L1H1"
+  ]
+ },
+ {
+  "modele": "Skoda · Skoda Octavia",
+  "finitions": 1,
+  "impact": 0.03716077016792396,
+  "millesimes": 5,
+  "saut": {
+   "de": "26.02.2019",
+   "p0": 87980,
+   "a": "13.03.2019",
+   "p1": 99980,
+   "net": 0.13639463514435102,
+   "trou": 0
+  },
+  "detail": [
+   "1.4 TSI Ambition DSG"
+  ]
+ },
+ {
+  "modele": "Citroën · Citroën C4 Picasso",
+  "finitions": 1,
+  "impact": 0.18379327299065795,
+  "millesimes": 1,
+  "saut": {
+   "de": "22.02.2012",
+   "p0": 53700,
+   "a": "19.05.2013",
+   "p1": 68550,
+   "net": 0.18379327299065817,
+   "trou": 1
+  },
+  "detail": [
+   "1.6 L HDI Confort"
+  ]
+ },
+ {
+  "modele": "Lada · Lada 4x4",
+  "finitions": 1,
+  "impact": 0.18089599617311003,
+  "millesimes": 1,
+  "saut": {
+   "de": "17.04.2018",
+   "p0": 38650,
+   "a": "27.08.2018",
+   "p1": 43950,
+   "net": 0.13712807244501946,
+   "trou": 0
+  },
+  "detail": [
+   "Urban"
+  ]
+ },
+ {
+  "modele": "Toyota · Toyota Corolla Sedan",
+  "finitions": 1,
+  "impact": 0.0868767128976895,
+  "millesimes": 2,
+  "saut": {
+   "de": "02.03.2020",
+   "p0": 89000,
+   "a": "10.11.2021",
+   "p1": 110000,
+   "net": 0.1939769969088212,
+   "trou": 1
+  },
+  "detail": [
+   "1.6 L Active"
+  ]
+ },
+ {
+  "modele": "Honda · Honda CR-V Hybride",
+  "finitions": 1,
+  "impact": 0.1708274117865558,
+  "millesimes": 1,
+  "saut": {
+   "de": "01.07.2025",
+   "p0": 204990,
+   "a": "19.01.2026",
+   "p1": 229980,
+   "net": 0.12203887058368235,
+   "trou": 1
+  },
+  "detail": [
+   "2.0 L e-HEV"
+  ]
+ },
+ {
+  "modele": "KIA · KIA Cee'd",
+  "finitions": 1,
+  "impact": 0.1704391626220958,
+  "millesimes": 1,
+  "saut": {
+   "de": "17.02.2012",
+   "p0": 34980,
+   "a": "12.05.2017",
+   "p1": 49980,
+   "net": 0.07943158678544338,
+   "trou": 5
+  },
+  "detail": [
+   "1.4 L"
+  ]
+ },
+ {
+  "modele": "Seat · Seat Ibiza",
+  "finitions": 2,
+  "impact": 0.03409865878608764,
+  "millesimes": 3,
+  "saut": {
+   "de": "08.03.2024",
+   "p0": 87980,
+   "a": "16.01.2026",
+   "p1": 90980,
+   "net": 0.03409865878608764,
+   "trou": 2
+  },
+  "detail": [
+   "1.0 L Style",
+   "1.0 L TSI FR BVA"
+  ]
+ },
+ {
+  "modele": "Great Wall · Great Wall Wingle 6",
+  "finitions": 1,
+  "impact": 0.1599992404678714,
+  "millesimes": 1,
+  "saut": {
+   "de": "27.08.2018",
+   "p0": 58000,
+   "a": "08.10.2019",
+   "p1": 72900,
+   "net": 0.15999924046787184,
+   "trou": 1
+  },
+  "detail": [
+   "2.0 L Diesel DC 4x4"
+  ]
+ },
+ {
+  "modele": "Peugeot · Peugeot Partner Origin",
+  "finitions": 1,
+  "impact": 0.1582566271838488,
+  "millesimes": 1,
+  "saut": {
+   "de": "11.05.2012",
+   "p0": 25100,
+   "a": "25.05.2013",
+   "p1": 30450,
+   "net": 0.1322283883707287,
+   "trou": 1
+  },
+  "detail": [
+   "1.4 L Clim PM"
+  ]
+ },
+ {
+  "modele": "Mercedes-Benz · Mercedes-Benz Classe C Plug-in Hybride",
+  "finitions": 1,
+  "impact": 0.1561721732686825,
+  "millesimes": 1,
+  "saut": {
+   "de": "17.01.2025",
+   "p0": 299000,
+   "a": "06.02.2025",
+   "p1": 335000,
+   "net": 0.12040133779264206,
+   "trou": 0
+  },
+  "detail": [
+   "350e AMG"
+  ]
+ },
+ {
+  "modele": "Soueast · Soueast DX7",
+  "finitions": 1,
+  "impact": 0.15158471813096552,
+  "millesimes": 1,
+  "saut": {
+   "de": "27.04.2021",
+   "p0": 100810,
+   "a": "27.01.2022",
+   "p1": 126500,
+   "net": 0.16549697450649736,
+   "trou": 1
+  },
+  "detail": [
+   "1.5 T GDI DCT"
+  ]
+ },
+ {
+  "modele": "Ford · Ford Focus sedan",
+  "finitions": 1,
+  "impact": 0.14954750669443317,
+  "millesimes": 1,
+  "saut": {
+   "de": "11.04.2012",
+   "p0": 33980,
+   "a": "06.05.2012",
+   "p1": 42900,
+   "net": 0.2625073572689818,
+   "trou": 0
+  },
+  "detail": [
+   "1.6 L Trend Sport"
+  ]
+ },
+ {
+  "modele": "Volkswagen · Volkswagen Transporter Fourgon 6.1",
+  "finitions": 1,
+  "impact": 0.14914080529320395,
+  "millesimes": 1,
+  "saut": {
+   "de": "30.04.2021",
+   "p0": 78980,
+   "a": "08.12.2021",
+   "p1": 88980,
+   "net": 0.12661433274246647,
+   "trou": 0
+  },
+  "detail": [
+   "2L TDI"
+  ]
+ },
+ {
+  "modele": "Dongfeng · Dongfeng S50",
+  "finitions": 1,
+  "impact": 0.14381501319093148,
+  "millesimes": 1,
+  "saut": {
+   "de": "16.05.2019",
+   "p0": 49900,
+   "a": "22.10.2021",
+   "p1": 55900,
+   "net": 0.09721585159401935,
+   "trou": 2
+  },
+  "detail": [
+   "1.5 L"
+  ]
+ },
+ {
+  "modele": "Renault · Renault Kwid Populaire",
+  "finitions": 1,
+  "impact": 0.07171988852922717,
+  "millesimes": 2,
+  "saut": {
+   "de": "13.03.2023",
+   "p0": 27767,
+   "a": "27.02.2025",
+   "p1": 29461,
+   "net": 0.04914237035918134,
+   "trou": 2
+  },
+  "detail": [
+   "1.0 L"
+  ]
+ },
+ {
+  "modele": "Mahindra · Mahindra Pick-up DC",
+  "finitions": 1,
+  "impact": 0.03549961982118166,
+  "millesimes": 4,
+  "saut": {
+   "de": "24.03.2021",
+   "p0": 63800,
+   "a": "07.06.2024",
+   "p1": 78046,
+   "net": 0.057581337038874914,
+   "trou": 3
+  },
+  "detail": [
+   "2.2 l Diesel 4x4"
+  ]
+ },
+ {
+  "modele": "Opel · Opel Insignia",
+  "finitions": 1,
+  "impact": 0.13842598806996032,
+  "millesimes": 1,
+  "saut": {
+   "de": "11.05.2012",
+   "p0": 63895,
+   "a": "16.04.2014",
+   "p1": 86972,
+   "net": 0.22228821410871347,
+   "trou": 2
+  },
+  "detail": [
+   "1.6 L Turbo BVA"
+  ]
+ },
+ {
+  "modele": "Skoda · Skoda Rapid",
+  "finitions": 1,
+  "impact": 0.13706934570609164,
+  "millesimes": 1,
+  "saut": {
+   "de": "17.03.2015",
+   "p0": 39980,
+   "a": "28.11.2018",
+   "p1": 71980,
+   "net": 0.30338885985770814,
+   "trou": 3
+  },
+  "detail": [
+   "1.6 MPI Ambition"
+  ]
+ },
+ {
+  "modele": "Seat · Seat Ateca",
+  "finitions": 1,
+  "impact": 0.13600202193866728,
+  "millesimes": 1,
+  "saut": {
+   "de": "30.04.2017",
+   "p0": 78980,
+   "a": "12.10.2020",
+   "p1": 104980,
+   "net": 0.06969437923817567,
+   "trou": 3
+  },
+  "detail": [
+   "1.4 L TSI Style"
+  ]
+ },
+ {
+  "modele": "MG · MG GT",
+  "finitions": 1,
+  "impact": 0.13300856214939483,
+  "millesimes": 1,
+  "saut": {
+   "de": "17.04.2018",
+   "p0": 52500,
+   "a": "04.03.2019",
+   "p1": 62500,
+   "net": 0.1330085621493946,
+   "trou": 1
+  },
+  "detail": [
+   "1.5 l Luxe BVA"
+  ]
+ },
+ {
+  "modele": "Ford · Ford Transit Van",
+  "finitions": 1,
+  "impact": 0.12556639635135025,
+  "millesimes": 1,
+  "saut": {
+   "de": "14.03.2019",
+   "p0": 76900,
+   "a": "08.01.2021",
+   "p1": 82600,
+   "net": 0.05204548903022865,
+   "trou": 2
+  },
+  "detail": [
+   "2.2 l D 350 L L3H2"
+  ]
+ },
+ {
+  "modele": "Citroën · Citroën C3 Populaire",
+  "finitions": 1,
+  "impact": 0.06274208870699005,
+  "millesimes": 2,
+  "saut": {
+   "de": "28.08.2020",
+   "p0": 28383,
+   "a": "19.09.2024",
+   "p1": 34626,
+   "net": 0.06274208870699005,
+   "trou": 4
+  },
+  "detail": [
+   "1.2 L"
+  ]
+ },
+ {
+  "modele": "Geely · Geely EX2",
+  "finitions": 1,
+  "impact": 0.12417147065545886,
+  "millesimes": 1,
+  "saut": {
+   "de": "16.12.2025",
+   "p0": 52000,
+   "a": "17.04.2026",
+   "p1": 54000,
+   "net": 0.12417147065545886,
+   "trou": 1
+  },
+  "detail": [
+   "39.4 kWh Max"
+  ]
+ },
+ {
+  "modele": "Bako · Bako B-Van",
+  "finitions": 1,
+  "impact": 0.12149028193434752,
+  "millesimes": 1,
+  "saut": {
+   "de": "21.06.2024",
+   "p0": 22586,
+   "a": "13.09.2026",
+   "p1": 22586,
+   "net": 0.1214902819343473,
+   "trou": 2
+  },
+  "detail": [
+   "Start"
+  ]
+ },
+ {
+  "modele": "Renault · Renault Megane coupé",
+  "finitions": 1,
+  "impact": 0.05757553470159493,
+  "millesimes": 2,
+  "saut": {
+   "de": "05.04.2013",
+   "p0": 44000,
+   "a": "03.04.2015",
+   "p1": 49900,
+   "net": 0.057575534701595155,
+   "trou": 2
+  },
+  "detail": [
+   "VP 1.6 16V"
+  ]
+ },
+ {
+  "modele": "Mazda · Mazda 6",
+  "finitions": 1,
+  "impact": 0.09755613208787084,
+  "millesimes": 1,
+  "saut": {
+   "de": "01.06.2014",
+   "p0": 76500,
+   "a": "02.10.2017",
+   "p1": 99800,
+   "net": 0.09755613208787062,
+   "trou": 3
+  },
+  "detail": [
+   "2.0 L SKYACTIV BVA"
+  ]
+ },
+ {
+  "modele": "DFSK · DFSK Glory 580",
+  "finitions": 1,
+  "impact": 0.09107907246337898,
+  "millesimes": 1,
+  "saut": {
+   "de": "07.05.2022",
+   "p0": 89900,
+   "a": "03.08.2023",
+   "p1": 104900,
+   "net": 0.14568763464873347,
+   "trou": 1
+  },
+  "detail": [
+   "1.5 T Luxury CVT"
+  ]
+ },
+ {
+  "modele": "Dacia · Dacia Dokker Van",
+  "finitions": 1,
+  "impact": 0.045489521621932205,
+  "millesimes": 2,
+  "saut": {
+   "de": "05.12.2014",
+   "p0": 26700,
+   "a": "16.05.2016",
+   "p1": 27200,
+   "net": -0.05609634349473536,
+   "trou": 2
+  },
+  "detail": [
+   "Lux Vitrée"
+  ]
+ },
+ {
+  "modele": "Geely · Geely GX3",
+  "finitions": 1,
+  "impact": 0.09035204825456944,
+  "millesimes": 1,
+  "saut": {
+   "de": "17.11.2021",
+   "p0": 56900,
+   "a": "31.01.2024",
+   "p1": 68800,
+   "net": 0.09035204825456922,
+   "trou": 3
+  },
+  "detail": [
+   "1.5 L CVT"
+  ]
+ },
+ {
+  "modele": "Mahindra · Mahindra KUV 100",
+  "finitions": 1,
+  "impact": 0.04408256978922398,
+  "millesimes": 2,
+  "saut": {
+   "de": "16.03.2019",
+   "p0": 34990,
+   "a": "12.01.2022",
+   "p1": 35990,
+   "net": -0.06428637160565642,
+   "trou": 3
+  },
+  "detail": [
+   "1.2 l K6+"
+  ]
+ },
+ {
+  "modele": "Chevrolet · Chevrolet Groove",
+  "finitions": 1,
+  "impact": 0.08587788209575908,
+  "millesimes": 1,
+  "saut": {
+   "de": "01.04.2022",
+   "p0": 76736,
+   "a": "17.11.2022",
+   "p1": 89760,
+   "net": 0.16972477064220182,
+   "trou": 0
+  },
+  "detail": [
+   "1.5 L Premier"
+  ]
+ },
+ {
+  "modele": "Renault · Renault Fluence",
+  "finitions": 1,
+  "impact": 0.04202554414060011,
+  "millesimes": 2,
+  "saut": {
+   "de": "18.09.2013",
+   "p0": 45300,
+   "a": "16.05.2016",
+   "p1": 46100,
+   "net": -0.0927785158662573,
+   "trou": 3
+  },
+  "detail": [
+   "1.6 L 16V Dynamique"
+  ]
+ },
+ {
+  "modele": "Ssangyong · Ssangyong Actyon Sports",
+  "finitions": 1,
+  "impact": 0.08323339024314702,
+  "millesimes": 1,
+  "saut": {
+   "de": "17.05.2012",
+   "p0": 39800,
+   "a": "20.10.2012",
+   "p1": 47600,
+   "net": 0.1959798994974875,
+   "trou": 0
+  },
+  "detail": [
+   "e-XDI 200 BVM"
+  ]
+ },
+ {
+  "modele": "Citroën · Citroën C5",
+  "finitions": 1,
+  "impact": 0.037095843217214375,
+  "millesimes": 2,
+  "saut": {
+   "de": "16.08.2013",
+   "p0": 64300,
+   "a": "17.03.2015",
+   "p1": 69800,
+   "net": 0.03709584321721393,
+   "trou": 2
+  },
+  "detail": [
+   "1.6 L HDI N2 Metallique Confort"
+  ]
+ },
+ {
+  "modele": "Renault · Renault Captur",
+  "finitions": 1,
+  "impact": 0.07126380886437844,
+  "millesimes": 1,
+  "saut": {
+   "de": "16.04.2014",
+   "p0": 42950,
+   "a": "16.05.2016",
+   "p1": 44900,
+   "net": -0.031380520673657486,
+   "trou": 2
+  },
+  "detail": [
+   "TCe 90"
+  ]
+ },
+ {
+  "modele": "Peugeot · Peugeot 508",
+  "finitions": 1,
+  "impact": 0.06414988295330759,
+  "millesimes": 1,
+  "saut": {
+   "de": "16.05.2016",
+   "p0": 73990,
+   "a": "04.08.2016",
+   "p1": 85900,
+   "net": 0.16096769833761315,
+   "trou": 0
+  },
+  "detail": [
+   "1.6 L HDI 115 ch BVM"
+  ]
+ },
+ {
+  "modele": "Audi · Audi Q8",
+  "finitions": 1,
+  "impact": 0.03082949308931182,
+  "millesimes": 2,
+  "saut": {
+   "de": "24.09.2020",
+   "p0": 430990,
+   "a": "17.02.2022",
+   "p1": 541990,
+   "net": 0.12834420045086303,
+   "trou": 2
+  },
+  "detail": [
+   "55 TFSI Tiptronic Quattro"
+  ]
+ },
+ {
+  "modele": "Mazda · Mazda BT-50",
+  "finitions": 1,
+  "impact": 0.05564162191217026,
+  "millesimes": 1,
+  "saut": {
+   "de": "22.09.2012",
+   "p0": 46700,
+   "a": "04.02.2014",
+   "p1": 49600,
+   "net": -0.046269135758767344,
+   "trou": 2
+  },
+  "detail": [
+   "Double cabine MID"
+  ]
+ },
+ {
+  "modele": "Jeep · Jeep Wrangler Unlimited",
+  "finitions": 1,
+  "impact": 0.05330331040221137,
+  "millesimes": 1,
+  "saut": {
+   "de": "09.01.2020",
+   "p0": 345000,
+   "a": "16.02.2022",
+   "p1": 355000,
+   "net": -0.07673413532645701,
+   "trou": 2
+  },
+  "detail": [
+   "3.6 L V6 Rubicon"
+  ]
+ },
+ {
+  "modele": "Citroën · Citroën C3",
+  "finitions": 1,
+  "impact": 0.048620445836307535,
+  "millesimes": 1,
+  "saut": {
+   "de": "06.03.2018",
+   "p0": 52550,
+   "a": "28.01.2019",
+   "p1": 65400,
+   "net": 0.18445210980474092,
+   "trou": 1
+  },
+  "detail": [
+   "1.2 L Puretech 110 Live EAT6"
+  ]
+ },
+ {
+  "modele": "KIA · KIA Cadenza",
+  "finitions": 1,
+  "impact": 0.047663035374277074,
+  "millesimes": 1,
+  "saut": {
+   "de": "29.04.2012",
+   "p0": 89980,
+   "a": "05.07.2014",
+   "p1": 104980,
+   "net": 0.047663035374277296,
+   "trou": 2
+  },
+  "detail": [
+   "3.5L V6 BVA"
+  ]
+ },
+ {
+  "modele": "Fiat · Fiat Ducato",
+  "finitions": 1,
+  "impact": 0.038840036657637356,
+  "millesimes": 1,
+  "saut": {
+   "de": "07.01.2019",
+   "p0": 66000,
+   "a": "27.04.2021",
+   "p1": 70980,
+   "net": 0.038840036657637134,
+   "trou": 2
+  },
+  "detail": [
+   "2.3 JTD 11.5 m3 Vitrée"
+  ]
+ },
+ {
+  "modele": "Land Rover · Land Rover Freelander",
+  "finitions": 1,
+  "impact": 0.03530031485899898,
+  "millesimes": 1,
+  "saut": {
+   "de": "05.04.2013",
+   "p0": 122500,
+   "a": "17.03.2015",
+   "p1": 136000,
+   "net": 0.03530031485899898,
+   "trou": 2
+  },
+  "detail": [
+   "Si4 HSE Dynamic"
+  ]
+ }
+]

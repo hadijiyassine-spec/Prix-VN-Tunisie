@@ -32,11 +32,12 @@ const TABLE = lireTable();
 let corrigees = 0, deja = 0;
 const absentes = [], detail = [];
 for (const modele of Object.keys(TABLE)) {
-  const c = TABLE[modele];
+  // Une entrée, ou plusieurs quand un même modèle mêle deux énergies (Volvo XC60 T8 et B5).
+  const entrees = [].concat(TABLE[modele]);
   let liste = null, marque = null;
   for (const b of Object.keys(DB)) if (DB[b][modele]) { liste = DB[b][modele]; marque = b; }
   if (!liste) { absentes.push(modele); continue; }
-  for (const nom of c.finitions) {
+  for (const c of entrees) for (const nom of c.finitions) {
     const f = liste.find(x => x.v === nom);
     if (!f) { absentes.push(modele + ' · ' + nom); continue; }
     const avant = (f.eg && f.eg.fuel) || null;
@@ -48,7 +49,8 @@ for (const modele of Object.keys(TABLE)) {
 }
 
 console.log('CARBURANTS_VERIFIES : ' + Object.keys(TABLE).length + ' modèles · ' +
-  Object.values(TABLE).reduce((n, c) => n + c.finitions.length, 0) + ' finitions visées\n');
+  Object.values(TABLE).reduce((n, c) => n + [].concat(c).reduce((m, e) => m + e.finitions.length, 0), 0) +
+  ' finitions visées\n');
 for (const d of detail)
   console.log('  ' + (d.modele + ' · ' + d.v).slice(0, 52).padEnd(54) +
     (d.avant || '(aucune)').padEnd(22) + ' → ' + d.apres.padEnd(12) + '  ' + d.motif);

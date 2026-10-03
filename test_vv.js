@@ -1861,11 +1861,14 @@ setTimeout(() => {
       // La table d'index.html et la base ne doivent pas divergier : le rejeu au démarrage ne
       // corrige donc plus rien, puisque tout est déjà porté dans data.js.
       const CV = win.eval('CARBURANTS_VERIFIES');
+      // Une entrée par modèle, ou plusieurs quand un même modèle mêle deux énergies : le Volvo
+      // XC60 porte un T8 rechargeable et un B5 essence, et la table doit pouvoir le dire.
       check('la table des énergies vérifiées est déclarée et motivée',
         CV && Object.keys(CV).length >= 17 &&
-        Object.keys(CV).every(m => CV[m].fuel && CANON.indexOf(CV[m].fuel) !== -1 &&
-          CV[m].motif && CV[m].motif.length > 8 && Array.isArray(CV[m].finitions) && CV[m].finitions.length),
-        Object.keys(CV || {}).length + ' modèles');
+        Object.keys(CV).every(m => [].concat(CV[m]).every(e => e.fuel && CANON.indexOf(e.fuel) !== -1 &&
+          e.motif && e.motif.length > 8 && Array.isArray(e.finitions) && e.finitions.length)),
+        Object.keys(CV || {}).length + ' modèles · ' +
+        Object.keys(CV || {}).reduce((n, m) => n + [].concat(CV[m]).length, 0) + ' entrées');
       const rejeu = win.appliquerCarburantsVerifies();
       check('la table est déjà portée dans la base — le rejeu ne corrige rien',
         rejeu.corrigees === 0, rejeu.corrigees + ' correction(s)');
@@ -1882,6 +1885,47 @@ setTimeout(() => {
       const t8 = win.DB.Volvo['Volvo XC60'].find(f => /T8 AWD Ultra Dark/.test(f.v));
       check('et la Volvo T8 est bien un hybride rechargeable',
         !!t8 && win.fuelClass(t8.eg && t8.eg.fuel) === 'phev', t8 && t8.eg && t8.eg.fuel);
+    }
+
+    // ── 20. Millésime à cheval : la prudence ne vaut que si la sortante se vendait encore ──
+    // La règle « à cheval → phase sortante » suppose que les deux générations cohabitaient ce
+    // mois-là. La Honda CR-V montre le contre-exemple : frontière au 16.01.2025, mais la 5e
+    // génération n'était plus tarifée depuis le 16.01.2023. Un véhicule de 01/2025 n'en est donc
+    // pas une, et la prudence l'ancrait 17 % trop bas.
+    console.log('\n20. Millésime à cheval et génération retirée du catalogue :');
+    {
+      const PH = win.eval('PHASES');
+      check('la frontière Honda CR-V est déclarée et sourcée',
+        PH['Honda CR-V'] && PH['Honda CR-V'][0].date === '16.01.2025' &&
+        PH['Honda CR-V'][0].source && PH['Honda CR-V'][0].motif.length > 80,
+        PH['Honda CR-V'] && PH['Honda CR-V'][0].gen);
+      check('la frontière Honda City est déclarée au jour du lancement JMC',
+        PH['Honda City'] && PH['Honda City'][0].date === '16.10.2021',
+        PH['Honda City'] && PH['Honda City'][0].gen);
+
+      const ph25 = win.phaseDeAnnee('Honda CR-V', 2025, 1);
+      check('CR-V de 01/2025 : la génération entrante est retenue, pas la sortante',
+        ph25.rang === 1 && ph25.aCheval === false && !!ph25.sortanteRetiree,
+        ph25.sortanteRetiree ? 'sortante arrêtée le ' + ph25.sortanteRetiree.fin : 'aucune');
+      const crv = win.DB.Honda['Honda CR-V'].find(f => f.v === '1.5 T CVT');
+      setFY(2025);
+      const r25 = win.computeVV(crv, 30000, 'normal', 'particulier', null, 2026, null, 'aucun', 1, 9);
+      check('…et sa valeur à neuf est celle du tarif du jour',
+        r25 && Math.abs(r25.ven.VEN - 190980) < 1200, r25 && Math.round(r25.ven.VEN) + ' DT');
+
+      // La prudence reste de mise quand la sortante était encore au catalogue : la City LX de
+      // 2021 relève bien de la génération précédente, tarifée jusqu'au 22.04.2021.
+      const phCity = win.phaseDeAnnee('Honda City', 2021, 10);
+      check('City de 10/2021 : la sortante se vendait encore, la prudence s\'applique',
+        phCity.aCheval === true && !phCity.sortanteRetiree);
+
+      // Même correction pour l'Opel Corsa : la marque avait quitté la Tunisie en 2017 et n'est
+      // revenue qu'en juin 2021. Un millésime 2021 ne peut pas être une Corsa de 2017.
+      const phCorsa = win.phaseDeAnnee('Opel Corsa', 2021, null);
+      check('Corsa de 2021 : la génération sortante avait quitté le marché en 2017',
+        phCorsa.rang === 1 && !!phCorsa.sortanteRetiree,
+        phCorsa.sortanteRetiree ? 'sortante arrêtée le ' + phCorsa.sortanteRetiree.fin : 'aucune');
+      setFY(2019);
     }
 
     console.log('\n' + (fails === 0 ? '=== TOUS LES TESTS PASSENT ===' : '=== ' + fails + ' ÉCHEC(S) ==='));

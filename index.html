@@ -1017,7 +1017,7 @@ let FM  = null;
 // Affichée dans la barre du haut et écrite dans la console au démarrage.
 const VERSION = 'v56';
 const VERSION_DATE = '29/09/2026';
-const VERSION_NOTES = 'la valeur vénale se situe désormais SOUS la valeur marchande, comme sa définition l\'exige : abattement de 5 % (jeu R2, validé par Yassine Hadiji le 29.09.2026) · malus de 10 % sur les motorisations PureTech de Stellantis, dont le marché sanctionne la consommation d\'huile et la courroie de distribution humide — 115 finitions de la base, reconnues par période de production, malus constant avec l\'âge ; biais face aux 152 annonces du 28.09 ramené de +2,7 % à -2,8 % et écart absolu médian de 10,8 à 9,6 % · base de prix neufs fusionnée avec le classeur 2011-24.09.2026 : 749 modèles, 2 553 finitions, 10 682 relevés, 37 prix du jour actualisés, les 6 retraits du contrôle catalogue respectés à l\'import · niveau de la valeur vénale révisé (jeu P5, validé par Yassine Hadiji le 28.09.2026) : taux de décote 5,80 / 7,50 / 9,50 %/an par gamme au lieu de 4,27 / 6,98 / 8,33, pente kilométrique 0,91 %/10 000 km au lieu de 0,70 — les anciens taux étaient ajustés sur une fenêtre de vingt ans, aplatie par les vieux véhicules, puis appliqués aux véhicules récents ; biais médian face au marché ramené de +13,6 % à +2,8 % sur 152 annonces relevées le 28.09.2026 · âge du véhicule affiché sous le montant de la valeur vénale, avec les deux dates qui le produisent · affichage corrigé sur écran 11 pouces en paysage : la grille débordait de l\'écran et la fiche était coupée · âge compté au MOIS PRÈS, de la mise en circulation à la date du sinistre : mois d\'évaluation ajouté au module, vétusté et repère kilométrique fins, délais des régimes douaniers comptés depuis la date réelle ; tant qu\'un mois manque, l\'âge reste l\'entier d\'avant et aucune valeur ne bouge · mois de 1ère mise en circulation, facultatif : il lève l\'ambiguïté des millésimes à cheval sur un changement de génération et affine le tri des finitions ; sans mois, le calcul rend exactement le même chiffre qu\'avant · version signalée BÊTA dans le bandeau · méthode B : la valeur vénale part de la VALEUR À NEUF de la finition — tarif du jour, ou valeur de fin de série de sa génération — actualisée à la date d\'évaluation ; le millésime ne commande plus que la génération retenue et l\'âge · quatre changements de génération vérifiés ajoutés (Peugeot 208 en 2021, Hyundai i20 en 2016 et 2021, Opel Corsa en 2021, Suzuki Swift en 2025) · avertissement en tête de fiche sur les séries tarifaires discontinues, dont le calcul dépend désormais · effet 3D retiré · affichage accéléré : saisie de l\'année sans recalcul à chaque chiffre, graphique construit à son entrée à l\'écran, listes sans animation ni reconstruction inutile, tiroir mobile construit à l\'ouverture · tri des listes réparé : les modèles actifs à la MEC remontent enfin en tête · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
+const VERSION_NOTES = 'contrôle du catalogue Honda : deux changements de génération ajoutés — la CR-V au 16.01.2025 (6e génération, 4 706 mm et sept places contre 4 592 mm et cinq) et la City au 16.10.2021 (lancement JMC, les trois prix de lancement se retrouvent au dinar près dans la base) ; sans ces frontières, une CR-V de 2018-2022 était évaluée sur le tarif d\'une voiture qui n\'existait pas encore, 10 % de trop, et une City LX de 2020-2021 sur celui de la génération suivante · les 7 dernières finitions sans énergie renseignées sur fiche technique, dont le JMC Grand Avenue qui est un DIESEL et passait pour une essence : plus aucune finition de la base n\'est sans énergie · la valeur vénale se situe désormais SOUS la valeur marchande, comme sa définition l\'exige : abattement de 5 % (jeu R2, validé par Yassine Hadiji le 29.09.2026) · malus de 10 % sur les motorisations PureTech de Stellantis, dont le marché sanctionne la consommation d\'huile et la courroie de distribution humide — 115 finitions de la base, reconnues par période de production, malus constant avec l\'âge ; biais face aux 152 annonces du 28.09 ramené de +2,7 % à -2,8 % et écart absolu médian de 10,8 à 9,6 % · base de prix neufs fusionnée avec le classeur 2011-24.09.2026 : 749 modèles, 2 553 finitions, 10 682 relevés, 37 prix du jour actualisés, les 6 retraits du contrôle catalogue respectés à l\'import · niveau de la valeur vénale révisé (jeu P5, validé par Yassine Hadiji le 28.09.2026) : taux de décote 5,80 / 7,50 / 9,50 %/an par gamme au lieu de 4,27 / 6,98 / 8,33, pente kilométrique 0,91 %/10 000 km au lieu de 0,70 — les anciens taux étaient ajustés sur une fenêtre de vingt ans, aplatie par les vieux véhicules, puis appliqués aux véhicules récents ; biais médian face au marché ramené de +13,6 % à +2,8 % sur 152 annonces relevées le 28.09.2026 · âge du véhicule affiché sous le montant de la valeur vénale, avec les deux dates qui le produisent · affichage corrigé sur écran 11 pouces en paysage : la grille débordait de l\'écran et la fiche était coupée · âge compté au MOIS PRÈS, de la mise en circulation à la date du sinistre : mois d\'évaluation ajouté au module, vétusté et repère kilométrique fins, délais des régimes douaniers comptés depuis la date réelle ; tant qu\'un mois manque, l\'âge reste l\'entier d\'avant et aucune valeur ne bouge · mois de 1ère mise en circulation, facultatif : il lève l\'ambiguïté des millésimes à cheval sur un changement de génération et affine le tri des finitions ; sans mois, le calcul rend exactement le même chiffre qu\'avant · version signalée BÊTA dans le bandeau · méthode B : la valeur vénale part de la VALEUR À NEUF de la finition — tarif du jour, ou valeur de fin de série de sa génération — actualisée à la date d\'évaluation ; le millésime ne commande plus que la génération retenue et l\'âge · quatre changements de génération vérifiés ajoutés (Peugeot 208 en 2021, Hyundai i20 en 2016 et 2021, Opel Corsa en 2021, Suzuki Swift en 2025) · avertissement en tête de fiche sur les séries tarifaires discontinues, dont le calcul dépend désormais · effet 3D retiré · affichage accéléré : saisie de l\'année sans recalcul à chaque chiffre, graphique construit à son entrée à l\'écran, listes sans animation ni reconstruction inutile, tiroir mobile construit à l\'ouverture · tri des listes réparé : les modèles actifs à la MEC remontent enfin en tête · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
@@ -1779,7 +1779,63 @@ const PHASES = {
             'la GL, contre 53 400 DT en septembre 2024, et les finitions CVT — propres à cette '+
             'génération — apparaissent à la même date, tandis que les BVA s\'arrêtent en 2024.',
       source:'automobile.tn, essai du 17.02.2025' }
-  ]
+  ],
+  // ── Frontière établie sans article de lancement daté, et c'est dit ──
+  // Les frontières précédentes reposent toutes sur une annonce tunisienne datée. Celle-ci n'en a
+  // pas : la recherche du 03.10.2026 n'a trouvé aucune communication de JMC — Japanese Motors
+  // Company, importateur Honda depuis novembre 2016 — sur l'arrivée de la 6e CR-V. Elle repose
+  // donc sur trois faits vérifiables, qui valent mieux qu'une date de presse :
+  //   · la fiche automobile.tn du tarif en cours décrit un véhicule de 4 706 mm à SEPT places,
+  //     190 ch, millésime 2025 — c'est la 6e génération (RS). La 5e (RW), vendue en Tunisie à
+  //     partir d'avril 2018, mesurait 4 592 mm et n'avait que cinq places ;
+  //   · la série de la finition « 1.5 T CVT » s'arrête à 155 990 DT le 18.01.2021 et ne reprend
+  //     qu'à 190 990 DT le 16.01.2025 : quatre ans de silence et +22,4 % d'un seul coup, tandis
+  //     que les finitions LX et EX — propres à la 5e génération — s'arrêtent le 16.01.2023 ;
+  //   · window.GENS porte déjà la rupture (RW 2016-2022, RS 2022 et après).
+  // La date retenue est celle du PREMIER TARIF de la génération entrante, comme pour la 208 :
+  // tout ce qui précède reste du côté sortant, ce qui est le choix prudent.
+  //
+  // Ce que cela corrige : la méthode B ancre la valeur à neuf sur le dernier tarif de la PHASE.
+  // Sans cette frontière, une CR-V de 2018 à 2022 était évaluée sur les 190 980 DT d'une voiture
+  // qui n'existait pas encore — environ 10 % de trop sur la valeur à neuf, donc sur la valeur
+  // vénale. Le défaut se lisait aussi dans les contrôles : la finition de base « 1.5 T CVT »
+  // ressortait SOUS la finition haute « EX » aux millésimes 2021 et 2022.
+  'Honda CR-V': [
+    { date:'16.01.2025', gen:'VI (RS)',
+      motif:'Sixième génération, de 4 706 mm et sept places, contre 4 592 mm et cinq places pour '+
+            'la cinquième vendue depuis avril 2018. La base s\'arrête à 155 990 DT le 18.01.2021 '+
+            'et reprend à 190 990 DT le 16.01.2025 ; les finitions LX et EX de la génération '+
+            'sortante s\'arrêtent le 16.01.2023. Aucune annonce de lancement datée n\'a été '+
+            'trouvée côté importateur : la frontière est posée au premier tarif de l\'entrante.',
+      source:'automobile.tn, fiche CR-V 1.5 T CVT millésime 2025 (4 706 mm, 7 places, 190 ch), '+
+             'consultée le 03.10.2026 ; relevé catalogue du 13.09.2026' }
+  ],
+  // Celle-ci, en revanche, a tout ce qu'il faut : une annonce tunisienne datée ET les trois prix
+  // de lancement qui se retrouvent dans la base au dinar près.
+  'Honda City': [
+    { date:'16.10.2021', gen:'GN (génération suivante, « cinquième du nom » selon la presse locale)',
+      motif:'Nouvelle City présentée par JMC — Japanese Motors Company dans son showroom de la '+
+            'route de Gammarth, à partir de 64 990 DT pour la LX, 66 990 DT pour la LX Sport et '+
+            '69 990 DT pour l\'EX. La base porte EXACTEMENT ces trois montants au 16.10.2021, '+
+            'la LX passant de 57 990 à 64 990 DT (+12,1 %) ; la finition LX Sport, propre à cette '+
+            'génération, apparaît le même jour, tandis que l\'ancienne « 1.5 L CVT EX » s\'arrête '+
+            'le 20.08.2021 et la « Cyber Edition » le 22.04.2021.',
+      source:'automobile.tn, 16.10.2021 ; L\'Économiste Maghrébin, 15.10.2021 ; '+
+             'WebManagerCenter, 17.10.2021 ; Business News (« cinquième du nom, à partir de 64 990 dinars »)' }
+  ],
+  // Ce qui rendait cette frontière nécessaire : la finition « 1.5 L CVT EX » et la « 1.5 L EX CVT »
+  // ne sont PAS la même finition mal orthographiée, comme on pourrait le croire en voyant les mêmes
+  // mots dans un autre ordre — ce sont les EX de DEUX générations, et la liste de prix les
+  // distinguait ainsi. Chacune garde donc sa série, et c'est juste. Mais la « 1.5 L CVT LX »,
+  // apparue le 05.11.2020 sur la génération sortante, a vu son nom repris par l'entrante : sa
+  // série traverse la frontière, et sans celle-ci une City LX de 2020 ou 2021 était ancrée sur
+  // les 78 980 DT de la génération suivante au lieu de 57 990 DT.
+  //
+  // La CR-V Hybride n'a PAS besoin de frontière : les deux générations y portent des étiquettes
+  // différentes — « 2.0 L e-CVT » pour la 5e, lancée au TICAD8 de Tunis fin août 2022 (premier
+  // tarif le 07.09.2022, dernier le 25.08.2023), et « 2.0 L e-HEV » pour la 6e (à partir du
+  // 16.01.2025). La méthode B les sépare donc déjà. Même situation chez la Civic
+  // (« 1.5 l Turbo RS BVA » puis « 1.5 l CVT »), la HR-V et l'Accord.
 };
 
 // Rang de phase d'une DATE de tarif pour un modèle : 0 avant la première frontière, 1 après,
@@ -1800,6 +1856,19 @@ function rangPhase(modelName, dateStr){
 // frontière — là, seul le jour trancherait, et la carte grise ne le donne pas toujours.
 // `tranche` dit que le mois a levé une ambiguïté que l'année seule laissait ouverte : la fiche
 // s'en sert pour nommer la phase retenue au lieu d'invoquer la prudence.
+// Dernier tarif connu d'une phase, toutes finitions du modèle confondues : la date à laquelle
+// cette génération a cessé d'être tarifée, donc vendue neuve.
+function finDePhase(modelName, rang){
+  let best=null;
+  for(const b of Object.keys(DB)){
+    const liste=DB[b][modelName];
+    if(!liste) continue;
+    for(const f of liste) for(const h of tarifsCatalogue(f))
+      if(rangPhase(modelName, h.d)===rang && (!best || kOf(h.d)>kOf(best))) best=h.d;
+  }
+  return best;
+}
+
 function phaseDeAnnee(modelName, annee, mois){
   const fr=PHASES[modelName];
   if(!fr || !fr.length || !annee) return {rang:0, aCheval:false, tranche:false, frontiere:null};
@@ -1818,7 +1887,30 @@ function phaseDeAnnee(modelName, annee, mois){
       else if(memeAnnee) aCheval=true;
     }
   }
-  return {rang, aCheval, tranche, frontiere};
+  // ── L'AMBIGUÏTÉ N'EN EST UNE QUE SI LA GÉNÉRATION SORTANTE ÉTAIT ENCORE VENDUE ──
+  //
+  // La règle de prudence — à cheval, on retient la sortante — suppose que les deux générations
+  // se vendaient côte à côte ce mois-là. Ce n'est pas toujours vrai. La Honda CR-V en donne le
+  // contre-exemple : sa frontière tombe au 16.01.2025, mais la cinquième génération n'était plus
+  // tarifée depuis le 16.01.2023. Un véhicule mis en circulation en janvier 2025 ne peut donc pas
+  // en être une, et la « prudence » l'ancrait sur 155 990 DT au lieu de 190 980 — 17 % de moins,
+  // sur un véhicule quasi neuf. Signalé par Yassine Hadiji le 03.10.2026.
+  //
+  // On ne retient donc la sortante que si son dernier tarif date de moins de douze mois : un
+  // véhicule peut être immatriculé sur stock un an après la fin de commercialisation, guère plus.
+  let sortanteRetiree=null;
+  if(aCheval && frontiere){
+    const fin=finDePhase(modelName, rang);
+    if(fin){
+      const kv=kAnMois(annee, mois||1), kFin=kOf(fin);
+      const ecartMois=(Math.floor(kv/100)-Math.floor(kFin/100))*12 + (kv%100 - kFin%100);
+      if(ecartMois > 12){
+        rang++; aCheval=false; tranche=true;
+        sortanteRetiree={fin, mois:ecartMois};
+      }
+    }
+  }
+  return {rang, aCheval, tranche, frontiere, sortanteRetiree};
 }
 // Les points de tarif appartenant à la même phase qu'un millésime donné. C'est le seul
 // matériau légitime pour ancrer sa valeur à neuf et pour plafonner sa valeur vénale.
@@ -2822,8 +2914,43 @@ const CARBURANTS_VERIFIES = {
   'Porsche Cayenne E-Hybrid Coupé': { fuel: '🔌 PHEV', motif: 'libellé ramené à la valeur canonique',
     finitions: ['Cayenne E-Hybrid Coupé Black Edition'] },
   // Volvo T8 : hybride rechargeable, confirmé par Yassine Hadiji le 29.09.2026.
-  'Volvo XC60': { fuel: '🔌 PHEV', motif: 'désignation Volvo T8 = hybride rechargeable',
-    finitions: ['2.0 l T8 AWD Ultra Dark', '2.0 l T8 AWD Ultra Black Edition'] },
+  // Le XC60 porte DEUX corrections d'énergies différentes : un modèle peut donc recevoir une
+  // liste d'entrées, et pas seulement une. Chez Volvo la lettre dit la chaîne de traction —
+  // T8 rechargeable, B5 hybridation légère — et les deux n'ont pas la même énergie.
+  'Volvo XC60': [
+    { fuel: '🔌 PHEV', motif: 'désignation Volvo T8 = hybride rechargeable',
+      finitions: ['2.0 l T8 AWD Ultra Dark', '2.0 l T8 AWD Ultra Black Edition'] },
+    // B5 = bloc ESSENCE de 1 969 cm³ avec hybridation légère 48 V, 250 ch, 7,5 L/100 km. Elle ne
+    // roule jamais en électrique seul et n'a pas de batterie de traction : sa valeur ne dépend
+    // d'aucun état de santé de batterie, et le module VE n'a pas à s'y appliquer. Elle est donc
+    // rangée en essence, et non en HEV — convention à confirmer, c'est le seul des sept cas qui
+    // relève d'un choix et non d'une lecture de fiche.
+    { fuel: '⛽ Ess.', motif: 'B5 = essence 1 969 cm³ à hybridation légère 48 V, sans mode électrique seul',
+      finitions: ['2.0 l B5 AWD Ultimate Dark'] },
+  ],
+
+  // ── Les 7 finitions qui n'avaient AUCUNE énergie, renseignées sur recherche (03.10.2026) ──
+  // Sans énergie, `fuelClass` rend « essence » : le résultat était juste pour six d'entre elles
+  // et FAUX pour la septième, le JMC Grand Avenue, qui est un diesel. Chacune est ici appuyée sur
+  // une fiche technique, pas sur une déduction de libellé.
+  'BAIC U5 Plus': { fuel: '⛽ Ess.',
+    motif: '1 499 cm³ essence, 105 ch, 5,7 L/100 km — aucune version diesel ni hybride au catalogue',
+    finitions: ['1.5 L Luxury'] },
+  'BAIC X55': { fuel: '⛽ Ess.',
+    motif: '1,5 litre turbo essence, 188 ch, 305 Nm, 7DCT — aucune version diesel ni hybride',
+    finitions: ['1.5 L DCT LV4 Sport Plus', '1.5 L DCT LV2 Sport'] },
+  // Chez BMW, « i » en fin de désignation vaut pour l'essence (20i, 30i) comme « d » pour le
+  // diesel : c'est la même convention qui a servi à corriger les X1 1.8d et X3 2.0d.
+  'BMW Z4': { fuel: '⛽ Ess.', motif: 'désignation BMW « 20i » = essence', finitions: ['sDrive 20i Pack M'] },
+  // LE SEUL QUI ÉTAIT FAUX. Le Grand Avenue est un pick-up à moteur 2,3 litres turbo DIESEL de
+  // 177 ch et 450 Nm, boîte automatique à 8 rapports, Euro IV. Traité en essence, il perdait le
+  // coefficient diesel et sortait de l'indice diesel.
+  'JMC Grand Avenue': { fuel: '⛽ Diesel',
+    motif: '2 296 cm³ turbo diesel, 177 ch, 450 Nm, Euro IV — fiche constructeur « Gazole »',
+    finitions: ['2.3 l Turbo 4x4 Plus BVA'] },
+  // T-GDI = Turbocharged Gasoline Direct Injection : essence, par construction du sigle.
+  'KIA Sportage': { fuel: '⛽ Ess.', motif: 'T-GDI = injection directe essence turbocompressée',
+    finitions: ['1.6 l T-GDI 7-DCT Motion'] },
   'Volvo XC90': { fuel: '🔌 PHEV', motif: 'désignation Volvo T8 = hybride rechargeable',
     finitions: ['2.0 l T8 AWD Ultra Black Edition', '2.0 l T8 AWD Ultra Bright'] },
 };
@@ -2834,11 +2961,12 @@ const CARBURANTS_VERIFIES = {
 function appliquerCarburantsVerifies(){
   let corrigees=0, absentes=[];
   for(const modele of Object.keys(CARBURANTS_VERIFIES)){
-    const c=CARBURANTS_VERIFIES[modele];
+    // Une entrée, ou plusieurs quand un même modèle mêle deux énergies (Volvo XC60 T8 et B5).
+    const entrees=[].concat(CARBURANTS_VERIFIES[modele]);
     let liste=null;
     for(const b of Object.keys(DB)) if(DB[b][modele]) liste=DB[b][modele];
     if(!liste){ absentes.push(modele); continue; }
-    for(const nom of c.finitions){
+    for(const c of entrees) for(const nom of c.finitions){
       const f=liste.find(x=>x.v===nom);
       if(!f){ absentes.push(modele+' · '+nom); continue; }
       f.eg = f.eg || {};
@@ -4244,6 +4372,17 @@ function blocPrix(v, modelName, mecAnnee, mecMois){
                       'trancherait. ' : ' peut relever de l\'une ou l\'autre phase ; la carte grise et '+
                       'le numéro de série tranchent. ')+
            'Par prudence, le calcul retient la phase <b>sortante</b>.</div>';
+    }
+    // L'ambiguïté a été levée non par le mois, mais par le fait que la génération sortante
+    // n'était plus vendue : on le dit, car c'est ce qui justifie de ne PAS appliquer la prudence.
+    else if(ph.sortanteRetiree && ph.frontiere){
+      const f=ph.frontiere;
+      avis='<div class="notice ok" style="margin:-6px 0 12px">📅 <b>Génération entrante retenue</b> — '+
+           'la génération a changé le '+f.date+(f.gen?' (<b>'+f.gen+'</b>)':'')+', et la précédente '+
+           'n\'était plus tarifée depuis le '+ph.sortanteRetiree.fin+', soit '+
+           Math.round(ph.sortanteRetiree.mois/12*10)/10+' an(s) avant cette mise en circulation. '+
+           'Un véhicule de '+libMEC(mecAnnee, mecMois)+' ne peut donc pas en relever : la valeur à '+
+           'neuf retenue est celle de la phase <b>entrante</b>.</div>';
     }
     // Le mois a tranché un millésime que l'année seule laissait ambigu : on nomme la phase
     // retenue et la raison, au lieu d'invoquer la prudence.
