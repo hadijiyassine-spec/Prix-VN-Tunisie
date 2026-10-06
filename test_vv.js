@@ -1836,6 +1836,30 @@ setTimeout(() => {
         az && az.textContent.trim().slice(0, 80));
       doc.getElementById('mecClr').click();
       setFY(2019);
+
+      // ── Quand la génération ENTRANTE est moins chère que la sortante ──
+      // Le Peugeot Landtrek, depuis mars 2026 : la phase entrante est tarifée PLUS BAS. La
+      // frontière relève donc la valeur des millésimes antérieurs — l'inverse de tous les autres
+      // cas — et le plafond « prix neuf du jour » doit alors se caler sur ce qui s'achète
+      // réellement le jour même, pas sur le tarif de la phase retirée.
+      const PHL = win.eval('PHASES');
+      check('la frontière Peugeot Landtrek est déclarée sur les deux carrosseries',
+        PHL['Peugeot Landtrek Double Cabine'] && PHL['Peugeot Landtrek Simple Cabine'] &&
+        PHL['Peugeot Landtrek Double Cabine'][0].date === '01.03.2026' &&
+        PHL['Peugeot Landtrek Simple Cabine'][0].date === '01.03.2026');
+      const lt = win.DB.Peugeot['Peugeot Landtrek Double Cabine'].find(f => f.v === '1.9 L Diesel 4x2');
+      setFY(2021);
+      const r21 = win.computeVV(lt, 100000, 'normal', 'pro', null, 2026, null, 'aucun');
+      const H = win.tarifsCatalogue(lt);
+      check('un Landtrek de 2021 est ancré sur la phase SORTANTE, plus chère',
+        r21 && r21.ven.VEN > H[H.length - 1].p,
+        r21 ? Math.round(r21.ven.VEN) + ' DT contre ' + H[H.length - 1].p + ' DT au tarif du jour' : '');
+      setFY(2025);
+      const r25l = win.computeVV(lt, 20000, 'tresbon', 'particulier', null, 2026, null, 'aucun');
+      check('…mais aucune valeur vénale ne dépasse ce qui s\'achète neuf le jour même',
+        r25l && r25l.vv <= H[H.length - 1].p,
+        r25l ? r25l.vv + ' ≤ ' + H[H.length - 1].p + ' DT' : '');
+      setFY(2019);
     }
 
     // ── 19. Énergies vérifiées (v56) ──

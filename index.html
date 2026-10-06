@@ -1911,6 +1911,44 @@ const PHASES = {
       source:'window.GENS (XM 2009-2014, UM 2014-2020) recoupé par la série de la base' }
   ],
 
+  // ── Frontière posée sur la connaissance du marché par l'expert ──
+  // Signalée par Yassine Hadiji le 06.10.2026. Elle mérite d'être traitée à part, parce qu'elle ne
+  // ressemble à aucune autre de cette table et qu'il faut savoir pourquoi on l'a retenue.
+  //
+  // Ce que la base dit, et ne dit pas : elle ne porte AUCUN relevé daté de mars 2026 sur ce
+  // modèle — dernier tarif d'avant le 16.02.2026, premier d'après le 06.04.2026. La date exacte à
+  // l'intérieur de mars est donc sans effet sur le partage des tarifs, ce qui rend la frontière
+  // robuste malgré l'absence de relevé.
+  //
+  // Ce que la recherche a trouvé, et qui ne coïncide pas : le restylage du Landtrek a été annoncé
+  // par STAFIM le 03.11.2025, avec le 4x4 Double Cabine restylé à 108 900 DT — montant que la base
+  // porte dès le 29.09.2025. Le restylage précède donc largement mars 2026, et n'est pas ce qui
+  // est visé ici.
+  //
+  // Ce que la frontière change, et c'est inhabituel : les tarifs d'APRÈS sont plus BAS que ceux
+  // d'avant (Simple Cabine 4x2 79 490 → 75 490 DT, 4x4 Pro Plus 108 900 → 103 900). La phase
+  // RELÈVE donc la valeur des Landtrek antérieurs de 2 à 7 %, au lieu de l'abaisser comme partout
+  // ailleurs — c'est exactement ce que la méthode B doit faire quand une génération entrante est
+  // moins chère que la sortante : un pick-up de 2021 n'a pas à être dévalué par la remise
+  // tarifaire consentie sur son remplaçant.
+  'Peugeot Landtrek Double Cabine': [
+    { date:'01.03.2026', gen:'phase 2',
+      motif:'Changement de phase signalé par Yassine Hadiji, expert automobile, le 06.10.2026. '+
+            'La base ne porte aucun relevé en mars 2026 : le partage se fait entre le 16.02.2026 '+
+            'et le 06.04.2026, et la date exacte dans le mois est sans effet. Le tarif catalogue '+
+            'de la 4x2 passe de 87 990 à 85 990 DT et celui de la 4x4 Pro Plus de 108 900 à '+
+            '103 900 DT : la phase entrante est MOINS chère, et la frontière relève donc la '+
+            'valeur des millésimes antérieurs au lieu de l\'abaisser.',
+      source:'Yassine Hadiji, 06.10.2026 — nature exacte du changement à préciser' }
+  ],
+  'Peugeot Landtrek Simple Cabine': [
+    { date:'01.03.2026', gen:'phase 2',
+      motif:'Même changement que sur la Double Cabine, signalé le 06.10.2026. Le tarif catalogue '+
+            'de la 4x2 passe de 79 490 à 75 490 DT et celui de la Benne tôle pliée de 75 490 à '+
+            '70 490 DT.',
+      source:'Yassine Hadiji, 06.10.2026 — nature exacte du changement à préciser' }
+  ],
+
   // ── Candidats écartés à l'examen, pour qu'on ne les réinstruise pas ──
   //   · Land Rover Defender 110 « 3.0 L P400 S » (01.2024 364 200 → 03.2025 540 000, +48 %) :
   //     le P400 n'existe QUE sur le L663, les deux tarifs sont donc la même génération ;
@@ -2806,6 +2844,19 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey, mois, moisEval){
   // Le plafond du prix neuf suit la même base : un diplomate remplace son véhicule en
   // franchise, pas au tarif concession.
   const plafondNeuf=(function(){ const x=prixNeufCourant(v, AE, anneeRef, mois); return x==null?null:x*abattement; })();
+  // ── Ce qu'on peut acheter NEUF LE JOUR MÊME, toutes phases confondues ──
+  //
+  // `plafondNeuf` est le prix de remplacement de LA PHASE du véhicule : quand sa génération n'est
+  // plus commercialisée, c'est son dernier tarif actualisé, et c'est bien ce qu'il faut pour la
+  // valeur à neuf. Mais pour BORNER la valeur vénale, le repère est autre : c'est le tarif de ce
+  // qu'un acheteur trouve en concession aujourd'hui.
+  //
+  // Les deux coïncident presque toujours, parce qu'une génération entrante est plus chère que la
+  // sortante. Le Peugeot Landtrek fait l'exception depuis mars 2026 : la phase entrante est moins
+  // chère (Double Cabine 4x2 à 85 990 DT contre 87 990 avant). Sans ce second repère, une Landtrek
+  // de 2025 en très bon état ressortait à 86 000 DT — soit 10 DT de plus qu'une neuve du jour.
+  // Relevé par check_neuf.js le 06.10.2026.
+  const plafondJour=(function(){ const x=prixNeufCourant(v, AE, null, null); return x==null?null:x*abattement; })();
   let VEN=L*idx*abattement, neufPlafonne=false;
   if(plafondNeuf!=null && VEN>plafondNeuf){ VEN=plafondNeuf; neufPlafonne=true; }
   VEN*=majPop;
@@ -2826,7 +2877,7 @@ function computeVEN(v, anneeRef, anneeEval, regimeKey, mois, moisEval){
   const venGamme = venJum!=null ? venJum : (abattement<1 ? VEN/abattement : VEN);
   return {VEN, idx, L, M, dAncre, fc, reforme, predites, ancre, anneeEval:AE, anneeRef, mois:mois||null,
           moisEval:moisEval||null, ageEval, ageEvalMois, majPop, popStatut,
-          venJum, plafonne, venGamme, plafondNeuf, neufPlafonne, regime:RG, regimeKey, tvaSeule,
+          venJum, plafonne, venGamme, plafondNeuf, plafondJour, neufPlafonne, regime:RG, regimeKey, tvaSeule,
           abattement, abattementMotif};
 }
 
@@ -3255,7 +3306,12 @@ function computeVV(v, km, etatKey, usageKey, coteAjustee, anneeEval, soh, regime
   // Exception : une populaire au-delà de son délai d'incessibilité s'échange précisément sur
   // le marché TAXÉ, donc AU-DESSUS de son prix subventionné — c'est tout l'objet de la
   // réintégration douanière, et la borne n'a pas lieu d'être.
-  const borneNeuf = (ven.popStatut==='majore') ? null : ven.plafondNeuf;
+  // La borne retenue est la PLUS BASSE des deux : le prix de remplacement de la phase du véhicule,
+  // et celui de ce qui s'achète neuf le jour même. Quand la génération entrante est moins chère
+  // — le Peugeot Landtrek depuis mars 2026 — c'est la seconde qui mord.
+  const borneNeuf = (ven.popStatut==='majore') ? null
+    : (ven.plafondJour!=null && (ven.plafondNeuf==null || ven.plafondJour<ven.plafondNeuf)
+        ? ven.plafondJour : ven.plafondNeuf);
   let vv = Math.round(ven.VEN*ratio/100)*100, vvPlafonnee=false;
   if(borneNeuf!=null && vv>borneNeuf){ vv=Math.floor(borneNeuf/100)*100; vvPlafonnee=true; }
   // `relatif` isole ce qui est propre À CE véhicule : état, kilométrage, usage, énergie —

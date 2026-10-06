@@ -269,6 +269,41 @@ trancher les deux questions ensemble — raison de plus pour ne pas l'expédier.
 
 ---
 
+## 5 ter. Le Peugeot Landtrek — une frontière d'un autre genre (06.10.2026)
+
+Signalée par Yassine Hadiji : **changement de phase depuis mars 2026**. Elle ne ressemble à aucune
+autre de la table, et il faut savoir pourquoi.
+
+**Ce que la base dit, et ne dit pas.** Elle ne porte **aucun relevé daté de mars 2026** sur ce
+modèle : dernier tarif d'avant le 16.02.2026, premier d'après le 06.04.2026. La date exacte à
+l'intérieur de mars est donc sans effet sur le partage — ce qui rend la frontière robuste malgré
+l'absence de relevé.
+
+**Ce que la recherche a trouvé, et qui ne coïncide pas.** Le restylage du Landtrek a été annoncé par
+STAFIM le **03.11.2025**, avec le 4×4 Double Cabine restylé à **108 900 DT** — montant que la base
+porte dès le 29.09.2025. Le restylage précède donc largement mars 2026 : ce n'est pas lui qui est
+visé. La nature exacte du changement de mars 2026 reste à préciser.
+
+**Ce que la frontière change, et c'est inhabituel.** Les tarifs d'**après** sont plus **bas** que
+ceux d'avant. La phase **relève** donc la valeur des Landtrek antérieurs, au lieu de l'abaisser
+comme partout ailleurs — et c'est exactement ce que la méthode B doit faire quand la génération
+entrante est moins chère : un pick-up de 2021 n'a pas à être dévalué par la remise consentie sur son
+remplaçant.
+
+| finition | ancrage avant | ancrage après | MEC 2021, 100 000 km, société |
+|---|---|---|---|
+| Double Cabine 4×2 | 85 990 DT (28.07.2026) | **87 990 DT** (16.02.2026) | 55 100 → **56 400 DT** |
+| Double Cabine 4×4 Pro Plus | 103 900 DT | **108 900 DT** (29.09.2025) | 60 800 → **63 700 DT** |
+| Simple Cabine 4×2 | 75 490 DT | **79 490 DT** (01.07.2024) | 48 400 → **51 300 DT** |
+| Simple Cabine Benne tôle pliée | 70 490 DT | **75 490 DT** (01.07.2024) | 45 200 → **48 700 DT** |
+
+Au passage, le contrôle a confirmé que les tarifs de l'été 2026 sont bien des **tarifs catalogue** et
+non des promotions : ils correspondent à ce qu'affiche automobile.tn aujourd'hui, et l'application
+écarte déjà par ailleurs quatre relevés promotionnels sur ce modèle (dont le 16.02.2026 à 76 490 DT
+sur la Simple Cabine).
+
+---
+
 ## 6. Ce qui est en service, et ce qui attend votre arbitrage
 
 **Appliqué** : **six frontières de génération** — Honda CR-V (16.01.2025), Honda City (16.10.2021),
