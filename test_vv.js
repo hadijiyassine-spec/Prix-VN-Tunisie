@@ -513,7 +513,13 @@ setTimeout(() => {
         ['Volkswagen', 'Volkswagen Polo Sedan', '1.4 L Highline', 2022, 72980, '26.10.2022'],
         ['Skoda', 'Skoda Kamiq', '1.0 L TSI Style DSG', 2023, 96980, '18.07.2023'],
       ];
-      const esp = t => t.replace(/[\u202f\u00a0\u2009]/g, ' ');
+      // Normalisation de pr\u00e9sentation avant comparaison, pour deux raisons cumul\u00e9es :
+      //   \u00b7 toLocaleString('fr-TN') s\u00e9pare les milliers par une espace ins\u00e9cable \u00e9troite ;
+      //   \u00b7 depuis le 07.10.2026, la valeur \u00e0 neuf et la valeur v\u00e9nale ne portent PLUS d'espace
+      //     du tout \u2014 leurs groupes de milliers sont envelopp\u00e9s dans <span class="mil">, pour que
+      //     le montant se copie coll\u00e9. On rend donc la forme d\u00e9ball\u00e9e comparable \u00e0 l'autre.
+      const esp = t => t.replace(/<span class="mil">(\d+)<\/span>/g, '$1 ')
+                        .replace(/[\u202f\u00a0\u2009]/g, ' ');
       for (const [b, m, vn, an, attendu, cap] of releves) {
         const v = win.DB[b] && win.DB[b][m] && win.DB[b][m].find(x => x.v === vn);
         check('la finition existe : ' + m + ' · ' + vn, !!v);
@@ -712,7 +718,13 @@ setTimeout(() => {
         // l'affichage : c'est le défaut visible qui a été signalé
         // toLocaleString('fr-TN') sépare les milliers par une espace insécable étroite :
         // on normalise avant de comparer, sinon indexOf ne trouve jamais rien.
-        const esp = t => t.replace(/[\u202f\u00a0\u2009]/g, ' ');
+        // Normalisation de pr\u00e9sentation avant comparaison, pour deux raisons cumul\u00e9es :
+      //   \u00b7 toLocaleString('fr-TN') s\u00e9pare les milliers par une espace ins\u00e9cable \u00e9troite ;
+      //   \u00b7 depuis le 07.10.2026, la valeur \u00e0 neuf et la valeur v\u00e9nale ne portent PLUS d'espace
+      //     du tout \u2014 leurs groupes de milliers sont envelopp\u00e9s dans <span class="mil">, pour que
+      //     le montant se copie coll\u00e9. On rend donc la forme d\u00e9ball\u00e9e comparable \u00e0 l'autre.
+      const esp = t => t.replace(/<span class="mil">(\d+)<\/span>/g, '$1 ')
+                        .replace(/[\u202f\u00a0\u2009]/g, ' ');
         const sansMec = esp(win.blocPrix(v, M, null));
         const avant = esp(win.blocPrix(v, M, 2022));
         const aCheval = esp(win.blocPrix(v, M, 2026));
@@ -1860,6 +1872,25 @@ setTimeout(() => {
         r25l && r25l.vv <= H[H.length - 1].p,
         r25l ? r25l.vv + ' ≤ ' + H[H.length - 1].p + ' DT' : '');
       setFY(2019);
+    }
+
+    // ── 18 bis. Séparateur de milliers purement visuel ──
+    // `toLocaleString` insère une vraie espace insécable : le montant collé dans un tableur arrive
+    // avec, et il faut le nettoyer à chaque fois. Sur la valeur à neuf et la valeur vénale — les
+    // deux montants qu'on recopie — la séparation est désormais une MARGE CSS portée par les
+    // groupes de tête, et le texte reste continu.
+    console.log('\n18 bis. Séparateur de milliers visuel :');
+    {
+      for (const [n, attendu] of [[122980, '122980'], [1234567, '1234567'], [980, '980'], [-45600, '-45600']]) {
+        const html = win.nbColle(n);
+        const texte = html.replace(/<[^>]+>/g, '');
+        check('nbColle(' + n + ') se copie « ' + attendu + ' », sans espace',
+          texte === attendu && !/\s| /.test(texte), html);
+      }
+      check('…et il reste des groupes à séparer visuellement',
+        /class="mil"/.test(win.nbColle(122980)));
+      check('la classe .mil porte une marge, pas une espace',
+        /\.mil\{margin-right:/.test(app));
     }
 
     // ── 19. Énergies vérifiées (v56) ──

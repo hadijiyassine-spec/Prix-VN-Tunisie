@@ -124,6 +124,9 @@ try{var t=localStorage.getItem('pvn-theme');
 }
 /* Les chiffres alignés en colonnes doivent l'être vraiment. */
 .price-val,.vi-price,.or-price,.vv-prix-val,.mc-v,.cote-ecart{font-variant-numeric:tabular-nums}
+/* Séparateur de milliers PUREMENT VISUEL : une marge, pas un caractère. Le montant se copie
+   « 122980 » et se lit « 122 980 ». Voir nbColle(). */
+.mil{margin-right:.20em}
 html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--t1)}
 
 /* ══════════════════════════════════════
@@ -1020,6 +1023,29 @@ const VERSION_DATE = '29/09/2026';
 const VERSION_NOTES = 'croisement des 223 générations connues avec les séries tarifaires : 42 propositions, dont la moitié écartées à la vérification — un P400 n\'existe que sur le Defender L663, un X1 de 2017 est déjà un F48, et les sauts du 19.01.2018 sont la loi de finances. Trois frontières retenues : Mercedes Classe E au 22.11.2023 (W214 présentée le 25.04.2023, sept ans de silence et +75 % dans la base), Opel Astra au 09.06.2023 (l\'Astra L n\'existait pas en décembre 2021, la Tunisienne de ce mois-là est une K) et KIA Sorento au 31.03.2015 · audit systématique des changements de génération : quatre frontières ajoutées après recherche — Mercedes-Benz Classe A au 07.01.2019 (W177 tarifée par Le Moteur, la finition « 180 AMG » saute de 98 000 à 148 000 DT le jour même), Ssangyong Rexton et Korando au 19.01.2018 (les deux SUV annoncés le même jour par le Groupe Zouari, +95 % et +45 %), MG 3 au 15.11.2024 (3e génération par OIS Motors, Comfort 63 950 DT au dinar près) ; cinq autres candidats écartés à la vérification, dont un facelift et deux sauts qui n\'étaient que la loi de finances 2018 · contrôle du catalogue Honda : deux changements de génération ajoutés — la CR-V au 16.01.2025 (6e génération, 4 706 mm et sept places contre 4 592 mm et cinq) et la City au 16.10.2021 (lancement JMC, les trois prix de lancement se retrouvent au dinar près dans la base) ; sans ces frontières, une CR-V de 2018-2022 était évaluée sur le tarif d\'une voiture qui n\'existait pas encore, 10 % de trop, et une City LX de 2020-2021 sur celui de la génération suivante · les 7 dernières finitions sans énergie renseignées sur fiche technique, dont le JMC Grand Avenue qui est un DIESEL et passait pour une essence : plus aucune finition de la base n\'est sans énergie · la valeur vénale se situe désormais SOUS la valeur marchande, comme sa définition l\'exige : abattement de 5 % (jeu R2, validé par Yassine Hadiji le 29.09.2026) · malus de 10 % sur les motorisations PureTech de Stellantis, dont le marché sanctionne la consommation d\'huile et la courroie de distribution humide — 115 finitions de la base, reconnues par période de production, malus constant avec l\'âge ; biais face aux 152 annonces du 28.09 ramené de +2,7 % à -2,8 % et écart absolu médian de 10,8 à 9,6 % · base de prix neufs fusionnée avec le classeur 2011-24.09.2026 : 749 modèles, 2 553 finitions, 10 682 relevés, 37 prix du jour actualisés, les 6 retraits du contrôle catalogue respectés à l\'import · niveau de la valeur vénale révisé (jeu P5, validé par Yassine Hadiji le 28.09.2026) : taux de décote 5,80 / 7,50 / 9,50 %/an par gamme au lieu de 4,27 / 6,98 / 8,33, pente kilométrique 0,91 %/10 000 km au lieu de 0,70 — les anciens taux étaient ajustés sur une fenêtre de vingt ans, aplatie par les vieux véhicules, puis appliqués aux véhicules récents ; biais médian face au marché ramené de +13,6 % à +2,8 % sur 152 annonces relevées le 28.09.2026 · âge du véhicule affiché sous le montant de la valeur vénale, avec les deux dates qui le produisent · affichage corrigé sur écran 11 pouces en paysage : la grille débordait de l\'écran et la fiche était coupée · âge compté au MOIS PRÈS, de la mise en circulation à la date du sinistre : mois d\'évaluation ajouté au module, vétusté et repère kilométrique fins, délais des régimes douaniers comptés depuis la date réelle ; tant qu\'un mois manque, l\'âge reste l\'entier d\'avant et aucune valeur ne bouge · mois de 1ère mise en circulation, facultatif : il lève l\'ambiguïté des millésimes à cheval sur un changement de génération et affine le tri des finitions ; sans mois, le calcul rend exactement le même chiffre qu\'avant · version signalée BÊTA dans le bandeau · méthode B : la valeur vénale part de la VALEUR À NEUF de la finition — tarif du jour, ou valeur de fin de série de sa génération — actualisée à la date d\'évaluation ; le millésime ne commande plus que la génération retenue et l\'âge · quatre changements de génération vérifiés ajoutés (Peugeot 208 en 2021, Hyundai i20 en 2016 et 2021, Opel Corsa en 2021, Suzuki Swift en 2025) · avertissement en tête de fiche sur les séries tarifaires discontinues, dont le calcul dépend désormais · effet 3D retiré · affichage accéléré : saisie de l\'année sans recalcul à chaque chiffre, graphique construit à son entrée à l\'écran, listes sans animation ni reconstruction inutile, tiroir mobile construit à l\'ouverture · tri des listes réparé : les modèles actifs à la MEC remontent enfin en tête · sélecteur de thème système / clair / sombre · thème sombre réparé : module valeur vénale sur fond blanc, couleurs codées en dur remplacées par des jetons · recherche globale : l\'ancienne fiche ne reste plus affichée et la barre marque suit · résultats de recherche plus masqués sous la barre sur téléphone · bouton « Retour à la sélection » enfin stylé · marges iPhone (calc invalide) · frise des années suit l\'année courante · scripts de contrôle : lecture de index.html, kilométrages vides lus comme 0 km · la valeur à neuf affichée est le tarif du jour, ou la valeur de fin de série de la finition — plus le tarif du millésime · corrections portées DANS data.js : 106 tarifs ajoutés, 6 retirés · l\'indice de prix se calcule enfin sur les tarifs catalogue, pas sur les promotions · substitutions de gamme mal attribuées : la Clio 1.0 SCe Life Plus finit bien à 60 900 DT, six tarifs retirés de la finition à laquelle ils n\'appartenaient pas · fin de série et tarif du millésime ne sont plus confondus : la vraie valeur à neuf de fin de série est nommée et datée · deux séries interrompues rétablies (Renault Master, Bako B-Van) · le prix affiché est celui du millésime, plus le dernier tarif de la finition · catalogue contrôlé sur automobile.tn le 13.09.2026, 96 tarifs corrigés · les prix promotionnels ne sont plus pris pour des tarifs · la gamme est une propriété de la finition, plus du millésime · le curseur de cotation repart du conseil à chaque nouvelle consultation · changements de phase : la RAV 4 Hybride de 2026 n\'est plus le tarif de référence des millésimes antérieurs · avertissement sur les 19 autres séries tarifaires discontinues · panneau de résultat en double corrigé (un </div> de trop) · module « mise à l\'épave » retiré : la plateforme calcule une valeur vénale, pas une indemnité · pastille essence enfin colorée · CSS et code morts supprimés · observation Kwid retirée : majoration populaire étayée sur les seules jumelles de la base · régime douanier replié derrière une case · alignement des champs de saisie · base de calcul propre aux régimes de franchise · fiche allégée · régimes restreints au véhicule · avantage taxi éteint à 5 ans · FCR uniquement en RS · catalogue subventionné indépendant du régime · contrastes vérifiés sur les 110 paires · décote VE recalée sur le prix réel du neuf européen · plus de prime kilométrique au plancher résiduel · indicateur de confiance de l\'estimation · régime FCR repris du guide officiel · régimes vérifiés sur les textes de loi · TVA 7 % pour les rechargeables · régimes douaniers confirmés · décote VE alignée sur l\'Europe · état recadré sur la qualité de réparation · batterie de traction · plafond prix neuf du jour · cohérence des millésimes';
 
 const fmt = n => n.toLocaleString('fr-TN') + '\u00a0DT';
+
+// \u2500\u2500 Montants dont les milliers se LISENT s\u00e9par\u00e9s mais se COPIENT coll\u00e9s \u2500\u2500
+//
+// `toLocaleString` ins\u00e8re une vraie espace ins\u00e9cable entre les milliers : \u00ab 122 980 \u00bb. S\u00e9lectionn\u00e9
+// et coll\u00e9 dans un tableur ou un rapport, ce montant arrive avec son espace, et il faut le
+// nettoyer \u00e0 la main \u00e0 chaque fois. Demande de Yassine Hadiji du 07.10.2026 : que la s\u00e9paration
+// soit PUREMENT VISUELLE sur les deux montants qui se recopient le plus \u2014 la valeur \u00e0 neuf et la
+// valeur v\u00e9nale.
+//
+// Les chiffres restent donc un texte continu, \u00ab 122980 \u00bb, et la respiration est obtenue par une
+// marge CSS port\u00e9e par les groupes de t\u00eate. Le presse-papiers ne voit que les chiffres.
+function nbColle(n){
+  const v = Math.round(n);
+  const s = String(Math.abs(v));
+  const tete = s.length % 3 || 3;              // 1 \u00e0 3 chiffres avant le premier groupe plein
+  let out = (v < 0 ? '-' : '');
+  for(let i = 0; i < s.length; i = (i === 0 ? tete : i + 3)){
+    const bout = s.slice(i, i === 0 ? tete : i + 3);
+    const dernier = (i === 0 ? tete : i + 3) >= s.length;
+    out += dernier ? bout : '<span class="mil">' + bout + '</span>';
+  }
+  return out;
+}
 // Pourcentage signé, avec un vrai signe moins (U+2212) et l'espace insécable d'usage.
 const signePct = x => (x>=0?'+':'\u2212')+Math.abs(x).toFixed(1)+'\u00a0%';
 // Année de calcul. Déterminée au démarrage : max(année système, dernière année de la base).
@@ -3605,7 +3631,7 @@ function refreshVVValues(v){
 
   const prix=document.getElementById('vvPrix');
   // L'unité est composée à part : elle doit se lire comme une unité, pas concurrencer le montant.
-  if(prix) prix.innerHTML=r.vv.toLocaleString('fr-TN')+'<em>DT</em>';
+  if(prix) prix.innerHTML=nbColle(r.vv)+'<em>DT</em>';
 
   // ── Âge du véhicule, sous le montant ──
   // On nomme les deux dates qui le produisent : mise en circulation et date d'évaluation.
@@ -4582,7 +4608,7 @@ function blocPrix(v, modelName, mecAnnee, mecMois){
   const H = histPhase(v, modelName, mecAnnee, mecMois);
   const dernier = H[H.length-1];
   if(!dernier){
-    h+='<span class="price-val">'+v.p.toLocaleString('fr-TN')+'</span>'+
+    h+='<span class="price-val">'+nbColle(v.p)+'</span>'+
        '<span class="price-unit">DT</span><span class="price-lbl">TTC</span></div>';
     return h+avis;
   }
@@ -4593,7 +4619,7 @@ function blocPrix(v, modelName, mecAnnee, mecMois){
     phaseDeAnnee(modelName, mecAnnee, mecMois).rang === rangPhase(modelName, v.d);
   const auCatalogue = anFin >= CY-1 && phaseCourante;
 
-  h+='<span class="price-val">'+dernier.p.toLocaleString('fr-TN')+'</span>'+
+  h+='<span class="price-val">'+nbColle(dernier.p)+'</span>'+
      '<span class="price-unit">DT</span>'+
      '<span class="price-lbl">TTC · '+(auCatalogue
        ? 'tarif du jour'
@@ -4608,7 +4634,7 @@ function blocPrix(v, modelName, mecAnnee, mecMois){
   const fc = fuelClass((v.eg&&v.eg.fuel)||(v.sp&&v.sp.carburant));
   const equiv = Math.round(dernier.p * indexMultiplier(anFin, AE, fc).m);
   if(!auCatalogue && Math.abs(equiv/dernier.p-1) >= 0.01)
-    h+='<div class="prix-ecart">Équivalent à neuf '+AE+' : <b>'+fmt(equiv)+
+    h+='<div class="prix-ecart">Équivalent à neuf '+AE+' : <b>'+nbColle(equiv)+' DT'+
        '</b> — le tarif de fin de série ramené au niveau des prix de '+AE+'.</div>';
 
   // Tarif catalogue à la mise en circulation : le prix d'achat d'origine du véhicule.
