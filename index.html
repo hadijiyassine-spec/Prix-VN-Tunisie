@@ -261,6 +261,12 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
 .rcard-model{font-family:'Syne','Inter','Segoe UI',system-ui,sans-serif;font-size:17px;font-weight:800;line-height:1.2;margin-bottom:1px}
 .rcard-ver{font-size:11.5px;opacity:.85}
 .rcard-body{padding:16px}
+.pdf-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:12px;
+  padding:10px 12px;border-radius:8px;border:1px solid var(--gn2);background:var(--sf);color:var(--gn2);
+  font:600 12.5px 'Inter','Segoe UI',system-ui,sans-serif;cursor:pointer}
+.pdf-btn:hover{background:var(--sf2)}
+.pdf-btn:disabled{opacity:.6;cursor:wait}
+.pdf-pied{margin-top:12px;padding-top:8px;border-top:1px solid var(--bd2);font-size:9px;color:var(--t3);text-align:center}
 .price-block{display:flex;align-items:baseline;gap:5px;margin-bottom:13px;padding-bottom:13px;border-bottom:1px solid var(--bd)}
 .price-val{font-family:'Syne','Inter','Segoe UI',system-ui,sans-serif;font-size:28px;font-weight:800;color:var(--gn);letter-spacing:-.5px}
 .price-unit{font-size:14px;color:var(--t2);font-weight:600}
@@ -4755,6 +4761,11 @@ function rResult(){
   c2.appendChild(card);
   if(v.hist.length>=2) graphiqueQuandVisible(v, chartId);
   wireVVInputs(v);
+  const pdfBtn=document.createElement('button');
+  pdfBtn.type='button'; pdfBtn.className='pdf-btn'; pdfBtn.textContent='📄 Télécharger le PDF';
+  pdfBtn.setAttribute('data-html2canvas-ignore','true');
+  pdfBtn.addEventListener('click',()=>exporterPDF(card, v, chartId, pdfBtn));
+  card.querySelector('.rcard-body').appendChild(pdfBtn);
 
   // Other versions
   const others=DB[sel.b][sel.m].filter(x=>x.v!==v.v);
@@ -4781,6 +4792,69 @@ function rResult(){
   // On mobile & tablet: scroll to result (on tablet it appears full-width below the columns)
   if(window.innerWidth<=1100){
     setTimeout(()=>{c2.closest('.res-col').scrollIntoView({behavior:'smooth',block:'start'});},100);
+  }
+}
+
+// ── Export PDF de la fiche ──
+// html2pdf (≈ 900 Ko) n'est chargé qu'au premier clic : la plupart des consultations n'exportent rien.
+let HTML2PDF_PROMESSE=null;
+function chargerHtml2pdf(){
+  if(window.html2pdf) return Promise.resolve();
+  if(!HTML2PDF_PROMESSE) HTML2PDF_PROMESSE=new Promise((ok,ko)=>{
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+    s.onload=ok; s.onerror=()=>{ HTML2PDF_PROMESSE=null; ko(new Error('html2pdf')); };
+    document.head.appendChild(s);
+  });
+  return HTML2PDF_PROMESSE;
+}
+function nomFichierPDF(){
+  const d=new Date(), p=n=>String(n).padStart(2,'0');
+  const brut=[sel.b, sel.m, sel.v.v].join(' ');
+  const propre=brut.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'');
+  return 'PrixVN_'+propre+'_'+p(d.getDate())+p(d.getMonth()+1)+d.getFullYear()+'.pdf';
+}
+async function exporterPDF(card, v, chartId, btn){
+  const lib=btn.textContent;
+  btn.disabled=true; btn.textContent='⏳ Préparation du PDF…';
+  // Le PDF est toujours en thème clair, quel que soit le thème d'affichage : c'est un document à imprimer.
+  const r=document.documentElement, themeAvant=r.getAttribute('data-theme');
+  const pied=document.createElement('div'); pied.className='pdf-pied';
+  pied.textContent='Édité le '+new Date().toLocaleDateString('fr-FR')+' · Prix VN Tunisie — '+location.host+location.pathname;
+  // html2canvas peint le contenu des <details> fermés par-dessus la suite : on les déplie le temps
+  // de l'export, ce qui met d'ailleurs le détail du calcul dans le PDF.
+  const fermes=[...card.querySelectorAll('details:not([open])')];
+  try{
+    fermes.forEach(d=>{ d.open=true; });
+    card.style.marginBottom='0';   // sa marge basse suffit parfois à créer une page blanche en fin de PDF
+    await chargerHtml2pdf();
+    r.setAttribute('data-theme','light');
+    // Le graphique n'est construit qu'à son entrée à l'écran : on le construit maintenant, en clair.
+    if(v.hist.length>=2 && document.getElementById(chartId)){
+      if(OBS_GRAPHIQUE){ OBS_GRAPHIQUE.disconnect(); OBS_GRAPHIQUE=null; }
+      buildChart(v, FY, chartId);
+    }
+    card.querySelector('.rcard-body').appendChild(pied);
+    await html2pdf().set({
+      margin:[8,8,10,8], filename:nomFichierPDF(),
+      image:{type:'jpeg', quality:0.96},
+      // html2canvas peint l'ombre portée de la fiche en bande grise verticale à l'intérieur : on l'ôte.
+      html2canvas:{scale:2, backgroundColor:'#ffffff', useCORS:true,
+        onclone:d=>d.querySelectorAll('.rcard').forEach(e=>{ e.style.boxShadow='none'; })},
+      jsPDF:{unit:'mm', format:'a4', orientation:'portrait'},
+      // Le module de valeur vénale, détail du calcul déplié, dépasse souvent la page : on ne
+      // l'empêche pas d'être coupé (il partirait en page 2 en laissant la 1 vide), seulement ses blocs.
+      pagebreak:{mode:['css','legacy'], avoid:['.sect:not(#vvSect)','.vv-fields','.vv-prix','.cote','#vvConfDetail','#vvDetail','.meta-grid','.notice','.rcard-head']}
+    }).from(card).save();
+  }catch(e){
+    alert('Le PDF n\'a pas pu être généré (connexion nécessaire au premier export).');
+  }finally{
+    fermes.forEach(d=>{ d.open=false; });
+    card.style.marginBottom='';
+    pied.remove();
+    if(themeAvant===null) r.removeAttribute('data-theme'); else r.setAttribute('data-theme', themeAvant);
+    redessinerGraphique();
+    btn.disabled=false; btn.textContent=lib;
   }
 }
 
