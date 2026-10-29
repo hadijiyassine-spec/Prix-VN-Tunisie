@@ -266,7 +266,6 @@ html,body{height:100%;font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-sys
   font:600 12.5px 'Inter','Segoe UI',system-ui,sans-serif;cursor:pointer}
 .pdf-btn:hover{background:var(--sf2)}
 .pdf-btn:disabled{opacity:.6;cursor:wait}
-.pdf-pied{margin-top:12px;padding-top:8px;border-top:1px solid var(--bd2);font-size:9px;color:var(--t3);text-align:center}
 .price-block{display:flex;align-items:baseline;gap:5px;margin-bottom:13px;padding-bottom:13px;border-bottom:1px solid var(--bd)}
 .price-val{font-family:'Syne','Inter','Segoe UI',system-ui,sans-serif;font-size:28px;font-weight:800;color:var(--gn);letter-spacing:-.5px}
 .price-unit{font-size:14px;color:var(--t2);font-weight:600}
@@ -4795,63 +4794,212 @@ function rResult(){
   }
 }
 
-// ── Export PDF de la fiche ──
-// html2pdf (≈ 900 Ko) n'est chargé qu'au premier clic : la plupart des consultations n'exportent rien.
-let HTML2PDF_PROMESSE=null;
-function chargerHtml2pdf(){
-  if(window.html2pdf) return Promise.resolve();
-  if(!HTML2PDF_PROMESSE) HTML2PDF_PROMESSE=new Promise((ok,ko)=>{
-    const s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-    s.onload=ok; s.onerror=()=>{ HTML2PDF_PROMESSE=null; ko(new Error('html2pdf')); };
+// ── Fiche d'évaluation PDF ──
+// Le PDF n'est pas une capture de l'écran : c'est un document composé (pdfmake), texte vectoriel,
+// tableaux et pagination propres. Les textes sont relus dans la fiche affichée, pour que le PDF
+// dise exactement ce que dit l'écran ; les montants viennent du calcul.
+// pdfmake (≈ 2 Mo avec sa police) n'est chargé qu'au premier clic.
+let PDFMAKE_PROMESSE=null;
+function chargerScript(src){
+  return new Promise((ok,ko)=>{
+    const s=document.createElement('script'); s.src=src; s.onload=ok; s.onerror=ko;
     document.head.appendChild(s);
   });
-  return HTML2PDF_PROMESSE;
+}
+function chargerPdfmake(){
+  if(window.pdfMake && window.pdfMake.vfs) return Promise.resolve();
+  if(!PDFMAKE_PROMESSE){
+    const base='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/';
+    PDFMAKE_PROMESSE=chargerScript(base+'pdfmake.min.js').then(()=>chargerScript(base+'vfs_fonts.min.js'))
+      .catch(e=>{ PDFMAKE_PROMESSE=null; throw e; });
+  }
+  return PDFMAKE_PROMESSE;
 }
 function nomFichierPDF(){
   const d=new Date(), p=n=>String(n).padStart(2,'0');
   const brut=[sel.b, sel.m, sel.v.v].join(' ');
   const propre=brut.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'');
-  return 'PrixVN_'+propre+'_'+p(d.getDate())+p(d.getMonth()+1)+d.getFullYear()+'.pdf';
+  return 'Fiche_evaluation_'+propre+'_'+p(d.getDate())+p(d.getMonth()+1)+d.getFullYear()+'.pdf';
+}
+// La police du PDF (Roboto) n'a ni émoji ni certains symboles : on les retire ou les remplace.
+function txtPDF(s){
+  return String(s==null?'':s)
+    .replace(/ /g,' ').replace(/₂/g,'2')
+    .replace(/\s*→\s*/g,' – ').replace(/[▶►]\s*/g,'').replace(/▲/g,'+').replace(/▼/g,'−')
+    .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu,'')
+    .replace(/[ \t]+/g,' ').replace(/ *\n */g,'\n').trim();
+}
+// textContent ignore les <br> : on les remplace par des retours à la ligne avant de lire.
+function txtDe(el){
+  if(!el) return '';
+  const c=el.cloneNode(true); c.querySelectorAll('br').forEach(b=>b.replaceWith('\n'));
+  return txtPDF(c.textContent);
+}
+function construireFichePDF(card, v, chartId){
+  const VERT='#1F7A3D', GRIS='#5B6573', FILET='#D5DCE4', FOND='#F2F5F8';
+  const now=new Date(), p=n=>String(n).padStart(2,'0');
+  const dateEd=p(now.getDate())+'/'+p(now.getMonth()+1)+'/'+now.getFullYear();
+  const ref='PVN-'+now.getFullYear()+p(now.getMonth()+1)+p(now.getDate())+'-'+p(now.getHours())+p(now.getMinutes());
+  const q=s=>card.querySelector(s), qa=s=>[...card.querySelectorAll(s)];
+  const titre=t=>({text:t.toUpperCase(), style:'h2', margin:[0,14,0,6]});
+  const grille=(lignes)=>({
+    table:{widths:[150,'*'], body:lignes.filter(l=>l[1]).map(([k,val])=>[{text:k,style:'lbl'},{text:txtPDF(val),style:'val'}])},
+    layout:{hLineWidth:(i,n)=>i===0||i===n.table.body.length?0:0.5, vLineWidth:()=>0, hLineColor:()=>FILET,
+            paddingTop:()=>4, paddingBottom:()=>4, paddingLeft:()=>0}
+  });
+  const encadre=(contenu, couleur)=>({
+    table:{widths:['*'], body:[[contenu]]},
+    layout:{hLineWidth:()=>0, vLineWidth:i=>i===0?3:0, vLineColor:()=>couleur||VERT,
+            fillColor:()=>FOND, paddingLeft:()=>10, paddingTop:()=>8, paddingBottom:()=>8}
+  });
+
+  // ── Véhicule ──
+  const spec=lbl=>{ const it=qa('.spec-item').find(e=>txtDe(e.querySelector('.spec-label')).toLowerCase().startsWith(lbl)); return it?txtDe(it.querySelector('.spec-value')):''; };
+  const energie=qa('.spec-pill').map(txtDe).filter(Boolean).join(' · ');
+  const contenu=[];
+  contenu.push(titre('Véhicule'));
+  contenu.push(grille([
+    ['Marque', sel.b], ['Modèle', sel.m], ['Finition', v.v],
+    ['Énergie / cylindrée', energie], ['Segment', spec('segment')], ['Émissions CO2', spec('émissions')],
+    ['Génération', txtDe(q('.spec-note'))],
+    ['1ère mise en circulation', FY ? libMEC(FY, FM) : 'non renseignée'],
+    ['Concessionnaire', v.dl],
+    ['Phase base Tunisie', v.d0+' → '+v.d+' ('+v.n+' mise'+(v.n>1?'s':'')+' à jour)']
+  ]));
+
+  // ── Valeur à neuf ──
+  contenu.push(titre('Valeur à neuf'));
+  const pv=q('.price-block');
+  contenu.push(encadre({stack:[
+    {text:'VALEUR À NEUF RETENUE', style:'kicker'},
+    {text:[{text:txtPDF(fmt(parseInt(txtDe(pv&&pv.querySelector('.price-val')).replace(/\D/g,''),10)||v.p)), style:'montantMoyen'},
+      {text:'  '+txtDe(pv&&pv.querySelector('.price-lbl')), style:'note'}]}
+  ]}));
+  const lignesNeuf=[...qa('.compat-banner'), ...qa('.prix-ecart')].map(txtDe).filter(Boolean);
+  qa('.rcard-body > .notice').forEach(n=>{ if(!n.closest('#vvSect')) lignesNeuf.push(txtDe(n)); });
+  if(lignesNeuf.length) contenu.push({ul:lignesNeuf.map(t=>({text:t,style:'corps'})), margin:[0,6,0,0]});
+
+  // ── Valeur vénale ──
+  contenu.push(titre('Valeur vénale'));
+  const kmF=document.getElementById('vvKm');
+  const km=kmF&&kmF.value!==''?parseFloat(kmF.value):null;
+  const r=FY ? computeVV(v, km, vvInputs.etat, vvInputs.usage, vvInputs.cote, vvInputs.anneeEval, sohSaisi(), regimeDe(v)) : null;
+  if(!r){
+    contenu.push(encadre({text:'Non calculée : l\'année de 1ère mise en circulation n\'est pas renseignée.', style:'corps'}, '#C77700'));
+  } else {
+    const dateEval=(r.moisEval?mm2(r.moisEval)+'/':'')+r.anneeEval;
+    contenu.push(grille([
+      ['Date d\'évaluation', dateEval+(r.anneeEval<CY?' (date passée)':'')],
+      ['Âge du véhicule', r.mecPosterieure ? 'mise en circulation postérieure à la date d\'évaluation'
+        : libAge(r.age, r.ageMois)+' ('+libMEC(FY, r.moisMec)+' → '+dateEval+((r.moisMec&&r.moisEval)?'':', compté à l\'année faute de mois')+')'],
+      ['Kilométrage', r.km!=null ? r.km.toLocaleString('fr-TN')+' km'+(r.kmRef!=null?' (normal à cet âge : '+Math.round(r.kmRef).toLocaleString('fr-TN')+' km)':'') : 'non renseigné'],
+      ['État / réparation', r.etat.label], ['Usage', r.usage.label],
+      ['Régime douanier', r.ven.regime && r.ven.regime.label ? r.ven.regime.label : ''],
+      ['Batterie (SOH)', r.bat && r.bat.soh!=null ? Math.round(r.bat.soh*100)+' %' : '']
+    ]));
+    const conf=document.getElementById('vvConf'), confLib=conf?txtPDF((conf.querySelector('b')||conf).textContent):'';
+    contenu.push({margin:[0,10,0,0], table:{widths:['*'], body:[[{stack:[
+      {text:'VALEUR VÉNALE ESTIMÉE', style:'kicker', color:'#FFFFFF'},
+      {text:txtPDF(fmt(r.vv)), style:'montant'},
+      {text:'soit '+Math.round(r.ratio*100)+' % de la valeur à neuf actualisée ('+txtPDF(fmt(Math.round(r.ven.VEN/100)*100))+')'+
+        (confLib?' · '+confLib:''), color:'#E3F1E7', fontSize:9}
+    ]}]]}, layout:{hLineWidth:()=>0, vLineWidth:()=>0, fillColor:()=>VERT, paddingLeft:()=>14, paddingTop:()=>10, paddingBottom:()=>10}});
+
+    // Détail du calcul : relu dans la fiche, une ligne par facteur.
+    // Une ligne peut réunir plusieurs facteurs (« État : ×1 · Usage : ×1 ») : un par ligne dans le PDF.
+    const lignes=qa('#vvDetail > div').map(d=>txtDe(d)).filter(Boolean)
+      .flatMap(t=>{ const parts=t.split(' · '); return parts.length>1 && parts.every(x=>/ : ×/.test(x)) ? parts : [t]; })
+      .map(t=>{
+      const i=t.lastIndexOf(' : ');
+      if(i<0) return [{text:t,style:'corps',colSpan:2},{}];
+      const lib=t.slice(0,i), c=t.slice(i+3), m=c.match(/^(×\s?[\d.,]+|[\d\s ]+DT)\s*(.*)$/);
+      return [{text:lib+(m&&m[2]?' '+m[2]:''),style:'corps'},{text:m?m[1]:c,style:'coef'}];
+    });
+    lignes.push([{text:'Valeur vénale estimée',bold:true,fontSize:9.5},{text:txtPDF(fmt(r.vv)),style:'coef',fontSize:10,color:VERT}]);
+    contenu.push({text:'Détail du calcul', style:'h3'});
+    contenu.push({table:{headerRows:0, widths:['*',80], body:lignes},
+      layout:{hLineWidth:(i,n)=>i===0?0:0.5, vLineWidth:()=>0, hLineColor:()=>FILET, paddingTop:()=>3, paddingBottom:()=>3, paddingLeft:()=>0}});
+
+    const reserves=qa('#vvConfDetail li').map(txtDe).filter(Boolean);
+    if(reserves.length){
+      contenu.push({text:'Réserves sur cette estimation', style:'h3'});
+      contenu.push({ul:reserves.map(t=>({text:t,style:'corps'}))});
+    }
+    const obs=[...qa('#vvAlerte .notice'), ...qa('#vvNotices .notice')].map(txtDe).filter(Boolean);
+    if(obs.length){
+      contenu.push({text:'Observations', style:'h3'});
+      contenu.push({ul:obs.map(t=>({text:t,style:'corps'}))});
+    }
+  }
+
+  // ── Historique tarifaire ──
+  contenu.push(titre('Historique tarifaire de la finition'));
+  const cv=document.getElementById(chartId);
+  if(cv && cv._chart){
+    try{ contenu.push({image:cv.toDataURL('image/png'), width:515, margin:[0,0,0,6]}); }catch(e){}
+  }
+  const h=v.hist, cols=3, parCol=Math.ceil(h.length/cols);
+  const colonnes=[];
+  for(let c=0;c<cols;c++){
+    const part=h.slice(c*parCol,(c+1)*parCol);
+    if(!part.length){ colonnes.push({text:''}); continue; }
+    colonnes.push({table:{widths:['*','auto'], body:part.map(x=>[{text:x.d,style:'corps'},{text:txtPDF(fmt(x.p)),style:'coef'}])},
+      layout:{hLineWidth:(i,n)=>i===0||i===n.table.body.length?0:0.5, vLineWidth:()=>0, hLineColor:()=>FILET, paddingTop:()=>2, paddingBottom:()=>2, paddingLeft:()=>0}});
+  }
+  contenu.push({columns:colonnes, columnGap:18});
+  const gen=txtDe(q('.spec-change'));
+  if(gen) contenu.push({text:gen.replace(/\n/g,' · '), style:'note', margin:[0,6,0,0]});
+
+  return {
+    pageSize:'A4', pageMargins:[40,62,40,54],
+    info:{title:'Fiche d\'évaluation — '+sel.m+' '+v.v, author:'Prix VN Tunisie'},
+    header:()=>({margin:[40,22,40,0], columns:[
+      {text:[{text:'Prix VN Tunisie',bold:true,color:VERT},{text:'  ·  valeur à neuf et valeur vénale',color:GRIS}],fontSize:8.5},
+      {text:'Réf. '+ref+'  ·  édité le '+dateEd, alignment:'right', fontSize:8.5, color:GRIS}
+    ]}),
+    footer:(page,total)=>({margin:[40,14,40,0], columns:[
+      {text:'Estimation indicative établie à partir des tarifs officiels relevés en Tunisie — hors barème compagnie. '+
+        'Elle ne se substitue pas à l\'examen du véhicule par un expert.', fontSize:7, color:GRIS, width:'*'},
+      {text:'Page '+page+' / '+total, fontSize:7.5, color:GRIS, alignment:'right', width:60}
+    ]}),
+    content:[
+      {text:'FICHE D\'ÉVALUATION', fontSize:20, bold:true, color:VERT, characterSpacing:0.5},
+      {text:txtPDF(sel.m+' — '+v.v), fontSize:12, color:'#1B2430', margin:[0,2,0,0]},
+      {canvas:[{type:'line', x1:0, y1:6, x2:515, y2:6, lineWidth:1.5, lineColor:VERT}], margin:[0,0,0,2]},
+      ...contenu
+    ],
+    defaultStyle:{font:'Roboto', fontSize:9, color:'#1B2430', lineHeight:1.2},
+    styles:{
+      h2:{fontSize:10.5, bold:true, color:VERT, characterSpacing:0.6},
+      h3:{fontSize:9.5, bold:true, margin:[0,10,0,4]},
+      lbl:{fontSize:8.5, color:GRIS},
+      val:{fontSize:9, bold:true},
+      corps:{fontSize:8.5},
+      coef:{fontSize:8.5, bold:true, alignment:'right'},
+      note:{fontSize:8, color:GRIS},
+      kicker:{fontSize:7.5, bold:true, color:GRIS, characterSpacing:0.8},
+      montant:{fontSize:24, bold:true, color:'#FFFFFF', margin:[0,2,0,2]},
+      montantMoyen:{fontSize:16, bold:true, color:VERT}
+    }
+  };
 }
 async function exporterPDF(card, v, chartId, btn){
   const lib=btn.textContent;
   btn.disabled=true; btn.textContent='⏳ Préparation du PDF…';
-  // Le PDF est toujours en thème clair, quel que soit le thème d'affichage : c'est un document à imprimer.
+  // Le graphique est repeint en thème clair le temps de la copie : c'est un document à imprimer.
   const r=document.documentElement, themeAvant=r.getAttribute('data-theme');
-  const pied=document.createElement('div'); pied.className='pdf-pied';
-  pied.textContent='Édité le '+new Date().toLocaleDateString('fr-FR')+' · Prix VN Tunisie — '+location.host+location.pathname;
-  // html2canvas peint le contenu des <details> fermés par-dessus la suite : on les déplie le temps
-  // de l'export, ce qui met d'ailleurs le détail du calcul dans le PDF.
-  const fermes=[...card.querySelectorAll('details:not([open])')];
   try{
-    fermes.forEach(d=>{ d.open=true; });
-    card.style.marginBottom='0';   // sa marge basse suffit parfois à créer une page blanche en fin de PDF
-    await chargerHtml2pdf();
-    r.setAttribute('data-theme','light');
-    // Le graphique n'est construit qu'à son entrée à l'écran : on le construit maintenant, en clair.
+    await chargerPdfmake();
     if(v.hist.length>=2 && document.getElementById(chartId)){
+      r.setAttribute('data-theme','light');
       if(OBS_GRAPHIQUE){ OBS_GRAPHIQUE.disconnect(); OBS_GRAPHIQUE=null; }
       buildChart(v, FY, chartId);
     }
-    card.querySelector('.rcard-body').appendChild(pied);
-    await html2pdf().set({
-      margin:[8,8,10,8], filename:nomFichierPDF(),
-      image:{type:'jpeg', quality:0.96},
-      // html2canvas peint l'ombre portée de la fiche en bande grise verticale à l'intérieur : on l'ôte.
-      html2canvas:{scale:2, backgroundColor:'#ffffff', useCORS:true,
-        onclone:d=>d.querySelectorAll('.rcard').forEach(e=>{ e.style.boxShadow='none'; })},
-      jsPDF:{unit:'mm', format:'a4', orientation:'portrait'},
-      // Le module de valeur vénale, détail du calcul déplié, dépasse souvent la page : on ne
-      // l'empêche pas d'être coupé (il partirait en page 2 en laissant la 1 vide), seulement ses blocs.
-      pagebreak:{mode:['css','legacy'], avoid:['.sect:not(#vvSect)','.vv-fields','.vv-prix','.cote','#vvConfDetail','#vvDetail','.meta-grid','.notice','.rcard-head']}
-    }).from(card).save();
+    const doc=construireFichePDF(card, v, chartId);
+    await new Promise(ok=>pdfMake.createPdf(doc).download(nomFichierPDF(), ok));
   }catch(e){
     alert('Le PDF n\'a pas pu être généré (connexion nécessaire au premier export).');
   }finally{
-    fermes.forEach(d=>{ d.open=false; });
-    card.style.marginBottom='';
-    pied.remove();
     if(themeAvant===null) r.removeAttribute('data-theme'); else r.setAttribute('data-theme', themeAvant);
     redessinerGraphique();
     btn.disabled=false; btn.textContent=lib;
